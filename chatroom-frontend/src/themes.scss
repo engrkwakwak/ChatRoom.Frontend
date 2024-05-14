@@ -1,0 +1,10 @@
+
+
+@import '../node_modules/@nebular/theme/styles/prebuilt/dark.scss';
+
+$nb-enable-css-custom-properties: true;
+
+$nb-themes: nb-register-theme(
+  dark,
+  dark
+);

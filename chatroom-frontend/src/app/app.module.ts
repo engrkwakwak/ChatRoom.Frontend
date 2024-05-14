@@ -3,26 +3,41 @@ import { BrowserModule, provideClientHydration } from '@angular/platform-browser
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
-import { NbButton, NbButtonModule, NbIconModule, NbLayoutModule, NbSidebarModule, NbSidebarService, NbThemeModule } from '@nebular/theme';
+import { NbButton, NbButtonModule, NbCardModule, NbIconModule, NbLayoutModule, NbListModule, NbMenuComponent, NbMenuModule, NbMenuService, NbSidebarModule, NbSidebarService, NbThemeModule, NbUserModule } from '@nebular/theme';
 import { NbEvaIconsModule } from '@nebular/eva-icons';
 import { HomeComponent } from './pages/home/home.component';
+import { SigninComponent } from './pages/auth/signin/signin.component';
+import { SignupComponent } from './pages/auth/signup/signup.component';
+import { ChatComponent } from './pages/chat/chat.component';
+import { NbMenuInternalService } from '@nebular/theme/components/menu/menu.service';
 
 @NgModule({
   declarations: [
     AppComponent,
-    HomeComponent
+    HomeComponent,
+    SigninComponent,
+    SignupComponent,
+    ChatComponent
   ],
   imports: [
     BrowserModule,
     AppRoutingModule,
-    NbThemeModule.forRoot(),
+    NbThemeModule.forRoot({name: "dark"}),
     NbLayoutModule,
     NbButtonModule,
     NbEvaIconsModule,
-    NbIconModule
+    NbIconModule,
+    NbSidebarModule,
+    NbListModule,
+    NbUserModule,
+    NbCardModule,
+    NbMenuModule.forRoot(),
   ],
   providers: [
-    provideClientHydration()
+    provideClientHydration(),
+    NbSidebarService,
+    // NbMenuInternalService,
+    // NbMenuService
   ],
   bootstrap: [AppComponent]
 })
