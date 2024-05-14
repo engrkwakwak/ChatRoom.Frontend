@@ -3,18 +3,23 @@ import { BrowserModule, provideClientHydration } from '@angular/platform-browser
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
-import { NbLayoutModule, NbSidebarModule, NbSidebarService, NbThemeModule } from '@nebular/theme';
+import { NbButton, NbButtonModule, NbIconModule, NbLayoutModule, NbSidebarModule, NbSidebarService, NbThemeModule } from '@nebular/theme';
+import { NbEvaIconsModule } from '@nebular/eva-icons';
+import { HomeComponent } from './pages/home/home.component';
 
 @NgModule({
   declarations: [
-    AppComponent
+    AppComponent,
+    HomeComponent
   ],
   imports: [
     BrowserModule,
     AppRoutingModule,
     NbThemeModule.forRoot(),
     NbLayoutModule,
-    NbSidebarModule.forRoot()
+    NbButtonModule,
+    NbEvaIconsModule,
+    NbIconModule
   ],
   providers: [
     provideClientHydration()
