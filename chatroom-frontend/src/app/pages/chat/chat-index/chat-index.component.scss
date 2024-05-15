@@ -1,0 +1,19 @@
+#chat-index-container{
+    max-width:  800px;
+    margin: 0rem auto;
+    z-index: 2;
+
+    .chat-image{
+        max-width: 200px;
+        display: block;
+        margin: 0rem auto;
+        -webkit-filter: drop-shadow(5px 5px 5px #000000);
+        filter: drop-shadow(5px 5px 5px #000000);
+    }
+
+    app-chatlist-toggle{
+        position: fixed;
+        top: 1rem;
+    }
+}
+

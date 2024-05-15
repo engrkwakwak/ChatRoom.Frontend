@@ -10,6 +10,8 @@ import { SigninComponent } from './pages/auth/signin/signin.component';
 import { SignupComponent } from './pages/auth/signup/signup.component';
 import { ChatComponent } from './pages/chat/chat.component';
 import { NbMenuInternalService } from '@nebular/theme/components/menu/menu.service';
+import { ChatIndexComponent } from './pages/chat/chat-index/chat-index.component';
+import { ChatModule } from './pages/chat/chat.module';
 
 @NgModule({
   declarations: [
@@ -17,7 +19,7 @@ import { NbMenuInternalService } from '@nebular/theme/components/menu/menu.servi
     HomeComponent,
     SigninComponent,
     SignupComponent,
-    ChatComponent
+    
   ],
   imports: [
     BrowserModule,
@@ -27,11 +29,7 @@ import { NbMenuInternalService } from '@nebular/theme/components/menu/menu.servi
     NbButtonModule,
     NbEvaIconsModule,
     NbIconModule,
-    NbSidebarModule,
-    NbListModule,
-    NbUserModule,
-    NbCardModule,
-    NbMenuModule.forRoot(),
+    ChatModule,
   ],
   providers: [
     provideClientHydration(),

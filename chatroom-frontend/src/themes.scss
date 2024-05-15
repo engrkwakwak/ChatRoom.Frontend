@@ -1,10 +1,19 @@
 
+@forward '../node_modules/@nebular/theme/styles/theming';
+@use '../node_modules/@nebular/theme/styles/theming' as *;
+@use '../node_modules/@nebular/theme/styles/themes/default';
+@use '../node_modules/@nebular/theme/styles/themes/dark';
 
-@import '../node_modules/@nebular/theme/styles/prebuilt/dark.scss';
 
 $nb-enable-css-custom-properties: true;
 
 $nb-themes: nb-register-theme(
+  (
+    header-shadow: none,
+    input-basic-background-color: background-basic-color-1,
+    input-basic-border-color: background-basic-color-1
+  ),
   dark,
   dark
 );
+

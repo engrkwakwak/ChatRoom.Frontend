@@ -1,0 +1,10 @@
+@use "../../../../../themes" as *;
+
+button{
+    background: transparent !important;
+    border: none !important;
+    color: nb-theme(color-primary-100) !important;
+    &:hover{
+        background-color: nb-theme(background-basic-color-1) !important;
+    }
+}
