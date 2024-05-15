@@ -1,1 +1,56 @@
-<p>signup works!</p>
+<nb-layout>
+    <nb-layout-column>
+        <h1 class="text-center">Chatroom💬</h1>
+        <nb-card status="basic" >
+            <nb-card-header>
+                <nb-icon icon="person"></nb-icon>
+                Sign Up
+            </nb-card-header>
+            <nb-card-body>
+                <div class="mb-3">
+                    <label for="display_name" class="mb-2">Display Name <span class="text-danger">*</span></label>
+                    <input id="display_name" placeholder="Enter Display Name" nbInput fullWidth />
+                </div>
+                <div class="mb-3">
+                    <label for="username" class="mb-2">Username <span class="text-danger">*</span></label>
+                    <input id="username" placeholder="Enter Username" nbInput fullWidth />
+                </div>
+                <div class="mb-3">
+                    <label for="email" class="mb-2">Email <span class="text-danger">*</span></label>
+                    <input id="email" placeholder="Enter Email Address" nbInput fullWidth />
+                </div>
+                <div class="mb-3">
+                    <label for="password" class="mb-2">Password <span class="text-danger">*</span></label>
+                    <nb-form-field >
+                        <input id="password" [type]="showPassword ? 'text' : 'password'" placeholder="Enter Password" nbInput fullWidth />
+                        <button nbSuffix  nbButton ghost class="d-block me-0 ms-auto" (click)="toggleShowPassword()">
+                            <nb-icon [icon]="showPassword ? 'eye-outline' : 'eye-off-2-outline'"></nb-icon>
+                        </button>
+                    </nb-form-field>
+                </div>
+                <div class="mb-3">
+                    <label for="password" class="mb-2">Password Confirmation <span class="text-danger">*</span></label>
+                    <nb-form-field >
+                        <input id="password" [type]="showPasswordConfirmation ? 'text' : 'password'" placeholder="Retype the Password" nbInput fullWidth />
+                        <button nbSuffix  nbButton ghost class="d-block me-0 ms-auto" (click)="toggleShowPasswordConfirmation()">
+                            <nb-icon [icon]="showPasswordConfirmation ? 'eye-outline' : 'eye-off-2-outline'"></nb-icon>
+                        </button>
+                    </nb-form-field>
+                </div>
+
+            </nb-card-body>
+            <nb-card-footer>
+                <button nbButton class="d-block me-0 ms-auto" status="primary" fullWidth>
+                    <nb-icon icon="save"></nb-icon>
+                    Sign Up
+                </button>
+                <hr>
+                <p class="text-center">Already have an Account?</p>
+                <button (click)="gotoSignIn()" nbButton class="d-block me-0 ms-auto" status="basic" outline fullWidth>
+                    <nb-icon icon="log-in"></nb-icon>
+                    Sign in
+                </button>
+            </nb-card-footer>
+        </nb-card>
+    </nb-layout-column>
+</nb-layout>
