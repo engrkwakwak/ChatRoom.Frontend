@@ -1,11 +1,12 @@
 <nb-layout>
     <nb-layout-column>
-        <h1 class="text-center">Chatroom💬</h1>
+        <app-brand-name />
         <nb-card status="basic" >
             <nb-card-header>
                 <nb-icon icon="person"></nb-icon>
                 Sign Up
             </nb-card-header>
+
             <nb-card-body>
                 <div class="mb-3">
                     <label for="display_name" class="mb-2">Display Name <span class="text-danger">*</span></label>
@@ -37,8 +38,8 @@
                         </button>
                     </nb-form-field>
                 </div>
-
             </nb-card-body>
+            
             <nb-card-footer>
                 <button nbButton class="d-block me-0 ms-auto" status="primary" fullWidth>
                     <nb-icon icon="save"></nb-icon>
