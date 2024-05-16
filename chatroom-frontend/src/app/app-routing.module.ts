@@ -7,6 +7,7 @@ import { SignupComponent } from './pages/auth/signup/signup.component';
 import { ChatComponent } from './pages/chat/chat.component';
 import { ChatIndexComponent } from './pages/chat/chat-index/chat-index.component';
 import { ChatViewComponent } from './pages/chat/chat-view/chat-view.component';
+import { PageNotFoundComponent } from './pages/error/page-not-found/page-not-found.component';
 
 const routes: Routes = [
   {path: "", component: HomeComponent},
@@ -21,6 +22,8 @@ const routes: Routes = [
       { path: "view/:id", component: ChatViewComponent },
     ]
   },
+
+  { path: "**", component: PageNotFoundComponent}
 ];
 
 @NgModule({
