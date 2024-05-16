@@ -12,7 +12,7 @@ nb-layout-header{
     max-width:  800px;
     margin: 0rem auto;
     z-index: 2;
-    height: calc(100% - 76px);
+    height: calc(100% - 76px - 50px);
     .chat-image{
         max-width: 200px;
         display: block;
@@ -34,9 +34,15 @@ nb-layout-header{
 
     nb-chat{
         .header{
-            display: none;
+            color: gray !important;
         }
     }
+
 }
 
+.chat-header{
+    background-color: nb-theme(background-basic-color-1);
+    margin-bottom: 2px;
+    padding: 5px;
+}
 

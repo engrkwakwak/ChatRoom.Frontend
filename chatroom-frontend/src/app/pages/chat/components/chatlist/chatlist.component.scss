@@ -1,18 +1,6 @@
 @use "../../../../../themes" as *;
 
 #chatlist{
-    background-color: nb-theme(background-basic-color-4);
-    border-right: 1px solid rgba(245, 245, 245, 0.116) ;
-    padding: 1rem;
-    height: 100vh;
-    width: 100vw;
-    position: fixed;
-    z-index: 2;
-    @media  screen and (min-width: 768px) {
-        max-width: 300px;
-        position: initial;
-    }
-
     nb-list-item{
         border: none;
         padding-top: .5rem;
