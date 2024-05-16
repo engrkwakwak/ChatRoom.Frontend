@@ -1,0 +1,27 @@
+.convo-header{
+    box-shadow: none !important;
+    color: black !important;
+}
+
+nb-layout-column{
+    padding: 0px !important;
+}
+
+#chat-ui-container {
+    #conversation{
+        background-color: #192038;
+        height: 100vh;
+        width: 100vw;
+        z-index: 1;
+        position: fixed;
+        @media  screen and (min-width: 768px) {
+            width: 100%;
+            position: initial;
+        }
+    }
+
+    @media  screen and (min-width: 768px) {
+        display: grid;
+        grid-template-columns: auto 1fr;
+    }
+}

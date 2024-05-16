@@ -1,0 +1,16 @@
+<div id="chatlist">
+    <h6>Chats</h6>
+    <input nbInput fullWidth type="text" placeholder="Search Messages" />
+    <nb-list>
+        <nb-list-item *ngFor="let user of users" (click)="viewChat()">
+            <nb-user [name]="user.name" [title]="user.title" color="gray">
+            </nb-user>
+        </nb-list-item>
+        
+        <nb-list-item class="active"  (click)="viewChat()" >
+            <nb-user name="Active User" title="Last message" color="gray" >
+            </nb-user>
+        </nb-list-item>
+        
+    </nb-list>
+</div>

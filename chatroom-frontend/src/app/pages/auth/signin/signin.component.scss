@@ -1,0 +1,17 @@
+@use "../../../../themes.scss" as *;
+
+.signup-link-con{
+    max-width: 600px;
+    margin: 0rem auto;
+}
+nb-card{
+    max-width: 600px;
+    margin: 0rem auto;
+    input{
+        border-color: nb-theme(color-basic-700) !important;
+        &:focus{
+            transition: .4s;
+            border-color: nb-theme(color-basic-600) !important;
+        }
+    }
+}
