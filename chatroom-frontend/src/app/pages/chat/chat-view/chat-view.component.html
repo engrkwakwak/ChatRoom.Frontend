@@ -1,19 +1,9 @@
 <div class="h-100">
-    <!-- <nb-layout-header>
-        <nb-actions size="medium">
-            <nb-action>
-              <app-chatlist-toggle />
-            </nb-action>
-        </nb-actions>
-        <h6>
-            Lorem Ipsum
-        </h6>
-    </nb-layout-header> -->
     <div class="chat-header">
-        <app-chatlist-toggle></app-chatlist-toggle>
-        <button nbButton ghost shape="semi-round">
-            <nb-icon icon="settings"></nb-icon>
-        </button>
+           <app-chatlist-toggle ></app-chatlist-toggle>
+           <button nbButton ghost shape="semi-round" nbPopoverPlacement="bottom" nbPopover="Chat Settings" nbPopoverTrigger="hint" >
+                  <nb-icon icon="settings"></nb-icon>
+           </button>
     </div>
     <div class=" align-items-center" id="chat-view-container">
         <nb-chat title="Chat Name">
@@ -63,7 +53,7 @@
                    type="text"
                    message="Lorem ipsum dolor sit amet consectetur, adipisicing elit. Laboriosam, accusantium."
                    reply="false"
-                   sender="Sender Name">
+                   avatar="">
             </nb-chat-message>
             <nb-chat-message 
                    type="text"

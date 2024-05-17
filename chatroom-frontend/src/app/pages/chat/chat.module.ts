@@ -2,7 +2,7 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ChatIndexComponent } from './chat-index/chat-index.component';
 import { ChatComponent } from './chat.component';
-import { NbActionsModule, NbButtonModule, NbChatModule, NbIconModule, NbInputModule, NbLayoutModule, NbListModule, NbTabsetModule, NbUserModule } from '@nebular/theme';
+import { NbActionsModule, NbButtonModule, NbChatModule, NbIconModule, NbInputModule, NbLayoutModule, NbListModule, NbPopoverModule, NbTabsetModule, NbUserModule } from '@nebular/theme';
 import { NbEvaIconsModule } from '@nebular/eva-icons';
 import { AppRoutingModule } from '../../app-routing.module';
 import { ChatlistComponent } from './components/chatlist/chatlist.component';
@@ -37,7 +37,8 @@ import { ChatContactsComponent } from './components/chat-contacts/chat-contacts.
     NbChatModule,
     BrowserAnimationsModule,
     NbTabsetModule,
-    NbInputModule
+    NbInputModule,
+    NbPopoverModule
   ],
 })
 export class ChatModule { }
