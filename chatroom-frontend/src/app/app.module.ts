@@ -9,6 +9,7 @@ import { HomeComponent } from './pages/home/home.component';
 import { ChatModule } from './pages/chat/chat.module';
 import { AuthModule } from './pages/auth/auth.module';
 import { PageNotFoundComponent } from './pages/error/page-not-found/page-not-found.component';
+import { HttpClientModule } from '@angular/common/http';
 
 @NgModule({
   declarations: [
@@ -26,7 +27,8 @@ import { PageNotFoundComponent } from './pages/error/page-not-found/page-not-fou
     NbEvaIconsModule,
     NbIconModule,
     ChatModule,
-    AuthModule
+    AuthModule,
+    HttpClientModule
   ],
   providers: [
     provideClientHydration(),
