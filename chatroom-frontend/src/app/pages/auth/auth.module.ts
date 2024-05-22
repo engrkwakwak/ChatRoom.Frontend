@@ -5,6 +5,7 @@ import { SignupComponent } from './signup/signup.component';
 import { NbButtonModule, NbCardModule, NbFormFieldModule, NbIconModule, NbInputModule, NbLayoutModule, NbSpinnerComponent, NbSpinnerModule } from '@nebular/theme';
 import { BrandNameComponent } from './components/brand-name/brand-name.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { HttpClientModule } from '@angular/common/http';
 
 
 
@@ -24,7 +25,8 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
     NbFormFieldModule,
     ReactiveFormsModule,
     FormsModule,
-    NbSpinnerModule
+    NbSpinnerModule,
+    HttpClientModule
   ]
 })
 export class AuthModule { }
