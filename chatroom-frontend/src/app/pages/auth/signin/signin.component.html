@@ -8,29 +8,39 @@
             </nb-card-header>
 
             <nb-card-body>
-                <div class="mb-3">
-                    <label for="username" class="mb-2">Username or Email <span class="text-danger">*</span></label>
-                    <input id="username" placeholder="Enter Username or Email" nbInput fullWidth />
-                </div>
-                <div class="mb-3">
-                    <label for="password" class="mb-2">Password <span class="text-danger">*</span></label>
-                    <nb-form-field >
-                        <input id="password" [type]="showPassword ? 'text' : 'password'" placeholder="Enter Password" nbInput fullWidth />
-                        <button nbSuffix  nbButton ghost class="d-block me-0 ms-auto" (click)="toggleShowPassword()">
-                            <nb-icon [icon]="showPassword ? 'eye-outline' : 'eye-off-2-outline'"></nb-icon>
-                        </button>
-                    </nb-form-field>
-                </div>
+                <form [formGroup]="loginForm">
+                    <div class="mb-3">
+                        <label for="username" class="mb-2">Username or Email <span class="text-danger">*</span></label>
+                        <input formControlName="username" id="username" placeholder="Enter Username or Email" nbInput fullWidth />
+                        <div *ngIf="loginForm.controls['username'].errors?.['required'] && loginForm.controls['username'].touched" class="text-danger">*Username or email is required.</div>
+                        <div *ngIf="loginForm.controls['username'].errors?.['serverError']" class="text-danger">*{{ loginForm.controls['username'].errors?.['serverError'] }}</div>
+                        <div *ngIf="loginForm.controls['username'].errors?.['maxLength'] && loginForm.controls['username'].touched" class="text-danger">
+                            *Maximum length exceeded. The maximum length for email is 100 characters and 20 characters for username.
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="password" class="mb-2">Password <span class="text-danger">*</span></label>
+                        <nb-form-field >
+                            <input formControlName="password" id="password" [type]="showPassword ? 'text' : 'password'" placeholder="Enter Password" nbInput fullWidth />
+                            <button nbSuffix  nbButton ghost class="d-block me-0 ms-auto" (click)="toggleShowPassword()">
+                                <nb-icon [icon]="showPassword ? 'eye-outline' : 'eye-off-2-outline'"></nb-icon>
+                            </button>
+                        </nb-form-field>
+                        <div *ngIf="loginForm.controls['password'].errors?.['required'] && loginForm.controls['password'].touched" class="text-danger">*Password is required.</div>
+                        <div *ngIf="loginForm.controls['password'].errors?.['serverError']" class="text-danger">{{ loginForm.controls['password'].errors?.['serverError'] }}</div>
+                    </div>
+                    <div *ngIf="invalidLogin" class="alert alert-danger">Invalid username or password.</div>
+                </form>
             </nb-card-body>
 
             <nb-card-footer>
-                <button nbButton class="d-block me-0 ms-auto" status="primary" fullWidth>
+                <button (click)="onSubmit()" nbButton class="d-block me-0 ms-auto" status="primary" fullWidth>
                     <nb-icon icon="log-in"></nb-icon>
                     Sign In
                 </button>
                 <br>
                 <button (click)="gotoSignUp()" nbButton class="d-block me-0 ms-auto" status="basic" outline fullWidth>
-                    <nb-icon icon="person-add"></nb-icon>
+                    <nb-icon icon="person-add"></nb-icon> 
                     Sign Up
                 </button>
             </nb-card-footer>

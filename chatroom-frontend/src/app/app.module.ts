@@ -9,6 +9,14 @@ import { HomeComponent } from './pages/home/home.component';
 import { ChatModule } from './pages/chat/chat.module';
 import { AuthModule } from './pages/auth/auth.module';
 import { PageNotFoundComponent } from './pages/error/page-not-found/page-not-found.component';
+import { ReactiveFormsModule } from '@angular/forms';
+import { JwtModule } from '@auth0/angular-jwt';
+import { provideHttpClient, withFetch } from '@angular/common/http';
+
+export function tokenGetter() {
+  return localStorage.getItem("chatroom-token");
+}
+
 
 @NgModule({
   declarations: [
@@ -26,11 +34,20 @@ import { PageNotFoundComponent } from './pages/error/page-not-found/page-not-fou
     NbEvaIconsModule,
     NbIconModule,
     ChatModule,
-    AuthModule
+    AuthModule,
+    ReactiveFormsModule,
+    JwtModule.forRoot({
+      config: {
+        tokenGetter: tokenGetter,
+        allowedDomains: ["localhost: 5001"],
+        disallowedRoutes: []
+      }
+    })
   ],
   providers: [
     provideClientHydration(),
-    NbSidebarService
+    NbSidebarService,
+    provideHttpClient(withFetch())
   ],
   bootstrap: [AppComponent]
 })
