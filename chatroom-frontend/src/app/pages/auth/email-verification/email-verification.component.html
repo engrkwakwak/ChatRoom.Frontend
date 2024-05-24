@@ -1,0 +1,13 @@
+
+<nb-layout>
+    <nb-layout-column>
+        <div class="container">
+            <img src="../../../../assets/images/email-verification-graphics.png"  />
+            <h3 class="text-center title">Verify your email address</h3>
+            <p class="text-center description">We need to verify the email address you used for registration. If you haven't received any email, please click the "Resend Verification Link" button below.</p>
+
+            <p class="counter text-center mb-0" *ngIf="emailInterval > 0">Resend Link available in {{ emailInterval / 1000 }} seconds</p>
+            <button class="mx-auto d-block" nbButton status="primary" [disabled]="emailInterval > 0" (click)="resendEmail()" [nbSpinner]="loading">Resend Verification Link</button>
+        </div>
+    </nb-layout-column>
+</nb-layout>

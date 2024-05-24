@@ -9,12 +9,17 @@ import { ChatIndexComponent } from './pages/chat/chat-index/chat-index.component
 import { ChatViewComponent } from './pages/chat/chat-view/chat-view.component';
 import { PageNotFoundComponent } from './pages/error/page-not-found/page-not-found.component';
 import { AuthGuard } from './guards/auth.guard';
+import { EmailVerificationComponent } from './pages/auth/email-verification/email-verification.component';
+import { EmailVerifiedGuard } from './guards/email-verified.guard';
+import { EmailVerifiedComponent } from './pages/auth/email-verified/email-verified.component';
 
 const routes: Routes = [
   {path: "", component: HomeComponent},
   {path: "home", redirectTo: ""},
   {path: "signin", component: SigninComponent, canActivate: [AuthGuard]},
   {path: "signup", component: SignupComponent, canActivate: [AuthGuard]},
+  {path: "email-verification", component: EmailVerificationComponent, canActivate: [AuthGuard]}, 
+  {path: "email-verified", component: EmailVerifiedComponent}, 
   {
     path: "chat", 
     component: ChatComponent,
@@ -22,10 +27,10 @@ const routes: Routes = [
       { path: "", component: ChatIndexComponent },
       { path: "view/:id", component: ChatViewComponent },
     ],
-    canActivate: [AuthGuard]
+    canActivate: [AuthGuard, EmailVerifiedGuard]
   },
 
-  { path: "**", component: PageNotFoundComponent}
+  {path: "**", component: PageNotFoundComponent}
 ];
 
 @NgModule({
