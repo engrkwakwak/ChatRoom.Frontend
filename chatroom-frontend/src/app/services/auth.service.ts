@@ -24,19 +24,11 @@ export class AuthService {
   }
 
   public isEmailTaken(email : string) : Observable<boolean>{
-    return this.http.get<boolean>(`${this.API_ENDPOINT}/users/has-duplicate-email`,{
-      params: {
-        email : email
-      }
-    });
+    return this.http.get<boolean>(`${this.API_ENDPOINT}/users/has-duplicate-email/${email}`);
   }
 
   public isUsernameTaken(username : string) : Observable<boolean>{
-    return this.http.get<boolean>(`${this.API_ENDPOINT}/users/has-duplicate-username`, {
-      params: {
-        username : username
-      },
-    });
+    return this.http.get<boolean>(`${this.API_ENDPOINT}/users/has-duplicate-username/${username}`);
   }
 
   signin(data: SigninDto): Observable<AuthenticatedResponseDto> {
