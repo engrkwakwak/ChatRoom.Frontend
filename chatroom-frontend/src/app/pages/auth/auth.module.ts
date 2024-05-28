@@ -2,10 +2,12 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { SigninComponent } from './signin/signin.component';
 import { SignupComponent } from './signup/signup.component';
-import { NbButtonModule, NbCardModule, NbFormFieldModule, NbIconModule, NbInputModule, NbLayoutModule, NbSpinnerComponent, NbSpinnerModule } from '@nebular/theme';
+import { NbButtonModule, NbCardModule, NbFormFieldModule, NbIconModule, NbInputModule, NbLayoutModule, NbSpinnerComponent, NbSpinnerModule, NbToastrModule, NbToastrService } from '@nebular/theme';
 import { BrandNameComponent } from './components/brand-name/brand-name.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
+import { EmailVerificationComponent } from './email-verification/email-verification.component';
+import { EmailVerifiedComponent } from './email-verified/email-verified.component';
 
 
 
@@ -13,7 +15,9 @@ import { HttpClientModule } from '@angular/common/http';
   declarations: [
     SigninComponent,
     SignupComponent,
-    BrandNameComponent
+    BrandNameComponent,
+    EmailVerificationComponent,
+    EmailVerifiedComponent
   ],
   imports: [
     CommonModule,
@@ -26,7 +30,8 @@ import { HttpClientModule } from '@angular/common/http';
     ReactiveFormsModule,
     FormsModule,
     NbSpinnerModule,
-    HttpClientModule
+    HttpClientModule,
+    NbToastrModule.forRoot()
   ]
 })
 export class AuthModule { }
