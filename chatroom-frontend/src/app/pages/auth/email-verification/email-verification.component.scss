@@ -1,0 +1,20 @@
+@use "../../../../themes.scss" as *;
+
+.container{
+    max-width: 600px;
+    img{
+        max-width: 300px;
+        margin: 0rem auto;
+        display: block;
+    }
+    .title{
+        color: nb-theme(color-primary-100) !important;
+    }
+    .description{
+        color: nb-theme(color-basic-500) !important;
+    }
+    .counter{
+        color: nb-theme(color-info-600) !important;
+        font-size: .8rem;
+    }
+}
