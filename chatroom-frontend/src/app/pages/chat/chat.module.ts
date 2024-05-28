@@ -11,6 +11,7 @@ import { ChatViewComponent } from './chat-view/chat-view.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { ChatSidebarComponent } from './components/chat-sidebar/chat-sidebar.component';
 import { ChatContactsComponent } from './components/chat-contacts/chat-contacts.component';
+import { NgxSpinner, NgxSpinnerModule } from 'ngx-spinner';
 
 
 
@@ -38,7 +39,8 @@ import { ChatContactsComponent } from './components/chat-contacts/chat-contacts.
     BrowserAnimationsModule,
     NbTabsetModule,
     NbInputModule,
-    NbPopoverModule
+    NbPopoverModule,
+    NgxSpinnerModule
   ],
 })
 export class ChatModule { }

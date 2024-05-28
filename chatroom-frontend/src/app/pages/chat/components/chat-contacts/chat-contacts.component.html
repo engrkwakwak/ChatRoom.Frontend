@@ -1,7 +1,16 @@
-<div id="chatlist">
-    <h6>Contacts</h6>
-    <input nbInput fullWidth type="text" placeholder="Search People" />
-    <nb-list>
+<div id="contactlist" >
+
+    <h6>Contactss</h6>
+
+    <input nbInput fullWidth status="basic" type="text" placeholder="Search People" (change)="search($event)" />
+
+    <div id="loader" *ngIf="loading">
+        <ngx-spinner type="ball-pulse" [fullScreen]="false" [showSpinner]="true" size="default" bdColor="rgba(0,0,0,0)">
+            <p style="color: white" > Searching... </p>
+        </ngx-spinner>
+    </div>
+    
+    <nb-list *ngIf="!loading">
         <nb-list-item *ngFor="let user of users">
             <nb-user [name]="user.name" color="gray">
             </nb-user>
@@ -14,6 +23,5 @@
                 <nb-icon icon="star"></nb-icon>
             </button>
         </nb-list-item>
-        
     </nb-list>
 </div>
