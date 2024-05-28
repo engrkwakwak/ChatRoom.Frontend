@@ -3,7 +3,7 @@ import { BrowserModule, provideClientHydration } from '@angular/platform-browser
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
-import { NbButton, NbButtonModule, NbCardModule, NbIconModule, NbLayoutModule, NbListModule, NbMenuComponent, NbMenuModule, NbMenuService, NbSidebarModule, NbSidebarService, NbThemeModule, NbUserModule } from '@nebular/theme';
+import { NbButton, NbButtonModule, NbCardModule, NbDatepickerModule, NbIconModule, NbLayoutModule, NbListModule, NbMenuComponent, NbMenuModule, NbMenuService, NbSidebarModule, NbSidebarService, NbThemeModule, NbToastrModule, NbUserModule, NbWindowModule } from '@nebular/theme';
 import { NbEvaIconsModule } from '@nebular/eva-icons';
 import { HomeComponent } from './pages/home/home.component';
 import { ChatModule } from './pages/chat/chat.module';
@@ -23,8 +23,7 @@ export function tokenGetter() {
   declarations: [
     AppComponent,
     HomeComponent,
-    PageNotFoundComponent,
-    
+    PageNotFoundComponent
   ],
   imports: [
     BrowserModule,
@@ -44,7 +43,13 @@ export function tokenGetter() {
         allowedDomains: ["localhost:5001", "localhost:5000"],
         disallowedRoutes: []
       }
-    })
+    }),
+    NbMenuModule.forRoot(),
+    NbWindowModule,
+    NbWindowModule.forRoot(),
+    NbDatepickerModule.forRoot(),
+    NbCardModule,
+    NbToastrModule.forRoot()
   ],
   providers: [
     provideClientHydration(),
