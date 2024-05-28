@@ -54,7 +54,7 @@
                     <div class="mb-3">
                         <label for="password" class="mb-2">Password Confirmation <span class="text-danger">*</span></label>
                         <nb-form-field >
-                            <input id="password" [type]="showPasswordConfirmation ? 'text' : 'password'" placeholder="Retype the Password" name="passwordConfirmation" formControlName="passwordConfirmation" nbInput fullWidth />
+                            <input id="password-confirmation" [type]="showPasswordConfirmation ? 'text' : 'password'" placeholder="Retype the Password" name="passwordConfirmation" formControlName="passwordConfirmation" nbInput fullWidth />
                             <button type="button" nbSuffix  nbButton ghost class="d-block me-0 ms-auto" (click)="toggleShowPasswordConfirmation()">
                                 <nb-icon [icon]="showPasswordConfirmation ? 'eye-outline' : 'eye-off-2-outline'"></nb-icon>
                             </button>

@@ -26,8 +26,4 @@ export class HomeComponent {
 
     return false;
   }
-  
-  logOut = () => {
-    localStorage.removeItem("chatroom-token");
-  }
 }

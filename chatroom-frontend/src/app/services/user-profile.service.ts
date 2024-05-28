@@ -1,0 +1,36 @@
+import { HttpClient } from '@angular/common/http';
+import { Injectable } from '@angular/core';
+import { environment } from '../../environments/environment';
+import { UserForUpdateDto } from '../dtos/chat/user-for-update.dto';
+import { Observable } from 'rxjs';
+import { UserDto } from '../dtos/chat/user.dto';
+
+@Injectable({
+  providedIn: 'root'
+})
+export class UserProfileService {
+
+  constructor(
+    private http: HttpClient
+  ) { }
+
+  private API_ENDPOINT = environment.apiUrl;
+
+  public isUsernameTaken(username: string): Observable<boolean> {
+    const url = `${this.API_ENDPOINT}/users/has-duplicate-username/${username}`;
+    return this.http.get<boolean>(url);
+  }
+
+  public isEmailTaken(email: string): Observable<boolean> {
+    const url = `${this.API_ENDPOINT}/users/has-duplicate-email/${email}`;
+    return this.http.get<boolean>(url);
+  }
+
+  public getUser(route: string) {
+    return this.http.get<UserDto>(`${this.API_ENDPOINT}${route}`);
+  }
+
+  public updateUser(route: string, data: UserForUpdateDto) : Observable<UserForUpdateDto>{
+    return this.http.put<UserForUpdateDto>(`${this.API_ENDPOINT}${route}`, data);
+  }
+}
