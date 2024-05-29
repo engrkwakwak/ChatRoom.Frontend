@@ -26,11 +26,16 @@ export class UserProfileService {
     return this.http.get<boolean>(url);
   }
 
-  public getUser(route: string) {
+  public getUser(route: string) : Observable<UserDto> {
     return this.http.get<UserDto>(`${this.API_ENDPOINT}${route}`);
   }
 
   public updateUser(route: string, data: UserForUpdateDto) : Observable<UserForUpdateDto>{
     return this.http.put<UserForUpdateDto>(`${this.API_ENDPOINT}${route}`, data);
   }
+
+  public uploadPicture(route: string, formData: FormData)  : Observable<string> {
+    return this.http.post<string>(`${this.API_ENDPOINT}${route}`, formData);
+  }
+
 }

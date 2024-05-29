@@ -1,4 +1,4 @@
-import { Component, Inject, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, Inject, OnInit } from '@angular/core';
 import { ChatService } from '../../chat.service';
 import { Router } from '@angular/router';
 import { NB_WINDOW, NbMenuService, NbWindowControlButtonsConfig, NbWindowService } from '@nebular/theme';
@@ -8,6 +8,7 @@ import { jwtDecode } from 'jwt-decode';
 import { UserProfileService } from '../../../../services/user-profile.service';
 import { UserDto } from '../../../../dtos/chat/user.dto';
 import { HttpErrorResponse } from '@angular/common/http';
+import { environment } from '../../../../../environments/environment.development';
 
 @Component({
   selector: 'app-chat-sidebar',
@@ -16,6 +17,9 @@ import { HttpErrorResponse } from '@angular/common/http';
 })
 export class ChatSidebarComponent implements OnInit {
   username: string = '';
+  picturePath: string = '';
+
+  private PICTURE_STORAGE = environment.localPictureStorage;
 
   constructor(
     private chatService : ChatService,
@@ -23,7 +27,8 @@ export class ChatSidebarComponent implements OnInit {
     private nbMenuService: NbMenuService,
     @Inject(NB_WINDOW) private window : Window,
     private nbWindowService: NbWindowService,
-    private userService: UserProfileService
+    private userService: UserProfileService,
+    private cdr: ChangeDetectorRef
   ){}
 
   ngOnInit() {
@@ -77,6 +82,7 @@ export class ChatSidebarComponent implements OnInit {
     const windowRef = this.nbWindowService.open(UserProfileComponent, { buttons: buttonsConfig } );
 
     windowRef.onClose.subscribe(() => {
+
       this.loadDisplayName();
     });
   }
@@ -94,7 +100,7 @@ export class ChatSidebarComponent implements OnInit {
     .subscribe({
       next: (userEntity: UserDto) => {
         this.username = userEntity.displayName;
-        
+        this.updatePicturePath(userEntity.displayPictureUrl ?? "");
       },
       error: (err: HttpErrorResponse) => console.log(err),
     })
@@ -103,5 +109,17 @@ export class ChatSidebarComponent implements OnInit {
   logOut = () => {
     localStorage.removeItem("chatroom-token");
     this.router.navigate(['/signin'])
+  }
+
+  public loadDisplayPicture() : string {
+    if(!this.picturePath || this.picturePath.trim().length === 0) {
+      return 'https://w7.pngwing.com/pngs/340/946/png-transparent-avatar-user-computer-icons-software-developer-avatar-child-face-heroes-thumbnail.png'
+    }
+    return `${this.PICTURE_STORAGE}${this.picturePath}`.replace(/\\/g, "/");
+  }
+
+  public updatePicturePath(newPath: string): void{
+    this.picturePath = newPath;
+    this.cdr.detectChanges();
   }
 }
