@@ -1,11 +1,6 @@
 <nb-card-body >
-    <nb-user 
-        style="display: flex; flex-direction: column; align-items: center;"
-        size="large"
-        [name]="displayName"
-        showTitle=false
-        picture="https://upload.wikimedia.org/wikipedia/commons/6/66/SmileyFace.png">
-    </nb-user>
+        <app-avatar class="d-block mb-2 mx-auto" style="width: fit-content;" [width]="70" [height]="70" src="https://api.dicebear.com/8.x/identicon/svg?seed={{displayName}}&radius=50&backgroundColor=ffdfbf,ffd5dc,d1d4f9,c0aede,b6e3f4"  />
+        <p class="mb-0 text-center fw-bold">{{displayName}}</p>
     <br>
     <form [formGroup]="userForm" autocomplete="off" (ngSubmit)="updateUser(userForm.value)">
         <nb-layout-column>

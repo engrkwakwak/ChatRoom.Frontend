@@ -94,7 +94,6 @@ export class ChatSidebarComponent implements OnInit {
     .subscribe({
       next: (userEntity: UserDto) => {
         this.username = userEntity.displayName;
-        
       },
       error: (err: HttpErrorResponse) => console.log(err),
     })

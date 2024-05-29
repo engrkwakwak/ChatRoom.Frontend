@@ -17,6 +17,7 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { JwtModule } from '@auth0/angular-jwt';
 import { tokenGetter } from '../../app.module';
 import { ContactItemComponent } from './components/chat-contacts/contact-item/contact-item.component';
+import { AvatarComponent } from './components/avatar/avatar.component';
 
 
 
@@ -30,7 +31,8 @@ import { ContactItemComponent } from './components/chat-contacts/contact-item/co
     ChatSidebarComponent,
     ChatContactsComponent,
     UserProfileComponent,
-    ContactItemComponent
+    ContactItemComponent,
+    AvatarComponent
   ],
   imports: [
     AppRoutingModule,

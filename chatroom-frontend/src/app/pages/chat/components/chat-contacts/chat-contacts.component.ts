@@ -36,9 +36,7 @@ export class ChatContactsComponent {
     this.userService.searchUsersByName(this.params)
     .subscribe({
       next: (res) => {
-        console.log(res)
         this.users = res;
-        console.log("must be done")
       },
       error: () => {
         if(this.loading == true){
@@ -49,32 +47,22 @@ export class ChatContactsComponent {
         if(this.loading == true){
           this.hideLoading();
         }
-        console.log("completed")
       }
     })
   }
 
   showLoading(){
-    // if(this.loading == false){
-      console.log("shown")
       this.loading = true;
       this.spinner.show();
-    // }
   }
 
   hideLoading(){
-    console.log("hidden");
-    // if(this.loading == true){
-
       this.loading = false;
       this.spinner.hide();
-    // }
   }
 
 
   ngOnInit(){
-    // this.spinner.show();
-    
     console.log("init")
   }
 

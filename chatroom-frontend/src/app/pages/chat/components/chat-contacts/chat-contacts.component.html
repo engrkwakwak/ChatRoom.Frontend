@@ -1,44 +1,33 @@
 <div id="contactlist" >
 
-    <h6>Contactss</h6>
+    <h6 class="head-title">Contacts</h6>
 
-    <input nbInput fullWidth status="basic" type="search" placeholder="Search People" (input)="search($event)" />
+    <div class="search-container">
+        <input nbInput fullWidth status="basic" type="search" placeholder="Search People" (input)="search($event)" />
+    </div>
 
     <div id="loader" *ngIf="loading">
-        test
         <ngx-spinner type="ball-pulse" [fullScreen]="false" [showSpinner]="true" size="default" bdColor="rgba(0,0,0,0)">
             <p style="color: white" > Searching... </p>
         </ngx-spinner>
     </div>
-    
 
-    <div *ngIf="!loading">
-        <br>
-        <nb-list nbInfiniteList>
-            <nb-list-item *ngFor="let user of users" >
-                <app-contact-item [user]="user" />
-            </nb-list-item>
-            
-            <!-- <nb-list-item *ngFor="let user of users" >
-                <div class="row align-items-center w-100 justify-content-between">
-                    <div class="col-auto pe-0">
-                        <img 
-                            width="30" 
-                            height="30" 
-                            src="https://api.dicebear.com/8.x/identicon/svg?seed={{user.displayName}}&radius=50&backgroundColor=ffdfbf,ffd5dc,d1d4f9,c0aede,b6e3f4" alt="">
-                    </div>
-                    <div class="col-auto pe-0 justify-content-end" style="width: 150px; overflow: hidden">
-                        <p class="mb-0" style="max-width: 200px !important;">{{ user.displayName }}</p>
-                        <p class="mb-0">&#64;{{ user.username }}</p>
-                    </div>
-                    <div class="col-auto p-0">
-                        <button nbButton ghost>
-                            <nb-icon icon="more-horizontal"></nb-icon>
-                        </button>
-                    </div>
-                </div>
-            </nb-list-item> -->
-        </nb-list>
-        <p class="text-center py-4 opacity-50" *ngIf="users.length < 1">No results found</p>
+    <div class="contacts-list-container">
+            <p class="mb-0 people-title">People</p>
+            <div *ngIf="!loading" class="user-container col" >
+                <nb-list nbInfiniteList>
+                    <nb-list-item *ngFor="let user of users" >
+                        <app-contact-item [user]="user" />
+                    </nb-list-item>
+                </nb-list>
+                <p class="text-center py-4 opacity-50" *ngIf="users.length < 1">
+                    We were unable to find any matching results. Please try broadening your search criteria or use different keywords
+                </p>
+            </div>
+        
+            <p class="mb-0 contact-title">Your Contacts</p>
+            <div class="col" style="height: 50%;">
+                
+            </div>
     </div>
 </div>
