@@ -1,8 +1,11 @@
 <div id="chatsidebar">
-    <div class="p-3 ">
-        <h6 class="mb-0">Display Name</h6>
-        <small>Active</small>
-    </div>
+    <nb-layout-header>
+        <nb-user [name]="username"
+                 title="Active"
+                 [nbContextMenu]="userActionItems"
+                 nbContextMenuTag="user-actions-menu">
+        </nb-user>
+    </nb-layout-header>
 
     <nb-tabset fullWidth>
         <nb-tab tabIcon="message-circle" tabTitle="Chats" responsive>
@@ -11,7 +14,5 @@
         <nb-tab tabIcon="people" tabTitle="Contacts" responsive>
             <app-chat-contacts />
         </nb-tab>
-      </nb-tabset>
-
-    
+    </nb-tabset>
 </div>
