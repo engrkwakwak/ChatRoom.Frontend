@@ -1,5 +1,9 @@
 import { Component } from '@angular/core';
 import { NgxSpinnerService } from 'ngx-spinner';
+import { UserSearchParameters } from '../../../../dtos/shared/user-search-parameters.dto';
+import { UserService } from '../../../../services/user.service';
+import { UserDto } from '../../../../dtos/chat/user.dto';
+import { take } from 'rxjs';
 
 @Component({
   selector: 'app-chat-contacts',
@@ -8,39 +12,70 @@ import { NgxSpinnerService } from 'ngx-spinner';
 })
 export class ChatContactsComponent {
   constructor(
-    private spinner : NgxSpinnerService
+    private spinner : NgxSpinnerService,
+    private userService : UserService
   ){}
 
-  users: { name: string, title: string }[] = [
-    { name: 'Carla Espinosa', title: 'Nurse' },
-    { name: 'Bob Kelso', title: 'Doctor of Medicine' },
-    { name: 'Janitor', title: 'Janitor' },
-    { name: 'Perry Cox', title: 'Doctor of Medicine' },
-    { name: 'Ben Sullivan', title: 'Carpenter and photographer' },
-  ];
-
+  users:UserDto[] = [];
   loading : boolean = false;
+  params : UserSearchParameters  = {
+    PageNumber : 1,
+    PageSize  : 50,
+    Name : ""
+  };
 
   public search(ev : any){
-    console.log(ev.target.value)
-    this.toggleLoading();
-    setTimeout(() => {
-      this.toggleLoading();
-    }, 5000);
+    this.params.Name = ev.target.value.trimEnd()
+    console.log(ev.target.value.trimEnd())
+    if(!ev.target.value || ev.target.value.trimEnd() == " "){
+      this.hideLoading();
+      return;
+    }
+    
+    this.showLoading();
+    this.userService.searchUsersByName(this.params)
+    .subscribe({
+      next: (res) => {
+        console.log(res)
+        this.users = res;
+        console.log("must be done")
+      },
+      error: () => {
+        if(this.loading == true){
+          this.hideLoading();
+        }
+      },
+      complete: () => {
+        if(this.loading == true){
+          this.hideLoading();
+        }
+        console.log("completed")
+      }
+    })
   }
 
-  public toggleLoading(){
-    if(this.loading){
-      this.spinner.hide();
-      this.loading = false;
-    }
-    else{
-      this.spinner.show();
+  showLoading(){
+    // if(this.loading == false){
+      console.log("shown")
       this.loading = true;
-    }
+      this.spinner.show();
+    // }
   }
+
+  hideLoading(){
+    console.log("hidden");
+    // if(this.loading == true){
+
+      this.loading = false;
+      this.spinner.hide();
+    // }
+  }
+
 
   ngOnInit(){
     // this.spinner.show();
+    
+    console.log("init")
   }
+
 }

@@ -16,6 +16,7 @@ import { UserProfileComponent } from './components/user-profile/user-profile.com
 import { ReactiveFormsModule } from '@angular/forms';
 import { JwtModule } from '@auth0/angular-jwt';
 import { tokenGetter } from '../../app.module';
+import { ContactItemComponent } from './components/chat-contacts/contact-item/contact-item.component';
 
 
 
@@ -28,7 +29,8 @@ import { tokenGetter } from '../../app.module';
     ChatViewComponent,
     ChatSidebarComponent,
     ChatContactsComponent,
-    UserProfileComponent
+    UserProfileComponent,
+    ContactItemComponent
   ],
   imports: [
     AppRoutingModule,

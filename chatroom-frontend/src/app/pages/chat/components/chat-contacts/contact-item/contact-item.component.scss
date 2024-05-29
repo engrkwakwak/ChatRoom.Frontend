@@ -1,0 +1,9 @@
+@use "../../../../../../themes" as *;
+
+.name-container{
+    width: 150px; 
+    overflow: hidden;
+}
+.username{
+    color: nb-theme(color-basic-600) !important;
+}
