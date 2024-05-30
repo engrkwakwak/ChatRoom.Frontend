@@ -20,6 +20,10 @@ export class ContactService {
     return this.http.post<any>(`${this.API_ENDPOINT}/contacts`, parameter);
   }
 
+  public deleteContact(userId : number, contactId : number) : Observable<any> {
+    return this.http.delete<any>(`${this.API_ENDPOINT}/contacts/${userId}/${contactId}`);
+  }
+
   public getActiveContactByUserIdContactId(userId : number, contactId : number) : Observable<ContactDto>{
     return this.http.get<ContactDto>(`${this.API_ENDPOINT}/contacts/active/${userId}/${contactId}`);
   }

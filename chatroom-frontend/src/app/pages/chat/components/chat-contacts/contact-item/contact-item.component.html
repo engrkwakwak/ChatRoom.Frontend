@@ -14,7 +14,7 @@
         <nb-icon icon="more-horizontal"></nb-icon>
     </button>
 
-    <p-menu #menu [popup]="true" [model]="userOptions" />
+    <p-menu #menu [popup]="true" [model]="contactInfo ? contactOptions : userOptions" />
 </div>
 <!-- 
     Dont put any elements outside the div

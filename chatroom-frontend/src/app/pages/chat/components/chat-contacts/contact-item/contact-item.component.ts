@@ -32,7 +32,29 @@ export class ContactItemComponent {
   }; 
   contactInfo : ContactDto | null = null;
 
-  userOptions : MenuItem[] = []; 
+  userOptions : MenuItem[] = [
+    {
+      label : "View Profile",
+      icon: "pi pi-user"
+    },
+    {
+      label : "Add Contact",
+      icon: "pi pi-user-plus",
+      command: () => this.addContact()
+    }
+  ]; 
+
+  contactOptions : MenuItem[] = [
+    {
+      label : "View Profile",
+      icon: "pi pi-user"
+    },
+    {
+      label : "Remove Contact",
+      icon: "pi pi-user-minus",
+      command: () => this.deleteContact()
+    }
+  ]; 
 
   private addContact(){
     const contact : ContactForCreationDto = {
@@ -43,6 +65,7 @@ export class ContactItemComponent {
     this.contactService.addContact(contact)
     .subscribe({
       next: _ => {
+        this.fetchContactInfo()
         this.toastrService.show('Success', `User successfully added to contacts`, { 
           position : NbGlobalPhysicalPosition.TOP_RIGHT,
           status : 'success',
@@ -55,12 +78,35 @@ export class ContactItemComponent {
     });
   }
 
-  fetchContactInfo(): Observable<ContactDto> {
-    return this.contactService.getActiveContactByUserIdContactId(this.authService.getUserIdFromSession(), this.user.userId)
+  private deleteContact(){
+    this.contactService.deleteContact(this.authService.getUserIdFromSession(), this.user.userId)
+    .subscribe({
+      next : _ => {
+        this.fetchContactInfo();
+        this.toastrService.show('Success', `User successfully remove from contacts.`, { 
+          position : NbGlobalPhysicalPosition.TOP_RIGHT,
+          status : 'success',
+          icon: 'checkmark'
+        });
+      },
+      error : err => {
+        this.errorHandlerService.handleError(err)
+      }
+    });
+  }
+
+  fetchContactInfo(){
+    this.contactService.getActiveContactByUserIdContactId(this.authService.getUserIdFromSession(), this.user.userId)
+    .subscribe({
+      next: res => {
+        this.contactInfo = res;
+      },
+      error : err => this.errorHandlerService.handleError(err)
+    })
   }
 
   ngOnInit(){
-
+    this.fetchContactInfo()
   }
 
 
