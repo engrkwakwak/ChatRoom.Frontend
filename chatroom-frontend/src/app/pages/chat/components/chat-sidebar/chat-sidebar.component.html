@@ -1,9 +1,10 @@
 <div id="chatsidebar">
     <nb-layout-header>
-        <nb-user [name]="username"
-                 title="Active"
-                 [nbContextMenu]="userActionItems"
-                 nbContextMenuTag="user-actions-menu">
+        <nb-user 
+            [name]="username"
+            title="Active"
+            [nbContextMenu]="userActionItems" nbContextMenuTag="user-actions-menu"
+            [picture]="this.loadDisplayPicture()">
         </nb-user>
     </nb-layout-header>
 
