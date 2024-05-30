@@ -19,6 +19,7 @@ import { tokenGetter } from '../../app.module';
 import { ContactItemComponent } from './components/chat-contacts/contact-item/contact-item.component';
 import { AvatarComponent } from './components/avatar/avatar.component';
 import { SkeletonModule } from 'primeng/skeleton';
+import { MenuModule } from 'primeng/menu';
 import { UserSkeletonPlaceholderComponent } from './components/user-skeleton-placeholder/user-skeleton-placeholder.component';
 
 
@@ -64,7 +65,8 @@ import { UserSkeletonPlaceholderComponent } from './components/user-skeleton-pla
         disallowedRoutes: []
       }
     }),
-    SkeletonModule
+    SkeletonModule,
+    MenuModule
   ]
 })
 export class ChatModule { }

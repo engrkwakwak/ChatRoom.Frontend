@@ -7,6 +7,7 @@ import { SigninDto } from '../dtos/auth/signin.dto';
 import { AuthenticatedResponseDto } from '../dtos/auth/authenticated-response.dto';
 import { response } from 'express';
 import { JWT_OPTIONS, JwtHelperService } from '@auth0/angular-jwt';
+import { jwtDecode } from 'jwt-decode';
 
 
 
@@ -28,6 +29,16 @@ export class AuthService {
   ) { }
 
   private API_ENDPOINT = environment.apiUrl;
+
+  public getUserIdFromSession() : number{
+    var userId: number = 0;
+    const token = localStorage.getItem('chatroom-token');
+    if(token){
+      const decodedToken = jwtDecode<any>(token);
+      userId = decodedToken['sub'];
+    }
+    return userId;
+  }
 
   public decodeAuthToken() : JwtToken{
     var token : string  = localStorage.getItem("chatroom-token")!;

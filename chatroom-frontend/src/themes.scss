@@ -30,7 +30,17 @@ $nb-themes: nb-register-theme(
   background-color: nb-theme(background-basic-color-1);
   border-radius: 4px;
 }
-
+.p-menu-list{
+  padding: 0rem;
+  margin: 0rem;
+}
+.p-menu.p-menu-overlay{
+  background: nb-theme(background-basic-color-1);
+  border: none;
+  a {
+    text-decoration: none;
+  }
+}
 /* 
   END OF PRIMENG
 */

@@ -4,6 +4,7 @@ import { UserSearchParameters } from '../../../../dtos/shared/user-search-parame
 import { UserService } from '../../../../services/user.service';
 import { UserDto } from '../../../../dtos/chat/user.dto';
 import { take } from 'rxjs';
+import { MenuItem } from 'primeng/api';
 
 @Component({
   selector: 'app-chat-contacts',
@@ -79,5 +80,7 @@ export class ChatContactsComponent {
   ngOnInit(){
     console.log("init")
   }
+
+  
 
 }
