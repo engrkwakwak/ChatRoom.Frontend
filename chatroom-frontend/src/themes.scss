@@ -1,4 +1,6 @@
-
+/* 
+  NEBULAR UI 
+*/
 @forward '../node_modules/@nebular/theme/styles/theming';
 @use '../node_modules/@nebular/theme/styles/theming' as *;
 @use '../node_modules/@nebular/theme/styles/themes/default';
@@ -16,4 +18,19 @@ $nb-themes: nb-register-theme(
   dark,
   dark
 );
+/* 
+  END OF NEBULAR UI
+*/
 
+
+/* 
+  PRIMENG
+*/
+.p-skeleton {
+  background-color: nb-theme(background-basic-color-1);
+  border-radius: 4px;
+}
+
+/* 
+  END OF PRIMENG
+*/

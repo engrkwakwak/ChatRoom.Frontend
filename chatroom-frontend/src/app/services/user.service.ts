@@ -20,7 +20,7 @@ export class UserService {
   public searchUsersByName(parameter : UserSearchParameters) : Observable<UserDto[]> {
     return this.http.get<UserDto[]>(`${this.API_ENDPOINT}/users/search/${parameter.Name}`, { params: {
       Name : parameter.Name,
-      PageZise : parameter.PageSize,
+      PageSize : parameter.PageSize,
       PageNumber : parameter.PageNumber
     }});
   }

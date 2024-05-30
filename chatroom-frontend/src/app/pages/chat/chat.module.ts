@@ -18,6 +18,8 @@ import { JwtModule } from '@auth0/angular-jwt';
 import { tokenGetter } from '../../app.module';
 import { ContactItemComponent } from './components/chat-contacts/contact-item/contact-item.component';
 import { AvatarComponent } from './components/avatar/avatar.component';
+import { SkeletonModule } from 'primeng/skeleton';
+import { UserSkeletonPlaceholderComponent } from './components/user-skeleton-placeholder/user-skeleton-placeholder.component';
 
 
 
@@ -32,7 +34,8 @@ import { AvatarComponent } from './components/avatar/avatar.component';
     ChatContactsComponent,
     UserProfileComponent,
     ContactItemComponent,
-    AvatarComponent
+    AvatarComponent,
+    UserSkeletonPlaceholderComponent
   ],
   imports: [
     AppRoutingModule,
@@ -61,7 +64,7 @@ import { AvatarComponent } from './components/avatar/avatar.component';
         disallowedRoutes: []
       }
     }),
-    
-  ],
+    SkeletonModule
+  ]
 })
 export class ChatModule { }

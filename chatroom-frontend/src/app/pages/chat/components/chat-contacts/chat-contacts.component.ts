@@ -12,53 +12,67 @@ import { take } from 'rxjs';
 })
 export class ChatContactsComponent {
   constructor(
-    private spinner : NgxSpinnerService,
     private userService : UserService
   ){}
 
   users:UserDto[] = [];
-  loading : boolean = false;
-  params : UserSearchParameters  = {
+  userParams : UserSearchParameters  = {
     PageNumber : 1,
-    PageSize  : 50,
+    PageSize  : 6,
     Name : ""
   };
+  loadingStatus : {Users:boolean, Contacts:boolean} = {
+    Users: false,
+    Contacts : false
+  }
+  hasStartedSearching : boolean = false;
 
-  public search(ev : any){
-    this.params.Name = ev.target.value.trimEnd()
-    console.log(ev.target.value.trimEnd())
+  search(ev : any){
+    const name : string = ev.target.value.trimEnd();
+    this.resetUsers(ev.target.value.trimEnd());
     if(!ev.target.value || ev.target.value.trimEnd() == " "){
-      this.hideLoading();
       return;
     }
-    
-    this.showLoading();
-    this.userService.searchUsersByName(this.params)
+    this.hasStartedSearching = true;
+    this.fetchUser();
+  }
+
+  fetchUser() {
+    console.log("fetching users")
+    if(this.userParams.Name.length <= 0 || this.loadingStatus.Users){
+      return;
+    }
+    this.loadingStatus.Users = true;
+    this.userService.searchUsersByName(this.userParams)
     .subscribe({
       next: (res) => {
-        this.users = res;
+        if(res.length > 0){
+          this.users.push(...res);
+          this.userParams.PageNumber++;
+        }
       },
       error: () => {
-        if(this.loading == true){
-          this.hideLoading();
-        }
+        this.loadingStatus.Users = false;
       },
       complete: () => {
-        if(this.loading == true){
-          this.hideLoading();
-        }
+        this.loadingStatus.Users = false;
+        console.log("done fetching users")
       }
     })
   }
 
-  showLoading(){
-      this.loading = true;
-      this.spinner.show();
+  private resetUsers(name : string){
+    this.users = [];
+    this.loadingStatus.Users = false;
+    this.userParams = {
+      PageSize: this.userParams.PageSize,
+      PageNumber : 1,
+      Name: name
+    }
   }
 
-  hideLoading(){
-      this.loading = false;
-      this.spinner.hide();
+  loadNext(){
+    console.log("Load next")
   }
 
 
