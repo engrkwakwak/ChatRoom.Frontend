@@ -8,7 +8,6 @@ import { UserForUpdateDto } from '../../../../dtos/chat/user-for-update.dto';
 import { jwtDecode } from 'jwt-decode';
 import { Observable, map, of } from 'rxjs';
 import { NbToastrService } from '@nebular/theme';
-import { environment } from '../../../../../environments/environment.development';
 
 @Component({
   selector: 'app-user-profile',
@@ -21,7 +20,6 @@ export class UserProfileComponent {
   displayName: string = "";
   picturePath: string = "";
 
-  private PICTURE_STORAGE = environment.localPictureStorage;
   constructor(
     private userService: UserProfileService,
     private toastrService: NbToastrService,
@@ -166,7 +164,7 @@ export class UserProfileComponent {
     if(!this.picturePath || this.picturePath.trim().length === 0) {
       return 'https://w7.pngwing.com/pngs/340/946/png-transparent-avatar-user-computer-icons-software-developer-avatar-child-face-heroes-thumbnail.png'
     }
-    return `${this.PICTURE_STORAGE}${this.picturePath}`.replace(/\\/g, "/");
+    return this.picturePath;
   }
 
   public updatePicturePath(newPath: string): void{

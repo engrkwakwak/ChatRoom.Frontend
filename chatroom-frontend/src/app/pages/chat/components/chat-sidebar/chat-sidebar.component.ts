@@ -19,8 +19,6 @@ export class ChatSidebarComponent implements OnInit {
   username: string = '';
   picturePath: string = '';
 
-  private PICTURE_STORAGE = environment.localPictureStorage;
-
   constructor(
     private chatService : ChatService,
     private router : Router,
@@ -115,7 +113,7 @@ export class ChatSidebarComponent implements OnInit {
     if(!this.picturePath || this.picturePath.trim().length === 0) {
       return 'https://w7.pngwing.com/pngs/340/946/png-transparent-avatar-user-computer-icons-software-developer-avatar-child-face-heroes-thumbnail.png'
     }
-    return `${this.PICTURE_STORAGE}${this.picturePath}`.replace(/\\/g, "/");
+    return this.picturePath;
   }
 
   public updatePicturePath(newPath: string): void{
