@@ -110,10 +110,7 @@ export class ChatSidebarComponent implements OnInit {
   }
 
   public loadDisplayPicture() : string {
-    if(!this.picturePath || this.picturePath.trim().length === 0) {
-      return 'https://w7.pngwing.com/pngs/340/946/png-transparent-avatar-user-computer-icons-software-developer-avatar-child-face-heroes-thumbnail.png'
-    }
-    return this.picturePath;
+    return this.userService.loadDisplayPicture(this.picturePath);
   }
 
   public updatePicturePath(newPath: string): void{
