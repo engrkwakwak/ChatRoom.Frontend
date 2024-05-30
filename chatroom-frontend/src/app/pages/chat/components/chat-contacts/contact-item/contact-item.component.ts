@@ -7,6 +7,8 @@ import { UserProfileService } from '../../../../../services/user-profile.service
 import { AuthService } from '../../../../../services/auth.service';
 import { NbGlobalPhysicalPosition, NbToastrService } from '@nebular/theme';
 import { ErrorHandlerService } from '../../../../../services/error-handler.service';
+import { ContactDto } from '../../../../../dtos/chat/contact.dto';
+import { Observable, switchMap } from 'rxjs';
 
 @Component({
   selector: 'app-contact-item',
@@ -28,18 +30,9 @@ export class ContactItemComponent {
     email: '',
     isEmailVerified: false
   }; 
+  contactInfo : ContactDto | null = null;
 
-  userOptions : MenuItem[] | undefined  = [
-    { 
-      label: 'View Profile',
-      icon: 'pi pi-user'
-    },
-    { 
-      label: 'Add Contact', 
-      icon: 'pi pi-user-plus',
-      command: () => this.addContact()
-    },
-  ]; 
+  userOptions : MenuItem[] = []; 
 
   private addContact(){
     const contact : ContactForCreationDto = {
@@ -62,7 +55,12 @@ export class ContactItemComponent {
     });
   }
 
+  fetchContactInfo(): Observable<ContactDto> {
+    return this.contactService.getActiveContactByUserIdContactId(this.authService.getUserIdFromSession(), this.user.userId)
+  }
+
   ngOnInit(){
+
   }
 
 
