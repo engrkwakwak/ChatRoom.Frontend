@@ -38,9 +38,9 @@ export class UserProfileService {
     return this.http.post<string>(`${this.API_ENDPOINT}${route}`, formData);
   }
 
-  public loadDisplayPicture(picturePath: string) : string {
+  public loadDisplayPicture(picturePath: string, name : string) : string {
     if(!picturePath || picturePath.trim().length === 0) {
-      return 'https://api.dicebear.com/8.x/adventurer/svg?seed=Pepper'
+      return `https://api.dicebear.com/8.x/adventurer-neutral/svg?seed=${name}`
     }
     return picturePath;
   }

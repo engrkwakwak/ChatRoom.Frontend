@@ -1,4 +1,13 @@
 import { Component } from '@angular/core';
+import { NgxSpinnerService } from 'ngx-spinner';
+import { UserSearchParameters } from '../../../../dtos/shared/user-search-parameters.dto';
+import { UserService } from '../../../../services/user.service';
+import { UserDto } from '../../../../dtos/chat/user.dto';
+import { take } from 'rxjs';
+import { MenuItem } from 'primeng/api';
+import { ContactService } from '../../../../services/contact.service';
+import { ContactParameters } from '../../../../dtos/shared/contact-parameters.dto';
+import { AuthService } from '../../../../services/auth.service';
 
 @Component({
   selector: 'app-chat-contacts',
@@ -6,11 +15,132 @@ import { Component } from '@angular/core';
   styleUrl: './chat-contacts.component.scss'
 })
 export class ChatContactsComponent {
-  users: { name: string, title: string }[] = [
-    { name: 'Carla Espinosa', title: 'Nurse' },
-    { name: 'Bob Kelso', title: 'Doctor of Medicine' },
-    { name: 'Janitor', title: 'Janitor' },
-    { name: 'Perry Cox', title: 'Doctor of Medicine' },
-    { name: 'Ben Sullivan', title: 'Carpenter and photographer' },
-  ];
+  constructor(
+    private userService : UserService,
+    private contactService : ContactService,
+    private authService : AuthService
+  ){}
+
+  users:UserDto[] = [];
+  contacts:UserDto[] = [];
+  userParams : UserSearchParameters  = {
+    PageNumber : 1,
+    PageSize  : 6,
+    Name : ""
+  };
+  contactParams : ContactParameters  = {
+    PageNumber : 1,
+    PageSize  : 6,
+    Name : "",
+    UserId : 0
+  };
+  loadingStatus : {Users:boolean, Contacts:boolean} = {
+    Users: false,
+    Contacts : false
+  }
+
+  search(ev : any){
+    const name : string = ev.target.value.trimEnd();
+    this.resetUsers(ev.target.value.trimEnd());
+    this.resetContacts(ev.target.value.trimEnd());
+    this.fetchContacts();
+    if(!ev.target.value || ev.target.value.trimEnd() == " "){
+      return;
+    }
+    this.fetchUser();
+  }
+
+  fetchUser() {
+    // console.log("fetching users")
+    let isSearching : boolean =  true;
+    if(this.userParams.Name.length <= 0 || this.loadingStatus.Users){
+      return;
+    }
+    setTimeout(() => {
+      if(isSearching){
+        this.loadingStatus.Users = true;
+      }
+    }, 500);
+    this.userService.searchUsersByName(this.userParams)
+    .subscribe({
+      next: (res) => {
+        if(res.length > 0){
+          this.users.push(...res);
+          this.userParams.PageNumber++;
+        }
+        
+      },
+      error: () => {
+        this.loadingStatus.Users = false;
+      },
+      complete: () => {
+        this.loadingStatus.Users = false;
+        isSearching = false;
+        // console.log("done fetching users")
+      }
+    })
+  }
+
+  fetchContacts() {
+    // console.log("fetching contacts")
+    if(this.loadingStatus.Contacts){
+      return;
+    }
+    this.loadingStatus.Contacts = true;
+    this.contactService.searchContactsByNameUserId(this.contactParams)
+    .subscribe({
+      next: (res) => {
+        if(res.length > 0){
+          this.contacts.push(...res);
+          this.contactParams.PageNumber++;
+        }
+      },
+      error: () => {
+        this.loadingStatus.Contacts = false;
+      },
+      complete: () => {
+        this.loadingStatus.Contacts = false;
+        // // console.log("done fetching contacts")
+      }
+    })
+  }
+
+  onContactUpdate(){
+    this.resetContacts(this.contactParams.Name);
+    this.fetchContacts();
+  }
+
+  private resetUsers(name : string){
+    this.users = [];
+    this.loadingStatus.Users = false;
+    this.userParams = {
+      PageSize: this.userParams.PageSize,
+      PageNumber : 1,
+      Name: name
+    }
+  }
+  private resetContacts(name : string){
+    this.contacts = [];
+    this.loadingStatus.Contacts = false;
+    this.contactParams = {
+      PageSize: this.userParams.PageSize,
+      PageNumber : 1,
+      Name: name,
+      UserId : this.contactParams.UserId
+    }
+  }
+
+  loadNext(){
+    // console.log("Load next")
+  }
+
+
+  ngOnInit(){
+    // console.log("init")
+    this.contactParams.UserId = this.authService.getUserIdFromSession()
+    this.fetchContacts();
+  }
+
+  
+
 }

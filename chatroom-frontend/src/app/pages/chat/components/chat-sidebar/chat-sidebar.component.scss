@@ -2,18 +2,30 @@
 
 #chatsidebar{
     background-color: nb-theme(background-basic-color-4);
-    border-right: 1px solid rgba(245, 245, 245, 0.116) ;
+    border-right: 1px solid nb-theme(color-basic-800) ;
     // padding: 1rem;
+    padding: 0rem;
     height: 100vh;
     width: 100vw;
     position: fixed;
     z-index: 2;
     @media  screen and (min-width: 768px) {
-        max-width: 300px;
+        max-width: 350px;
         position: initial;
     }
 
     nb-tab{
-        padding: 1rem;
+        padding: 0rem;
+    }
+
+    .display-name{
+        // width: calc(100% - 150px) !important; 
+        max-width: 200px;
+        text-overflow: ellipsis !important; 
+        overflow-x: hidden;
+    }
+
+    nb-layout-header{
+        background-color: nb-theme(background-basic-color-4);
     }
 }

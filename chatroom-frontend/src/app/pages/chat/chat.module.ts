@@ -11,10 +11,16 @@ import { ChatViewComponent } from './chat-view/chat-view.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { ChatSidebarComponent } from './components/chat-sidebar/chat-sidebar.component';
 import { ChatContactsComponent } from './components/chat-contacts/chat-contacts.component';
+import { NgxSpinner, NgxSpinnerModule } from 'ngx-spinner';
 import { UserProfileComponent } from './components/user-profile/user-profile.component';
 import { ReactiveFormsModule } from '@angular/forms';
 import { JwtModule } from '@auth0/angular-jwt';
 import { tokenGetter } from '../../app.module';
+import { ContactItemComponent } from './components/chat-contacts/contact-item/contact-item.component';
+import { AvatarComponent } from './components/avatar/avatar.component';
+import { SkeletonModule } from 'primeng/skeleton';
+import { MenuModule } from 'primeng/menu';
+import { UserSkeletonPlaceholderComponent } from './components/user-skeleton-placeholder/user-skeleton-placeholder.component';
 
 
 
@@ -27,7 +33,10 @@ import { tokenGetter } from '../../app.module';
     ChatViewComponent,
     ChatSidebarComponent,
     ChatContactsComponent,
-    UserProfileComponent
+    UserProfileComponent,
+    ContactItemComponent,
+    AvatarComponent,
+    UserSkeletonPlaceholderComponent
   ],
   imports: [
     AppRoutingModule,
@@ -44,6 +53,7 @@ import { tokenGetter } from '../../app.module';
     NbTabsetModule,
     NbInputModule,
     NbPopoverModule,
+    NgxSpinnerModule,
     NbContextMenuModule,
     NbCardModule,
     ReactiveFormsModule,
@@ -55,7 +65,8 @@ import { tokenGetter } from '../../app.module';
         disallowedRoutes: []
       }
     }),
-    
-  ],
+    SkeletonModule,
+    MenuModule
+  ]
 })
 export class ChatModule { }

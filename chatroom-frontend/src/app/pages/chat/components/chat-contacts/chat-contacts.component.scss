@@ -1,0 +1,77 @@
+@use "../../../../../themes" as *;
+
+@mixin scrollbar {
+    &::-webkit-scrollbar{
+        width: 8px !important;
+
+    }
+    &::-webkit-scrollbar-track {
+        background: nb-theme(background-basic-color-4) !important; 
+    }
+    &::-webkit-scrollbar-thumb {
+        background: nb-theme(background-basic-color-1) !important; 
+        border-radius: 5px !important;
+    }
+}
+
+
+#contactlist{
+    height: calc(100vh - 52px - 76px);
+    .head-title{
+        padding: 0.5rem 1rem;
+        margin: 0px;
+    }
+    .search-container{
+        padding: 19px 1rem;
+    }
+    #loader {
+        position: relative !important;
+        margin: 0px;
+        height: 350px;
+    }
+    
+
+    .contacts-list-container{
+        .people-title,.contact-title{
+            padding: 0.5rem 1rem;
+        }
+        height: calc(100% - 60px - 36px - 36px);
+        nb-card.user-container{
+            margin: 0px;
+            padding: 0rem ;
+            height: 50%;
+            max-height: 50%; 
+            background-color: nb-theme(background-basic-color-4 );
+            nb-list{
+                @include scrollbar;
+                padding: 0rem 1rem;
+                nb-list-item{
+                    border: none;
+                    display: block;
+                    margin: 5px 0px;
+                    padding-top: .5rem;
+                    padding-bottom: .5rem;
+                    &.user-item{
+                        border-radius: 3px;
+                        cursor: pointer;
+                        &.active{
+                            background: nb-theme(background-basic-color-1) !important;
+                        }
+                        &:hover{
+                            background: nb-theme(background-basic-color-1) !important;
+                            transition: .4s;
+                        }
+                    }
+                    &.user-no-results, &.user-initial-state{
+                        padding: 0rem;
+                        div{
+                            color: nb-theme(color-basic-600);
+                            text-align: center;
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+

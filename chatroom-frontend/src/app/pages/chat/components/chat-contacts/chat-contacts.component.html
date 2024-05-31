@@ -1,19 +1,72 @@
-<div id="chatlist">
-    <h6>Contacts</h6>
-    <input nbInput fullWidth type="text" placeholder="Search People" />
-    <nb-list>
-        <nb-list-item *ngFor="let user of users">
-            <nb-user [name]="user.name" color="gray">
-            </nb-user>
-        </nb-list-item>
+<div id="contactlist" >
+
+    <!-- <h6 class="head-title">Contacts</h6> -->
+
+    <div class="search-container">
+        <input nbInput fullWidth status="basic" type="search" placeholder="Search People" (input)="search($event)" />
+    </div>
+
+    <div class="contacts-list-container">
+            <p class="mb-0 people-title">People</p>
+            <nb-card class="user-container" >
+                <nb-list 
+                nbInfiniteList
+                [threshold]="100"
+                [throttleTime]="1000"
+                (bottomThreshold)="fetchUser()">
+                    <nb-list-item class="user-item" *ngFor="let user of users" >
+                        <app-contact-item [user]="user" (contactUpdated)="onContactUpdate()" />
+                    </nb-list-item>
+                    
+                    <nb-list-item class="user-skeleton" *ngIf="loadingStatus.Users">
+                        <app-user-skeleton-placeholder />
+                        <br>
+                        <app-user-skeleton-placeholder />
+                    </nb-list-item>
+
+                    <nb-list-item class="user-no-results" *ngIf="users.length < 1 && userParams.Name != ''">
+                        <div class="p-2 pt-4 ">
+                            We were unable to find any matching results. Please try broadening your search criteria or use different keywords
+                        </div>
+                    </nb-list-item>
+
+                    <nb-list-item class="user-initial-state" *ngIf="users.length < 1 && !loadingStatus.Users && userParams.Name == ''">
+                        <div class="p-2 pt-4">
+                            Try entering some keywords to search for other users.
+                        </div>
+                    </nb-list-item>
+                </nb-list>
+            </nb-card>
         
-        <nb-list-item class="active"  >
-            <nb-user name="Active User" color="gray" >
-            </nb-user>
-            <button nbButton ghost>
-                <nb-icon icon="star"></nb-icon>
-            </button>
-        </nb-list-item>
-        
-    </nb-list>
+            <p class="mb-0 contact-title">Your Contacts</p>
+            <nb-card class="user-container" >
+                <nb-list 
+                nbInfiniteList
+                [threshold]="100"
+                [throttleTime]="1000"
+                (bottomThreshold)="fetchContacts()">
+                    <nb-list-item class="user-item" *ngFor="let user of contacts" >
+                        <app-contact-item [user]="user"  />
+                    </nb-list-item>
+                    
+                    <nb-list-item class="user-skeleton" *ngIf="loadingStatus.Contacts">
+                        <app-user-skeleton-placeholder />
+                        <br>
+                        <app-user-skeleton-placeholder />
+                    </nb-list-item>
+
+                    <nb-list-item class="user-no-results" *ngIf="contacts.length < 1 && contactParams.Name != ''">
+                        <div class="py-2 pt-4">
+                            We were unable to find any matching results. Please try broadening your search criteria or use different keywords
+                        </div>
+                    </nb-list-item>
+
+                    <nb-list-item class="user-initial-state" *ngIf="contacts.length < 1 && !loadingStatus.Contacts && contactParams.Name == ''">
+                        <div class="py-2 pt-4">
+                            Try entering some keywords to search for other users.
+                        </div>
+                    </nb-list-item>
+                </nb-list>
+            </nb-card>
+    </div>
 </div>

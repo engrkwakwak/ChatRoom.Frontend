@@ -1,11 +1,15 @@
 <div id="chatsidebar">
     <nb-layout-header>
-        <nb-user 
-            [name]="username"
-            title="Active"
-            [nbContextMenu]="userActionItems" nbContextMenuTag="user-actions-menu"
-            [picture]="this.loadDisplayPicture()">
-        </nb-user>
+        <div class="row align-items-center" [nbContextMenu]="userActionItems"
+        nbContextMenuTag="user-actions-menu">
+            <div class="col-auto">
+                <app-avatar [width]="40" [height]="40" [src]="loadDisplayPicture()" />
+            </div>
+            <div class="col ps-0" style="overflow: hidden;">
+                <div class="fw-bold display-name">{{username}}</div>
+                <p class="mb-0 ">Active</p>
+            </div>
+        </div>
     </nb-layout-header>
 
     <nb-tabset fullWidth>

@@ -13,6 +13,7 @@ import { HttpClientModule } from '@angular/common/http';
 import { ReactiveFormsModule } from '@angular/forms';
 import { JwtModule } from '@auth0/angular-jwt';
 import { provideHttpClient, withFetch } from '@angular/common/http';
+import { NgxSpinnerModule } from 'ngx-spinner';
 
 export function tokenGetter() {
   return localStorage.getItem("chatroom-token");
@@ -23,7 +24,7 @@ export function tokenGetter() {
   declarations: [
     AppComponent,
     HomeComponent,
-    PageNotFoundComponent
+    PageNotFoundComponent,
   ],
   imports: [
     BrowserModule,
@@ -44,6 +45,7 @@ export function tokenGetter() {
         disallowedRoutes: []
       }
     }),
+    NgxSpinnerModule,
     NbMenuModule.forRoot(),
     NbWindowModule,
     NbWindowModule.forRoot(),

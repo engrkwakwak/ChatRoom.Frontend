@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { NbLayoutComponent } from '@nebular/theme';
+import { PrimeNGConfig } from 'primeng/api';
 
 @Component({
   selector: 'app-root',
@@ -8,4 +8,10 @@ import { NbLayoutComponent } from '@nebular/theme';
 })
 export class AppComponent {
   title = 'chatroom-frontend';
+
+  constructor(private primengConfig: PrimeNGConfig) {}
+
+  ngOnInit() {
+      this.primengConfig.ripple = true;
+  }
 }

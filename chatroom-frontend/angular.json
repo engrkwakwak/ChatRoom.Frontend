@@ -39,7 +39,8 @@
             "styles": [
               "src/styles.scss",
               "src/themes.scss",
-              "node_modules/@nebular/theme/styles/prebuilt/default.css"
+              "node_modules/@nebular/theme/styles/prebuilt/default.css",
+              "node_modules/ngx-spinner/animations/ball-pulse.css"
             ],
             "scripts": [],
             "server": "src/main.server.ts",
@@ -111,7 +112,8 @@
             ],
             "styles": [
               "src/styles.scss",
-              "node_modules/@nebular/theme/styles/prebuilt/dark.css"
+              "node_modules/@nebular/theme/styles/prebuilt/dark.css",
+              "node_modules/ngx-spinner/animations/ball-pulse.css"
             ],
             "scripts": []
           }

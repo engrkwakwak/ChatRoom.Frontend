@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { ChatService } from '../chat.service';
 import { JwtHelperService } from '@auth0/angular-jwt';
 import { AuthService } from '../../../services/auth.service';
+import { MenuItem } from 'primeng/api';
 
 @Component({
   selector: 'app-chat-index',

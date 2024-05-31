@@ -1,3 +1,6 @@
+/* 
+  NEBULAR UI 
+*/
 /* You can add global styles to this file, and also import other style files */
 @use 'themes' as *;
 
@@ -8,3 +11,23 @@
 @include nb-install() {
   @include nb-theme-global();
 }
+/* 
+  END OF NEBULAR UI
+*/
+
+
+
+/* 
+  PRIMENG
+  Note: Primeng theme is not yet customized. Customize first before usage TY! Canbe customeze on the Themes.scss
+*/
+@import "primeng/resources/themes/aura-dark-blue/theme.css";
+@import "primeng/resources/primeng.css";
+@import "primeicons/primeicons.css";
+
+/* 
+  END OF PRIMENG
+*/
+
+
+

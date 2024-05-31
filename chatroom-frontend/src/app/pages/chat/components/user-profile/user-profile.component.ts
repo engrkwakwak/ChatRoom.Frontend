@@ -161,7 +161,7 @@ export class UserProfileComponent {
   }
 
   public loadDisplayPicture() : string {
-    return this.userService.loadDisplayPicture(this.picturePath);
+    return this.userService.loadDisplayPicture(this.picturePath, this.displayName);
   }
 
   public updatePicturePath(newPath: string): void{
