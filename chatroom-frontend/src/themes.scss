@@ -1,5 +1,8 @@
+
+
+
 /* 
-  NEBULAR UI 
+  NEBULAR UI CUSTOMIZATIONS
 */
 @forward '../node_modules/@nebular/theme/styles/theming';
 @use '../node_modules/@nebular/theme/styles/theming' as *;
@@ -18,6 +21,36 @@ $nb-themes: nb-register-theme(
   dark,
   dark
 );
+
+
+/* 
+  NbChat customizations
+*/
+nb-chat{
+  box-shadow: none;
+  background-color: nb-theme(background-basic-color-4);
+  border: none;
+
+  .scrollable{
+
+    &::-webkit-scrollbar{
+      width: 8px !important;
+    }
+    &::-webkit-scrollbar-track {
+        background: nb-theme(background-basic-color-4) !important; 
+    }
+    &::-webkit-scrollbar-thumb {
+        background: nb-theme(background-basic-color-1) !important; 
+        border-radius: 5px !important;
+    }
+  }
+
+  .header{
+      display: none !important;
+  }
+}
+
+
 /* 
   END OF NEBULAR UI
 */

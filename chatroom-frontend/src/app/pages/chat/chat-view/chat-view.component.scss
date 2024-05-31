@@ -1,48 +1,37 @@
 @use "../../../../themes.scss" as *;
 
-nb-layout-header{
-    background: nb-theme(background-basic-color-2);
-    border-bottom:  1px solid rgba(245, 245, 245, 0.116) ;
-    box-shadow: none !important;
-    nav{
-        box-shadow: none !important;
-    }
-}
-#chat-view-container{
-    max-width:  800px;
-    margin: 0rem auto;
-    z-index: 2;
-    height: calc(100% - 76px - 50px);
-    .chat-image{
-        max-width: 200px;
-        display: block;
+#chat-convo{
+    background-color: nb-theme(background-basic-color-4);
+    #chat-view-container{
+        max-width:  800px;
         margin: 0rem auto;
-        -webkit-filter: drop-shadow(5px 5px 5px #000000);
-        filter: drop-shadow(5px 5px 5px #000000);
-    }
-
-    app-chatlist-toggle{
-        position: fixed;
-        top: 1rem;
-    }
-
-    nb-chat-form{
-        input {
-            background-color: nb-theme(background-basic-color-4) !important;
+        z-index: 2;
+        height: calc(100% - 76px - 50px);
+        .chat-image{
+            max-width: 200px;
+            display: block;
+            margin: 0rem auto;
+            -webkit-filter: drop-shadow(5px 5px 5px #000000);
+            filter: drop-shadow(5px 5px 5px #000000);
+        }
+    
+        app-chatlist-toggle{
+            position: fixed;
+            top: 1rem;
+        }
+    
+        nb-chat-form{
+            input {
+                background-color: nb-theme(background-basic-color-4) !important;
+            }
         }
     }
-
-    nb-chat{
-        .header{
-            color: gray !important;
-        }
+    
+    .chat-header{
+        background-color: nb-theme(background-basic-color-4);
+        margin-bottom: 2px;
+        padding: 5px;
+        border-bottom: 1px solid nb-theme(color-basic-800) ;
     }
-
-}
-
-.chat-header{
-    background-color: nb-theme(background-basic-color-1);
-    margin-bottom: 2px;
-    padding: 5px;
 }
 
