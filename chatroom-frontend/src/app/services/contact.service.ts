@@ -4,6 +4,8 @@ import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { ContactForCreationDto } from '../dtos/chat/contact-for-creation.dto';
 import { ContactDto } from '../dtos/chat/contact.dto';
+import { ContactParameters } from '../dtos/shared/contact-parameters.dto';
+import { UserDto } from '../dtos/chat/user.dto';
 
 @Injectable({
   providedIn: 'root'
@@ -26,5 +28,16 @@ export class ContactService {
 
   public getActiveContactByUserIdContactId(userId : number, contactId : number) : Observable<ContactDto>{
     return this.http.get<ContactDto>(`${this.API_ENDPOINT}/contacts/active/${userId}/${contactId}`);
+  }
+
+  public searchContactsByNameUserId(parameter : ContactParameters) : Observable<UserDto[]>{
+    return this.http.get<UserDto[]>(`${this.API_ENDPOINT}/contacts`, {
+      params : {
+        Name : parameter.Name,
+        PageSize : parameter.PageSize,
+        PageNumber : parameter.PageNumber,
+        UserId : parameter.UserId
+      }
+    });
   }
 }

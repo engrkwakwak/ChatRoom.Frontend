@@ -5,6 +5,9 @@ import { UserService } from '../../../../services/user.service';
 import { UserDto } from '../../../../dtos/chat/user.dto';
 import { take } from 'rxjs';
 import { MenuItem } from 'primeng/api';
+import { ContactService } from '../../../../services/contact.service';
+import { ContactParameters } from '../../../../dtos/shared/contact-parameters.dto';
+import { AuthService } from '../../../../services/auth.service';
 
 @Component({
   selector: 'app-chat-contacts',
@@ -13,37 +16,51 @@ import { MenuItem } from 'primeng/api';
 })
 export class ChatContactsComponent {
   constructor(
-    private userService : UserService
+    private userService : UserService,
+    private contactService : ContactService,
+    private authService : AuthService
   ){}
 
   users:UserDto[] = [];
+  contacts:UserDto[] = [];
   userParams : UserSearchParameters  = {
     PageNumber : 1,
     PageSize  : 6,
     Name : ""
   };
+  contactParams : ContactParameters  = {
+    PageNumber : 1,
+    PageSize  : 6,
+    Name : "",
+    UserId : 0
+  };
   loadingStatus : {Users:boolean, Contacts:boolean} = {
     Users: false,
     Contacts : false
   }
-  hasStartedSearching : boolean = false;
 
   search(ev : any){
     const name : string = ev.target.value.trimEnd();
     this.resetUsers(ev.target.value.trimEnd());
+    this.resetContacts(ev.target.value.trimEnd());
+    this.fetchContacts();
     if(!ev.target.value || ev.target.value.trimEnd() == " "){
       return;
     }
-    this.hasStartedSearching = true;
     this.fetchUser();
   }
 
   fetchUser() {
     console.log("fetching users")
+    let isSearching : boolean =  true;
     if(this.userParams.Name.length <= 0 || this.loadingStatus.Users){
       return;
     }
-    this.loadingStatus.Users = true;
+    setTimeout(() => {
+      if(isSearching){
+        this.loadingStatus.Users = true;
+      }
+    }, 500);
     this.userService.searchUsersByName(this.userParams)
     .subscribe({
       next: (res) => {
@@ -51,15 +68,46 @@ export class ChatContactsComponent {
           this.users.push(...res);
           this.userParams.PageNumber++;
         }
+        
       },
       error: () => {
         this.loadingStatus.Users = false;
       },
       complete: () => {
         this.loadingStatus.Users = false;
+        isSearching = false;
         console.log("done fetching users")
       }
     })
+  }
+
+  fetchContacts() {
+    console.log("fetching contacts")
+    if(this.loadingStatus.Contacts){
+      return;
+    }
+    this.loadingStatus.Contacts = true;
+    this.contactService.searchContactsByNameUserId(this.contactParams)
+    .subscribe({
+      next: (res) => {
+        if(res.length > 0){
+          this.contacts.push(...res);
+          this.contactParams.PageNumber++;
+        }
+      },
+      error: () => {
+        this.loadingStatus.Contacts = false;
+      },
+      complete: () => {
+        this.loadingStatus.Contacts = false;
+        console.log("done fetching contacts")
+      }
+    })
+  }
+
+  onContactUpdate(){
+    this.resetContacts(this.contactParams.Name);
+    this.fetchContacts();
   }
 
   private resetUsers(name : string){
@@ -71,6 +119,16 @@ export class ChatContactsComponent {
       Name: name
     }
   }
+  private resetContacts(name : string){
+    this.contacts = [];
+    this.loadingStatus.Contacts = false;
+    this.contactParams = {
+      PageSize: this.userParams.PageSize,
+      PageNumber : 1,
+      Name: name,
+      UserId : this.contactParams.UserId
+    }
+  }
 
   loadNext(){
     console.log("Load next")
@@ -79,6 +137,8 @@ export class ChatContactsComponent {
 
   ngOnInit(){
     console.log("init")
+    this.contactParams.UserId = this.authService.getUserIdFromSession()
+    this.fetchContacts();
   }
 
   

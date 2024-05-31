@@ -1,14 +1,13 @@
-import { Component, Input } from '@angular/core';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { UserDto } from '../../../../../dtos/chat/user.dto';
 import { MenuItem } from 'primeng/api';
 import { ContactService } from '../../../../../services/contact.service';
 import { ContactForCreationDto } from '../../../../../dtos/chat/contact-for-creation.dto';
-import { UserProfileService } from '../../../../../services/user-profile.service';
 import { AuthService } from '../../../../../services/auth.service';
 import { NbGlobalPhysicalPosition, NbToastrService } from '@nebular/theme';
 import { ErrorHandlerService } from '../../../../../services/error-handler.service';
 import { ContactDto } from '../../../../../dtos/chat/contact.dto';
-import { Observable, switchMap } from 'rxjs';
+import { emit } from 'process';
 
 @Component({
   selector: 'app-contact-item',
@@ -23,6 +22,7 @@ export class ContactItemComponent {
     private errorHandlerService : ErrorHandlerService
   ){}
 
+  @Output() contactUpdated : EventEmitter<any> = new EventEmitter<any>();
   @Input({required: true}) user : UserDto = {
     userId: 0,
     username: '',
@@ -71,6 +71,7 @@ export class ContactItemComponent {
           status : 'success',
           icon: 'checkmark'
         });
+        this.contactUpdated.emit();
       },
       error : err => {
         this.errorHandlerService.handleError(err)
@@ -88,6 +89,7 @@ export class ContactItemComponent {
           status : 'success',
           icon: 'checkmark'
         });
+        this.contactUpdated.emit();
       },
       error : err => {
         this.errorHandlerService.handleError(err)
