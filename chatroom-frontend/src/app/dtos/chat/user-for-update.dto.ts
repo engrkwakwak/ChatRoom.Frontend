@@ -4,4 +4,5 @@ export interface UserForUpdateDto {
     Email: string;
     Address?: string;
     BirthDate?: string;
+    DisplayPictureUrl?: string;
 }

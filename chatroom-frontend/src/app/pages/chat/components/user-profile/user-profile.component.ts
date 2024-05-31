@@ -1,14 +1,13 @@
-import { Component } from '@angular/core';
+import { ChangeDetectorRef, Component } from '@angular/core';
 import { UserProfileService } from '../../../../services/user-profile.service';
-import { ActivatedRoute, Router } from '@angular/router';
-import { DatePipe, formatDate } from '@angular/common';
+import { formatDate } from '@angular/common';
 import { AbstractControl, AsyncValidatorFn, FormControl, FormGroup, ValidationErrors, Validators } from '@angular/forms';
 import { UserDto } from '../../../../dtos/chat/user.dto';
 import { HttpErrorResponse } from '@angular/common/http';
 import { UserForUpdateDto } from '../../../../dtos/chat/user-for-update.dto';
 import { jwtDecode } from 'jwt-decode';
 import { Observable, map, of } from 'rxjs';
-import { NbDialogService, NbToastrService } from '@nebular/theme';
+import { NbToastrService } from '@nebular/theme';
 
 @Component({
   selector: 'app-user-profile',
@@ -19,9 +18,12 @@ export class UserProfileComponent {
   user!: UserDto;
   userForm!: FormGroup;
   displayName: string = "";
+  picturePath: string = "";
+
   constructor(
     private userService: UserProfileService,
-    private toastrService: NbToastrService
+    private toastrService: NbToastrService,
+    private cdr: ChangeDetectorRef
   ){
   }
 
@@ -93,8 +95,8 @@ export class UserProfileComponent {
           dateCreated: userEntity.dateCreated ? new Date(userEntity.dateCreated) : undefined
         }
         this.displayName = userEntity.displayName;
+        this.updatePicturePath(userEntity.displayPictureUrl ?? "");
         this.userForm.patchValue(this.user);
-        
       },
       error: (err: HttpErrorResponse) => console.log(err),
     })
@@ -123,24 +125,47 @@ export class UserProfileComponent {
       DisplayName: userFormValue.displayName,
       Email: userFormValue.email,
       Address: userFormValue.address,
-      BirthDate: userFormValue.birthDate ? formatDate(userFormValue.birthDate, 'yyyy-MM-dd', 'en-US') : undefined
+      BirthDate: userFormValue.birthDate ? formatDate(userFormValue.birthDate, 'yyyy-MM-dd', 'en-US') : undefined,
+      DisplayPictureUrl: this.user.displayPictureUrl
     }
     const apiUri: string = `/users/${this.user.userId}`;
-
     this.userService.updateUser(apiUri, userForUpd)
     .subscribe({
       next: (_) => {
         this.toastrService.success("User profile updated successfully!", 'Success');
         this.displayName= userForUpd.DisplayName;
       },
-      // error: (err: HttpErrorResponse) => this.errorHandler.handleError(err)
+       error: (err: HttpErrorResponse) => console.log(err)//this.errorHandler.handleError(err)
     })
   }
 
-  private updateTokenDetails(): void {
-    const token = localStorage.getItem('chatroom-token');
-    if(token){
-      const decodedToken = jwtDecode<any>(token);
+  public uploadPicture = (files:FileList) => {
+    if(files.length === 0){
+      return;
     }
+
+    let fileToUpload = <File>files[0];
+    const formData = new FormData();
+    formData.append('file', fileToUpload, fileToUpload.name);
+
+    const apiUri: string = `/users/${this.user.userId}/picture`;
+    this.userService.uploadPicture(apiUri, formData)
+    .subscribe({
+      next: (dbPath: string) => {
+        console.log('Upload success.');
+        this.user.displayPictureUrl = dbPath;
+        this.updatePicturePath(dbPath);
+      },
+      error: (err: HttpErrorResponse) => console.log(err)
+    })
+  }
+
+  public loadDisplayPicture() : string {
+    return this.userService.loadDisplayPicture(this.picturePath, this.displayName);
+  }
+
+  public updatePicturePath(newPath: string): void{
+    this.picturePath = newPath;
+    this.cdr.detectChanges();
   }
 }

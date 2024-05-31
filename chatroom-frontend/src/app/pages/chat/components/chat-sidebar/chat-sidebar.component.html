@@ -3,7 +3,7 @@
         <div class="row align-items-center" [nbContextMenu]="userActionItems"
         nbContextMenuTag="user-actions-menu">
             <div class="col-auto">
-                <app-avatar [width]="40" [height]="40" src="https://api.dicebear.com/8.x/identicon/svg?seed={{username}}&radius=50&backgroundColor=ffdfbf,ffd5dc,d1d4f9,c0aede,b6e3f4" />
+                <app-avatar [width]="40" [height]="40" [src]="loadDisplayPicture()" />
             </div>
             <div class="col ps-0" style="overflow: hidden;">
                 <div class="fw-bold display-name">{{username}}</div>

@@ -1,5 +1,6 @@
 <nb-card-body >
-        <app-avatar class="d-block mb-2 mx-auto" style="width: fit-content;" [width]="70" [height]="70" src="https://api.dicebear.com/8.x/identicon/svg?seed={{displayName}}&radius=50&backgroundColor=ffdfbf,ffd5dc,d1d4f9,c0aede,b6e3f4"  />
+        <input type="file" #file placeholder="Choose an image" accept="image/*" (change)="file.files && uploadPicture(file.files)" style="display: none;">
+        <app-avatar class="d-block mb-2 mx-auto" style="width: fit-content;" [width]="70" [height]="70" [src]="loadDisplayPicture()" (click)="file.click()"  />
         <p class="mb-0 text-center fw-bold">{{displayName}}</p>
     <br>
     <form [formGroup]="userForm" autocomplete="off" (ngSubmit)="updateUser(userForm.value)">

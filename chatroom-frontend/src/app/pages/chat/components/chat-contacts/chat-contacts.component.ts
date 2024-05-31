@@ -51,7 +51,7 @@ export class ChatContactsComponent {
   }
 
   fetchUser() {
-    console.log("fetching users")
+    // console.log("fetching users")
     let isSearching : boolean =  true;
     if(this.userParams.Name.length <= 0 || this.loadingStatus.Users){
       return;
@@ -76,13 +76,13 @@ export class ChatContactsComponent {
       complete: () => {
         this.loadingStatus.Users = false;
         isSearching = false;
-        console.log("done fetching users")
+        // console.log("done fetching users")
       }
     })
   }
 
   fetchContacts() {
-    console.log("fetching contacts")
+    // console.log("fetching contacts")
     if(this.loadingStatus.Contacts){
       return;
     }
@@ -100,7 +100,7 @@ export class ChatContactsComponent {
       },
       complete: () => {
         this.loadingStatus.Contacts = false;
-        console.log("done fetching contacts")
+        // // console.log("done fetching contacts")
       }
     })
   }
@@ -131,12 +131,12 @@ export class ChatContactsComponent {
   }
 
   loadNext(){
-    console.log("Load next")
+    // console.log("Load next")
   }
 
 
   ngOnInit(){
-    console.log("init")
+    // console.log("init")
     this.contactParams.UserId = this.authService.getUserIdFromSession()
     this.fetchContacts();
   }

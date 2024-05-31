@@ -8,6 +8,7 @@ import { NbGlobalPhysicalPosition, NbToastrService } from '@nebular/theme';
 import { ErrorHandlerService } from '../../../../../services/error-handler.service';
 import { ContactDto } from '../../../../../dtos/chat/contact.dto';
 import { emit } from 'process';
+import { UserProfileService } from '../../../../../services/user-profile.service';
 
 @Component({
   selector: 'app-contact-item',
@@ -19,7 +20,8 @@ export class ContactItemComponent {
     private contactService : ContactService,
     private authService : AuthService,
     private toastrService : NbToastrService,
-    private errorHandlerService : ErrorHandlerService
+    private errorHandlerService : ErrorHandlerService,
+    private userProfileService : UserProfileService
   ){}
 
   @Output() contactUpdated : EventEmitter<any> = new EventEmitter<any>();
@@ -105,6 +107,10 @@ export class ContactItemComponent {
       },
       error : err => this.errorHandlerService.handleError(err)
     })
+  }
+
+  public loadDisplayPicture() : string {
+    return this.userProfileService.loadDisplayPicture(this.user.displayPictureUrl!, this.user.displayName);
   }
 
   ngOnInit(){
