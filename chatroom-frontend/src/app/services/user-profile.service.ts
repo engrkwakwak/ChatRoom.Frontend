@@ -4,6 +4,7 @@ import { environment } from '../../environments/environment';
 import { UserForUpdateDto } from '../dtos/chat/user-for-update.dto';
 import { Observable } from 'rxjs';
 import { UserDto } from '../dtos/chat/user.dto';
+import { jwtDecode } from 'jwt-decode';
 
 @Injectable({
   providedIn: 'root'
@@ -43,5 +44,16 @@ export class UserProfileService {
       return `https://api.dicebear.com/8.x/adventurer-neutral/svg?seed=${name}`
     }
     return picturePath;
+  }
+
+  public getUserIdFromToken() : number {
+    var userId: number = 0;
+    const token = localStorage.getItem('chatroom-token');
+    if(token){
+      const decodedToken = jwtDecode<any>(token);
+      userId = decodedToken['sub'];
+      return parseInt(userId.toString());
+    }
+    return 0;
   }
 }

@@ -1,0 +1,10 @@
+<nb-chat #chatContainer>
+    <nb-chat-message *ngFor="let message of messages"
+        type="text"
+        [message]="message.content"
+        [reply]="this.currentUserId === message.sender.userId"
+        [sender]="message.sender.displayName"
+        [date]="message.dateSent"
+        [avatar]="message.sender.displayPictureUrl">
+    </nb-chat-message>
+</nb-chat>
