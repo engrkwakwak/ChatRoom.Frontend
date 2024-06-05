@@ -4,10 +4,23 @@
        <button nbButton ghost shape="semi-round" nbPopoverPlacement="bottom" nbPopover="Chat Settings" nbPopoverTrigger="hint" >
               <nb-icon icon="settings"></nb-icon>
        </button>
-       <span class="fw-bold">Display Name</span>
+       <span class="fw-bold">
+              <app-avatar [src]="profileImageSrc" *ngIf="profileImageSrc"></app-avatar>
+              {{ receiver ? receiver!.displayName : (chat ? chat!.chatName : "Loading...") }}
+       </span>
     </div>
     <div class=" align-items-center" id="chat-view-container">
-        <nb-chat title="Chat Name">
+       <div class="no-chats" *ngIf="!chatId">
+              <div class="row align-items-center h-100">
+                     <div class="col">
+                            <p class="fs-4 fw-bold text-center t1">👋 Ready to Connect?</p> 
+                            <p class="fs-6 text-center t2">Just a simple 'Hi' could spark a great conversation. Take the first step and reach out. Your friend is just a message away!</p>
+                     </div>
+              </div>
+       </div>
+        <nb-chat title="Chat Name" 
+        *ngIf="chatId"
+        #nbchat>
             <nb-chat-message 
                    type="text"
                    message="Lorem ipsum dolor sit."
@@ -82,6 +95,6 @@
             </nb-chat-message>
         </nb-chat>
 
-        <nb-chat-form ></nb-chat-form>
+        <nb-chat-form (send)="sendMessage($event)"></nb-chat-form>
     </div>
 </div>

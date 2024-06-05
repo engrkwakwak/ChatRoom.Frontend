@@ -10,7 +10,7 @@ import { Router } from '@angular/router';
 })
 export class ChatlistComponent {
   constructor(
-    private chatService : ChatService,
+    private chatModuleService : ChatService,
     private router : Router
   ){}
 
@@ -23,13 +23,13 @@ export class ChatlistComponent {
   ];
 
   hideChatlist(){
-    this.chatService.hideChatlist()
+    this.chatModuleService.hideChatlist()
   }
 
   viewChat(){
-    if(this.chatService.isMobile){
+    if(this.chatModuleService.isMobile){
       this.hideChatlist();
     }
-    this.router.navigate(['/chat/view/1']);
+    this.router.navigate(['/chat/view/from-chatlist/1']);
   }
 }

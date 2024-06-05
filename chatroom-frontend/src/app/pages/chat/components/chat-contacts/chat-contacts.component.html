@@ -14,7 +14,7 @@
                 [threshold]="100"
                 [throttleTime]="1000"
                 (bottomThreshold)="fetchUser()">
-                    <nb-list-item class="user-item" *ngFor="let user of users" >
+                    <nb-list-item class="user-item" *ngFor="let user of users" (click)="viewMessages(user)">
                         <app-contact-item [user]="user" (contactUpdated)="onContactUpdate()" />
                     </nb-list-item>
                     
@@ -45,7 +45,7 @@
                 [threshold]="100"
                 [throttleTime]="1000"
                 (bottomThreshold)="fetchContacts()">
-                    <nb-list-item class="user-item" *ngFor="let user of contacts" >
+                    <nb-list-item class="user-item" *ngFor="let user of contacts" (click)="viewMessages(user)">
                         <app-contact-item [user]="user"  />
                     </nb-list-item>
                     

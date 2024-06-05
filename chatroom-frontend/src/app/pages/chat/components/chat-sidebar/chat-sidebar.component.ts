@@ -30,6 +30,7 @@ export class ChatSidebarComponent implements OnInit {
   ){}
 
   ngOnInit() {
+    console.log("in init")
     this.nbMenuService.onItemClick()
       .pipe(
         filter(({ tag }) => tag === 'user-actions-menu'),
@@ -117,4 +118,5 @@ export class ChatSidebarComponent implements OnInit {
     this.picturePath = newPath;
     this.cdr.detectChanges();
   }
+
 }

@@ -19,6 +19,17 @@
             position: fixed;
             top: 1rem;
         }
+
+        .no-chats{
+            height: 100% !important;
+            .row{
+                max-width: 600px;
+                margin: 0px auto;
+                .t2{
+                    color: nb-theme(color-basic-600);
+                }
+            }
+        }
     
         nb-chat-form{
             input {

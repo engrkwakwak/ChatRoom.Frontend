@@ -8,6 +8,8 @@ import { MenuItem } from 'primeng/api';
 import { ContactService } from '../../../../services/contact.service';
 import { ContactParameters } from '../../../../dtos/shared/contact-parameters.dto';
 import { AuthService } from '../../../../services/auth.service';
+import { Router } from '@angular/router';
+import { ChatService } from '../../chat.service';
 
 @Component({
   selector: 'app-chat-contacts',
@@ -18,7 +20,9 @@ export class ChatContactsComponent {
   constructor(
     private userService : UserService,
     private contactService : ContactService,
-    private authService : AuthService
+    private authService : AuthService,
+    private router : Router,
+    private chatModuleService : ChatService
   ){}
 
   users:UserDto[] = [];
@@ -50,8 +54,18 @@ export class ChatContactsComponent {
     this.fetchUser();
   }
 
+  hideContactList(){
+    this.chatModuleService.hideChatlist()
+  }
+
+  viewChat(){
+    if(this.chatModuleService.isMobile){
+      this.hideContactList();
+    }
+    this.router.navigate(['/chat/view/1']);
+  }
+
   fetchUser() {
-    // console.log("fetching users")
     let isSearching : boolean =  true;
     if(this.userParams.Name.length <= 0 || this.loadingStatus.Users){
       return;
@@ -76,13 +90,11 @@ export class ChatContactsComponent {
       complete: () => {
         this.loadingStatus.Users = false;
         isSearching = false;
-        // console.log("done fetching users")
       }
     })
   }
 
   fetchContacts() {
-    // console.log("fetching contacts")
     if(this.loadingStatus.Contacts){
       return;
     }
@@ -90,6 +102,7 @@ export class ChatContactsComponent {
     this.contactService.searchContactsByNameUserId(this.contactParams)
     .subscribe({
       next: (res) => {
+        console.log(this.contactParams)
         if(res.length > 0){
           this.contacts.push(...res);
           this.contactParams.PageNumber++;
@@ -100,7 +113,6 @@ export class ChatContactsComponent {
       },
       complete: () => {
         this.loadingStatus.Contacts = false;
-        // // console.log("done fetching contacts")
       }
     })
   }
@@ -108,6 +120,14 @@ export class ChatContactsComponent {
   onContactUpdate(){
     this.resetContacts(this.contactParams.Name);
     this.fetchContacts();
+  }
+
+  viewMessages(user : UserDto){
+    if(this.chatModuleService.isMobile){
+      this.hideContactList();
+    }
+    this.router.navigate([`/chat/view/from-contacts/${user.userId}`]);
+    
   }
 
   private resetUsers(name : string){
@@ -119,6 +139,7 @@ export class ChatContactsComponent {
       Name: name
     }
   }
+
   private resetContacts(name : string){
     this.contacts = [];
     this.loadingStatus.Contacts = false;
@@ -130,13 +151,7 @@ export class ChatContactsComponent {
     }
   }
 
-  loadNext(){
-    // console.log("Load next")
-  }
-
-
   ngOnInit(){
-    // console.log("init")
     this.contactParams.UserId = this.authService.getUserIdFromSession()
     this.fetchContacts();
   }
