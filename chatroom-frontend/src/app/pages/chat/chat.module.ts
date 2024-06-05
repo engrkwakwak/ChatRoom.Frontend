@@ -21,6 +21,7 @@ import { AvatarComponent } from './components/avatar/avatar.component';
 import { SkeletonModule } from 'primeng/skeleton';
 import { MenuModule } from 'primeng/menu';
 import { UserSkeletonPlaceholderComponent } from './components/user-skeleton-placeholder/user-skeleton-placeholder.component';
+import { MessageListComponent } from './components/message-list/message-list.component';
 
 
 
@@ -36,7 +37,8 @@ import { UserSkeletonPlaceholderComponent } from './components/user-skeleton-pla
     UserProfileComponent,
     ContactItemComponent,
     AvatarComponent,
-    UserSkeletonPlaceholderComponent
+    UserSkeletonPlaceholderComponent,
+    MessageListComponent
   ],
   imports: [
     AppRoutingModule,
