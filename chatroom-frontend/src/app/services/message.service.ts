@@ -21,6 +21,6 @@ export class MessageService {
   }
 
   public sendMessage(message : MessageForCreationDto) : Observable<MessageDto>{
-    return this.httpClient.post<MessageDto>(`${this.API_ENDPOINT}/${message.ChatId}/messages`, message);
+    return this.httpClient.post<MessageDto>(`${this.API_ENDPOINT}/chats/${message.ChatId}/messages`, message);
   }
 }

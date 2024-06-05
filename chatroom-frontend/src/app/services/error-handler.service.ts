@@ -18,5 +18,11 @@ export class ErrorHandlerService {
         icon : "alert-triangle"
       });
     }
+    if(error.error && error.error.message){
+      this.toastrService.show(error.error.message, "Error", {
+        status: "danger",
+        icon : "alert-triangle"
+      });
+    }
   }
 }

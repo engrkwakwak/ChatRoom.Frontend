@@ -10,7 +10,7 @@
        </span>
     </div>
     <div class=" align-items-center" id="chat-view-container">
-       <app-message-list [currentUserId]="currentUserId" [chatId]="chatId!"></app-message-list>
+       <app-message-list [currentUserId]="userId" [chatId]="chatId!" #messageList></app-message-list>
        <nb-chat-form (send)="sendMessage($event)"></nb-chat-form>
     </div>
 </div>

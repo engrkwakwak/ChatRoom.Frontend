@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute, Route, Router } from '@angular/router';
 import { ChatService } from '../../../services/chat.service';
 import { AuthService } from '../../../services/auth.service';
@@ -11,6 +11,7 @@ import { NewChatMessageDto } from '../../../dtos/chat/new-chat-message.dto';
 import { ChatDto } from '../../../dtos/chat/chat.dto';
 import { MessageForCreationDto } from '../../../dtos/chat/message-for-creation.dto';
 import { MessageService } from '../../../services/message.service';
+import { MessageListComponent } from '../components/message-list/message-list.component';
 
 @Component({
   selector: 'app-chat-view',
@@ -29,32 +30,44 @@ export class ChatViewComponent {
     private toast : NbToastrService
   ){}
 
-  
-
-  loading : boolean = false;
-  
-  // for P2P and Group
-  currentUserId: number = 0;
+  @ViewChild('messageList') messageListComponent! : MessageListComponent
+  /* 
+    UserId of the current user on the session
+  */
+  userId: number = 0;
+  /* 
+    ChatId of Chat usually initialize from the route
+  */
   chatId : number | null = null;
+  /* 
+    Chat info of the conversation
+   */
   chat : ChatDto|null = null;
+  /* 
+    List of members of the chat either a P2P chat or Group chat
+  */
   members : UserDto[] = [];
-
-  // for P2P
+  /* 
+   UserId of the receiver for P2P chats
+  */
   receiverId : number | null = null;
+  /* 
+    UserDto instance of the receiver
+  */
   receiver : UserDto|null = null;
+  /* 
+    displayImage of the group chat or the receiver
+  */
   profileImageSrc : string|null = null;
-
-  messages : any[] = [];
 
 
   ngOnInit(){
-    
     this.activatedRoute.paramMap.subscribe({
       next: (paramMap) => {
         this.chatId = parseInt(paramMap.get("id")!);
         if(paramMap.has("chatId")){
           this.chatId = parseInt(paramMap.get("chatId")!)
-          this.currentUserId = this.userProfileService.getUserIdFromToken();
+          this.userId = this.userProfileService.getUserIdFromToken();
           this.initChatFromChatlist()
         }
         if(paramMap.has("userId")){
@@ -128,8 +141,8 @@ export class ChatViewComponent {
     }
     this.chatService.sendMessageForNewChat(message)
     .subscribe({
-      next : res => {
-        this.toast.show("This is temporaty Message Sent", "Message Sent")
+      next : _ => {
+        this.initChatFromContacts()
       },
       error : err => this.errorHandlerService.handleError(err)
     })
@@ -144,7 +157,10 @@ export class ChatViewComponent {
     }
     this.messageService.sendMessage(message)
     .subscribe({
-      next : _ => this.toast.show("This is temporaty Message Sent", "Message Sent"),
+      next : message => {
+        console.log(message)
+        this.messageListComponent.messages.push(message)
+      },
       error : err => this.errorHandlerService.handleError(err)
     })
   }
