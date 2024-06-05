@@ -27,15 +27,11 @@ export class ChatService {
     return this.http.post<MessageDto>(`${this.API_ENDPOINT}/chats/send-message-to-new-chat`, message);
   }
 
-  sendMessage(message : MessageForCreationDto) : Observable<MessageDto>{
-    return this.http.post<MessageDto>(`${this.API_ENDPOINT}/chats/send-message`, message);
-  }
-
   getChatByChatId(chatId : number ) : Observable<ChatDto> {
-    return this.http.get<ChatDto>(`${this.API_ENDPOINT}/chats/get-by-id${chatId}`);
+    return this.http.get<ChatDto>(`${this.API_ENDPOINT}/chats/${chatId}`);
   }
 
   getMembersByChatId(chatId : number) : Observable<UserDto[]> {
-    return this.http.get<UserDto[]>(`${this.API_ENDPOINT}/chats/get-active-members${chatId}`);
+    return this.http.get<UserDto[]>(`${this.API_ENDPOINT}/chats/${chatId}/members`);
   }
 }

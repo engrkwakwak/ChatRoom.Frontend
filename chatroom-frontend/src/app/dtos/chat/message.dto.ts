@@ -4,7 +4,19 @@ export interface MessageDto {
     senderId : number
     messageTypeId : number
     content : string
-    dateSent : string
-    dateUpdated : string
+    dateSent : Date
     statusId : number
+    sender: {
+        userId: number;
+        displayName: string;
+        displayPictureUrl: string;
+    }
+    messageType: {
+        msgTypeId: number;
+        msgTypeName: string;
+    }
+    status: {
+        statusId: number;
+        statusName: string;
+    }
 }

@@ -102,7 +102,6 @@ export class ChatContactsComponent {
     this.contactService.searchContactsByNameUserId(this.contactParams)
     .subscribe({
       next: (res) => {
-        console.log(this.contactParams)
         if(res.length > 0){
           this.contacts.push(...res);
           this.contactParams.PageNumber++;
