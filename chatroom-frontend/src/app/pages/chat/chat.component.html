@@ -1,6 +1,6 @@
 <nb-layout>
     <nb-layout-column id="chat-ui-container">
-        <app-chat-sidebar *ngIf="chatService.isChatlistVisible" />
+        <app-chat-sidebar [style]="chatService.isChatlistVisible ? 'display: initial;' : 'display: none;'"/>
 
         <div id="conversation">
             <router-outlet></router-outlet>

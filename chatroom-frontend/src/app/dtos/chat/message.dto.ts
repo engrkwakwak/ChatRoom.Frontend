@@ -1,8 +1,11 @@
 export interface MessageDto {
-    messageId: number;
-    chatId: number;
-    content: string;
-    dateSent: Date;
+    messageId : number
+    chatId : number
+    senderId : number
+    messageTypeId : number
+    content : string
+    dateSent : Date
+    statusId : number
     sender: {
         userId: number;
         displayName: string;

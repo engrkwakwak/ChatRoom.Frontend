@@ -117,4 +117,5 @@ export class ChatSidebarComponent implements OnInit {
     this.picturePath = newPath;
     this.cdr.detectChanges();
   }
+
 }

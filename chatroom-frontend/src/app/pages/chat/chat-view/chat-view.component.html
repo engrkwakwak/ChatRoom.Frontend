@@ -4,10 +4,13 @@
        <button nbButton ghost shape="semi-round" nbPopoverPlacement="bottom" nbPopover="Chat Settings" nbPopoverTrigger="hint" >
               <nb-icon icon="settings"></nb-icon>
        </button>
-       <span class="fw-bold">Display Name</span>
+       <span class="fw-bold">
+              <app-avatar [src]="profileImageSrc" *ngIf="profileImageSrc"></app-avatar>
+              {{ receiver ? receiver!.displayName : (chat ? chat!.chatName : "Loading...") }}
+       </span>
     </div>
     <div class=" align-items-center" id="chat-view-container">
-       <app-message-list [currentUserId]="this.currentUserId" [chatId]="this.chatId"></app-message-list>
-       <nb-chat-form ></nb-chat-form>
+       <app-message-list [currentUserId]="userId" [chatId]="chatId!" #messageList></app-message-list>
+       <nb-chat-form (send)="sendMessage($event)"></nb-chat-form>
     </div>
 </div>

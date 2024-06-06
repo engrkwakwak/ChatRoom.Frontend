@@ -25,7 +25,13 @@ const routes: Routes = [
     component: ChatComponent,
     children: [
       { path: "", component: ChatIndexComponent },
-      { path: "view/:id", component: ChatViewComponent },
+      { 
+        path: "view", 
+        children: [
+          { path : "from-contacts/:userId", component : ChatViewComponent },
+          { path: "from-chatlist/:chatId", component: ChatViewComponent },
+        ]
+      }
     ],
     canActivate: [AuthGuard, EmailVerifiedGuard]
   },

@@ -32,6 +32,7 @@ export class MessageListComponent implements OnInit, AfterViewInit {
   }
   
   ngOnInit(): void {
+  
     this.loadMessages();
   }
 
@@ -73,7 +74,6 @@ export class MessageListComponent implements OnInit, AfterViewInit {
         },
         error: (err: HttpErrorResponse) => {
           this.isLoading = false;
-          console.log(err);
         }
       });
   }
