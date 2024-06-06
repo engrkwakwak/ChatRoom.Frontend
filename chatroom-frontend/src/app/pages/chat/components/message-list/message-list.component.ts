@@ -1,9 +1,10 @@
-import { Component, Input, OnInit, ViewChild, AfterViewInit } from '@angular/core';
+import { Component, Input, OnInit, ViewChild, AfterViewInit, TemplateRef } from '@angular/core';
 import { MessageDto } from '../../../../dtos/chat/message.dto';
 import { MessageParametersDto } from '../../../../dtos/shared/message-parameters.dto';
 import { HttpErrorResponse, HttpResponse } from '@angular/common/http';
-import { NbChatComponent } from '@nebular/theme';
+import { NbChatComponent, NbDialogConfig, NbDialogRef, NbDialogService, NbWindowService } from '@nebular/theme';
 import { MessageService } from '../../../../services/message.service';
+import { ErrorHandlerService } from '../../../../services/error-handler.service';
 
 @Component({
   selector: 'app-message-list',
@@ -11,15 +12,21 @@ import { MessageService } from '../../../../services/message.service';
   styleUrls: ['./message-list.component.scss']
 })
 export class MessageListComponent implements OnInit, AfterViewInit {
+
   messages: MessageDto[] = [];
+  selectedMessage : MessageDto|null = null;
   messageParameters: MessageParametersDto;
   isLoading: boolean = false;
   @Input() currentUserId: number = 0;
   @Input() chatId: number = 0;
   @ViewChild('chatContainer') chatContainer!: NbChatComponent;
+  @ViewChild('deleteMessageTemplate') deleteMessageTemplate : any;
+  deleteDialogRef! : NbDialogRef<any>;
 
   constructor(
-    private messageService: MessageService
+    private messageService: MessageService,
+    private nbDialogService : NbDialogService,
+    private errorHandlerService : ErrorHandlerService
   ) {
     this.messageParameters = {
       HasNext: false,
@@ -43,6 +50,28 @@ export class MessageListComponent implements OnInit, AfterViewInit {
       }
     });
   }
+
+  public confirmDeleteMessage(message : MessageDto){
+    this.selectedMessage = message;
+    this.deleteDialogRef = this.nbDialogService.open(this.deleteMessageTemplate)
+  }
+
+  public deleteMessage(message : MessageDto){
+    this.deleteDialogRef.close();
+    this.messageService.deleteMessage(message.messageId, message.chatId)
+    .subscribe({
+      next: _ => {
+        this.messages.forEach((message, i) => {
+          if(message.messageId == this.selectedMessage?.messageId){
+            this.messages.splice(i,1);
+          }
+        })
+      },
+      error: err => this.errorHandlerService.handleError(err)
+    })
+  }
+
+
 
   public loadMessages(isLoadPrevious: boolean = false) {
     const apiUri: string = `/chats/${this.chatId}/messages?pageNumber=${this.messageParameters.PageNumber}&pageSize=${this.messageParameters.PageSize}`

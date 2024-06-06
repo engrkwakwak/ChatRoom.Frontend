@@ -1,0 +1,14 @@
+
+<nb-card>
+    <nb-card-header>{{title ? title : "Confirm"}}</nb-card-header>
+    <nb-card-body>
+        {{ message ? message : "Do you want to continue?"}}
+    </nb-card-body>
+    <nb-card-footer>
+        <div class="buttons">
+            <button nbButton ghost (click)="cancel()">Cancel</button>
+            <button nbButton [status]="status ? status : 'basic'" (click)="continue()">Continue</button>
+        </div>
+    </nb-card-footer>
+</nb-card>
+

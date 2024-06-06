@@ -31,6 +31,10 @@ nb-chat{
   background-color: nb-theme(background-basic-color-4);
   border: none;
 
+  nb-chat-message{
+    margin-bottom: 0px;
+  }
+
   .scrollable{
 
     &::-webkit-scrollbar{
