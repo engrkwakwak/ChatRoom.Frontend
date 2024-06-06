@@ -158,7 +158,6 @@ export class ChatViewComponent {
     this.messageService.sendMessage(message)
     .subscribe({
       next : message => {
-        console.log(message)
         this.messageListComponent.messages.push(message)
       },
       error : err => this.errorHandlerService.handleError(err)

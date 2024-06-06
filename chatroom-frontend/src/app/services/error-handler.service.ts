@@ -11,7 +11,7 @@ export class ErrorHandlerService {
   ) { }
 
   public handleError(error : any){
-    console.log(error)
+    console.debug(error)
     if(error.error && error.error.Message){
       this.toastrService.show(error.error.Message, "Error", {
         status: "danger",

@@ -50,7 +50,6 @@ export class MessageListComponent implements OnInit, AfterViewInit {
       .subscribe({
         next: (res: HttpResponse<MessageDto[]>) => {
           const newMessages = res.body?.reverse() ?? [];
-          console.log(newMessages)
           this.messages = [...newMessages, ...this.messages];
 
           const paginationJson = res.headers.get('X-Pagination') ?? '{}';
@@ -75,7 +74,6 @@ export class MessageListComponent implements OnInit, AfterViewInit {
         },
         error: (err: HttpErrorResponse) => {
           this.isLoading = false;
-          console.log(err);
         }
       });
   }
