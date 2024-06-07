@@ -5,6 +5,7 @@ import { HttpErrorResponse, HttpResponse } from '@angular/common/http';
 import { NbChatComponent, NbDialogConfig, NbDialogRef, NbDialogService, NbWindowService } from '@nebular/theme';
 import { MessageService } from '../../../../services/message.service';
 import { ErrorHandlerService } from '../../../../services/error-handler.service';
+import { UpdateMessageFormComponent } from '../update-message-form/update-message-form.component';
 
 @Component({
   selector: 'app-message-list',
@@ -22,6 +23,7 @@ export class MessageListComponent implements OnInit, AfterViewInit {
   @ViewChild('chatContainer') chatContainer!: NbChatComponent;
   @ViewChild('deleteMessageTemplate') deleteMessageTemplate : any;
   deleteDialogRef! : NbDialogRef<any>;
+  @ViewChild('updateMessageComponent') updateMessageComponent? : UpdateMessageFormComponent;
 
   constructor(
     private messageService: MessageService,
@@ -51,6 +53,14 @@ export class MessageListComponent implements OnInit, AfterViewInit {
     });
   }
 
+  public onMessageUpdate(ev : MessageDto){
+    this.messages.forEach((message : MessageDto, i : number) => {
+      if(message.messageId == ev.messageId){
+        this.messages[i].content = ev.content
+      }
+    });
+  }
+
   public confirmDeleteMessage(message : MessageDto){
     this.selectedMessage = message;
     this.deleteDialogRef = this.nbDialogService.open(this.deleteMessageTemplate)
@@ -69,6 +79,11 @@ export class MessageListComponent implements OnInit, AfterViewInit {
       },
       error: err => this.errorHandlerService.handleError(err)
     })
+  }
+
+  public showUpdateMessageComponent(message:MessageDto){
+    this.selectedMessage = message
+    this.updateMessageComponent?.show();
   }
 
 

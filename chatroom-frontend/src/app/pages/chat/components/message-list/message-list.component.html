@@ -9,7 +9,7 @@
                     <button nbButton size="tiny" ghost status="danger" (click)="confirmDeleteMessage(message)">
                         Delete
                     </button>
-                    <button nbButton size="tiny" ghost>
+                    <button nbButton size="tiny" ghost (click)="showUpdateMessageComponent(message)">
                         Edit
                     </button>
                 </div>
@@ -36,3 +36,9 @@
     (onCancel)="deleteDialogRef.close()"
     (onContinue)="deleteMessage(selectedMessage!)" />
 </ng-template>
+
+
+<app-update-message-form 
+    #updateMessageComponent 
+    [message]="selectedMessage" 
+    (onUpdate)="onMessageUpdate($event)"/>

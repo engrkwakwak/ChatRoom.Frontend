@@ -23,6 +23,7 @@ import { MenuModule } from 'primeng/menu';
 import { UserSkeletonPlaceholderComponent } from './components/user-skeleton-placeholder/user-skeleton-placeholder.component';
 import { MessageListComponent } from './components/message-list/message-list.component';
 import { ConfirmationDialogComponent } from './components/confirmation-dialog/confirmation-dialog.component';
+import { UpdateMessageFormComponent } from './components/update-message-form/update-message-form.component';
 
 
 
@@ -40,7 +41,8 @@ import { ConfirmationDialogComponent } from './components/confirmation-dialog/co
     AvatarComponent,
     UserSkeletonPlaceholderComponent,
     MessageListComponent,
-    ConfirmationDialogComponent
+    ConfirmationDialogComponent,
+    UpdateMessageFormComponent
   ],
   imports: [
     AppRoutingModule,
