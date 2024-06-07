@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Input, Output, TemplateRef, ViewChild } from '@angular/core';
-import { NbDialogService } from '@nebular/theme';
+import { NbDialogRef, NbDialogService } from '@nebular/theme';
 
 @Component({
   selector: 'app-confirmation-dialog',
@@ -7,19 +7,35 @@ import { NbDialogService } from '@nebular/theme';
   styleUrl: './confirmation-dialog.component.scss'
 })
 export class ConfirmationDialogComponent {
+
+  constructor(
+    private nbDialogService : NbDialogService
+  ){
+
+  }
+
   @Input({required : true}) message : string | null = null;
   @Input() status : string = "basic";
   @Input({required :true}) title : string|null = null; 
-  @Output() onCancel : EventEmitter<any> = new EventEmitter<any>();
   @Output() onContinue : EventEmitter<any> = new EventEmitter<any>();
+  @ViewChild('dialogTemplate') dialogTemplate? : TemplateRef<any>
+  dialogRef? : NbDialogRef<any>
 
 
   cancel(){
-    this.onCancel.emit();
+    this.dialogRef?.close();
+  }
+
+  close(){
+    this.dialogRef?.close();
   }
 
   continue(){
     this.onContinue.emit();
+  }
+
+  open(){
+    this.dialogRef = this.nbDialogService.open(this.dialogTemplate!)
   }
 
 

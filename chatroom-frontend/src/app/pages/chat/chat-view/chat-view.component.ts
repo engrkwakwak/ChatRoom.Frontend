@@ -102,7 +102,9 @@ export class ChatViewComponent {
   private initChatFromChatlist(){
     concat(
       this.chatService.getChatByChatId(this.chatId!).pipe(
-        tap(chat => this.chat = chat)
+        tap(chat => {
+          this.chat = chat;
+        })
       ),
       this.chatService.getMembersByChatId(this.chatId!).pipe(
         tap(res => {

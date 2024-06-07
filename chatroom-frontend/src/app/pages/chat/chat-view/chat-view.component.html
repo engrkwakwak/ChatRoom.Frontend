@@ -1,13 +1,15 @@
 <div id="chat-convo" class="h-100">
     <div class="chat-header">
+
        <app-chatlist-toggle ></app-chatlist-toggle>
-       <button nbButton ghost shape="semi-round" nbPopoverPlacement="bottom" nbPopover="Chat Settings" nbPopoverTrigger="hint" ngi>
-              <nb-icon icon="settings"></nb-icon>
-       </button>
+
+       
        <span class="fw-bold">
               <app-avatar [src]="profileImageSrc" *ngIf="profileImageSrc"></app-avatar>
               {{ receiver ? receiver!.displayName : (chat ? chat!.chatName : "Loading...") }}
        </span>
+
+       <app-chat-settings [chat]="chat!" [members]="members!" />
     </div>
     <div class=" align-items-center" id="chat-view-container">
       

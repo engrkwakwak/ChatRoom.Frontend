@@ -6,6 +6,7 @@ import { NbChatComponent, NbDialogConfig, NbDialogRef, NbDialogService, NbWindow
 import { MessageService } from '../../../../services/message.service';
 import { ErrorHandlerService } from '../../../../services/error-handler.service';
 import { UpdateMessageFormComponent } from '../update-message-form/update-message-form.component';
+import { ConfirmationDialogComponent } from '../confirmation-dialog/confirmation-dialog.component';
 
 @Component({
   selector: 'app-message-list',
@@ -22,7 +23,7 @@ export class MessageListComponent implements OnInit, AfterViewInit {
   @Input() chatId: number = 0;
   @ViewChild('chatContainer') chatContainer!: NbChatComponent;
   @ViewChild('deleteMessageTemplate') deleteMessageTemplate : any;
-  deleteDialogRef! : NbDialogRef<any>;
+  @ViewChild('deleteDialogComponent') deleteDialogComponent? : ConfirmationDialogComponent;
   @ViewChild('updateMessageComponent') updateMessageComponent? : UpdateMessageFormComponent;
 
   constructor(
@@ -63,11 +64,11 @@ export class MessageListComponent implements OnInit, AfterViewInit {
 
   public confirmDeleteMessage(message : MessageDto){
     this.selectedMessage = message;
-    this.deleteDialogRef = this.nbDialogService.open(this.deleteMessageTemplate)
+    this.deleteDialogComponent?.open();
   }
 
   public deleteMessage(message : MessageDto){
-    this.deleteDialogRef.close();
+    this.deleteDialogComponent?.close()
     this.messageService.deleteMessage(message.messageId, message.chatId)
     .subscribe({
       next: _ => {

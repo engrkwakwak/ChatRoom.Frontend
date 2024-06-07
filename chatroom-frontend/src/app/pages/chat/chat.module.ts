@@ -24,6 +24,7 @@ import { UserSkeletonPlaceholderComponent } from './components/user-skeleton-pla
 import { MessageListComponent } from './components/message-list/message-list.component';
 import { ConfirmationDialogComponent } from './components/confirmation-dialog/confirmation-dialog.component';
 import { UpdateMessageFormComponent } from './components/update-message-form/update-message-form.component';
+import { ChatSettingsComponent } from './components/chat-settings/chat-settings.component';
 
 
 
@@ -42,7 +43,8 @@ import { UpdateMessageFormComponent } from './components/update-message-form/upd
     UserSkeletonPlaceholderComponent,
     MessageListComponent,
     ConfirmationDialogComponent,
-    UpdateMessageFormComponent
+    UpdateMessageFormComponent,
+    ChatSettingsComponent
   ],
   imports: [
     AppRoutingModule,

@@ -28,14 +28,12 @@
     </nb-chat-message>
 </nb-chat>
 
-<ng-template #deleteMessageTemplate>
-    <app-confirmation-dialog 
+<app-confirmation-dialog 
+    #deleteDialogComponent
     status="danger" 
     message="Are you sure you want to delete this message?" 
     title="Delete Message"
-    (onCancel)="deleteDialogRef.close()"
     (onContinue)="deleteMessage(selectedMessage!)" />
-</ng-template>
 
 
 <app-update-message-form 

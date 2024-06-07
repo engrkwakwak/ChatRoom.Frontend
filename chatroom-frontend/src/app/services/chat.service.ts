@@ -34,4 +34,8 @@ export class ChatService {
   getMembersByChatId(chatId : number) : Observable<UserDto[]> {
     return this.http.get<UserDto[]>(`${this.API_ENDPOINT}/chats/${chatId}/members`);
   }
+
+  deleteChatByChatId(chatId : number) : Observable<any> {
+    return this.http.delete<any>(`${this.API_ENDPOINT}/chats/${chatId}`);
+  }
 }

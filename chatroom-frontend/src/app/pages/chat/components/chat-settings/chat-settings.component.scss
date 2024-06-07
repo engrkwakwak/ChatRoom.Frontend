@@ -1,0 +1,49 @@
+@use "../../../../../themes.scss" as *;
+
+.chat-settings-card{
+    background-color: nb-theme(background-basic-color-1) !important;
+    border-radius: .2rem;
+    width: 500px;
+    margin: 0rem;
+    .close-button{
+        display: flex;
+        flex-direction: column;
+        align-items: flex-end;
+        button{
+            align-self: flex-end;
+        }
+        padding: 1rem 1rem 0rem 1rem;
+    }
+    h6{
+        text-align: center;
+        margin-bottom: 0px;
+        padding: 0.5rem 0rem;
+    }
+    app-avatar{
+        display: block;
+        width: fit-content;
+        margin: 0rem auto;
+        padding: 1rem 1rem 0rem 1rem;
+    }
+    .action-buttons{
+        padding: 1rem;
+        nb-list{
+            border-top: 1px solid nb-theme(color-basic-700) !important;
+            nb-list-item {
+                border: none;
+                border-bottom: 1px solid nb-theme(color-basic-700) !important;
+                font-weight: bold !important;
+                &:hover {
+                    font-weight: bolder !important;
+                    cursor: pointer;
+                    opacity: 0.6;
+                    transition-duration: 0.4s;
+                }
+        
+                &.delete-chat-item{
+                    color: nb-theme(color-danger-500);
+                }
+            }
+        }
+    }
+}
