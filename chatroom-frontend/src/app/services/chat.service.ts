@@ -38,4 +38,8 @@ export class ChatService {
   deleteChatByChatId(chatId : number) : Observable<any> {
     return this.http.delete<any>(`${this.API_ENDPOINT}/chats/${chatId}`);
   }
+
+  canViewChat(chatId : number) : Observable<boolean> {
+    return this.http.get<boolean>(`${this.API_ENDPOINT}/chats/${chatId}/can-view`);
+  }
 }

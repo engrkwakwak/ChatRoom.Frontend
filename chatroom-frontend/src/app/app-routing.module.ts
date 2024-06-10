@@ -12,13 +12,14 @@ import { AuthGuard } from './guards/auth.guard';
 import { EmailVerificationComponent } from './pages/auth/email-verification/email-verification.component';
 import { EmailVerifiedGuard } from './guards/email-verified.guard';
 import { EmailVerifiedComponent } from './pages/auth/email-verified/email-verified.component';
+import { ChatGuard } from './guards/chat.guard';
 
 const routes: Routes = [
   {path: "", component: HomeComponent},
   {path: "home", redirectTo: ""},
   {path: "signin", component: SigninComponent, canActivate: [AuthGuard]},
   {path: "signup", component: SignupComponent, canActivate: [AuthGuard]},
-  {path: "email-verification", component: EmailVerificationComponent, canActivate: [AuthGuard]}, 
+  {path: "email-verification", component: EmailVerificationComponent, canActivate: [AuthGuard, EmailVerifiedGuard]}, 
   {path: "email-verified", component: EmailVerifiedComponent}, 
   {
     path: "chat", 
@@ -29,14 +30,22 @@ const routes: Routes = [
         path: "view", 
         children: [
           { path : "from-contacts/:userId", component : ChatViewComponent },
-          { path: "from-chatlist/:chatId", component: ChatViewComponent },
+          { path: "from-chatlist/:chatId", component: ChatViewComponent, canActivate: [ChatGuard] },
         ]
       }
     ],
     canActivate: [AuthGuard, EmailVerifiedGuard]
   },
 
-  {path: "**", component: PageNotFoundComponent}
+  {path: "**", component: PageNotFoundComponent},
+  {
+    path: "error",
+    children: [
+      {
+        path: "404", component: PageNotFoundComponent
+      }
+    ]
+  }
 ];
 
 @NgModule({
