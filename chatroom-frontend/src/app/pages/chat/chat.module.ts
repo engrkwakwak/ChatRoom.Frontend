@@ -22,6 +22,7 @@ import { SkeletonModule } from 'primeng/skeleton';
 import { MenuModule } from 'primeng/menu';
 import { UserSkeletonPlaceholderComponent } from './components/user-skeleton-placeholder/user-skeleton-placeholder.component';
 import { MessageListComponent } from './components/message-list/message-list.component';
+import { ChatlistItemComponent } from './components/chatlist/chatlist-item/chatlist-item.component';
 
 
 
@@ -38,7 +39,8 @@ import { MessageListComponent } from './components/message-list/message-list.com
     ContactItemComponent,
     AvatarComponent,
     UserSkeletonPlaceholderComponent,
-    MessageListComponent
+    MessageListComponent,
+    ChatlistItemComponent
   ],
   imports: [
     AppRoutingModule,

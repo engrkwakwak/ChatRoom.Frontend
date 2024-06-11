@@ -1,0 +1,16 @@
+<!-- 
+    This conponent should be  used inside an nb-list-item
+ -->
+ <div class="row align-items-center">
+    <div class="col-auto pe-0">
+        <app-avatar [src]="loadProfilePicture()" />
+    </div>
+    <div class="col pe-0 name-container">
+        <p class="mb-0" >{{ chat?.chatTypeId == 2 ?  chat?.chatName : receiver?.displayName }}</p>
+        <p>{{ latestMessage?.content }}</p>
+        <p class="date-sent">{{ latestMessage?.dateSent | date:"LLL d, YYYY h:m a" }}</p>
+    </div>
+</div>
+<!-- 
+    Dont put any elements outside the div
+-->

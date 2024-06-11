@@ -1,19 +1,22 @@
 <div id="chatlist">
-    <br>
     <div class="chat-search-container">
-        <input nbInput fullWidth type="text" placeholder="Search Messages" />
+        <input nbInput fullWidth type="text" placeholder="Search Messages" (input)="search($event)" />
     </div>
     
-    <nb-list>
-        <nb-list-item *ngFor="let user of users" (click)="viewChat()">
-            <nb-user [name]="user.name" [title]="user.title" color="gray">
-            </nb-user>
+    <nb-list
+        nbInfiniteList
+        [threshold]="100"
+        [throttleTime]="1000"
+        (bottomThreshold)="fetchChats()">
+
+        <nb-list-item *ngFor="let chat of chats" (click)="viewChat(chat)">
+            <app-chatlist-item [chat]="chat" />
         </nb-list-item>
-        
-        <nb-list-item class="active"  (click)="viewChat()" >
-            <nb-user name="Active User" title="Last message" color="gray" >
-            </nb-user>
+
+        <nb-list-item  *ngIf="fetchingChats">
+            <app-user-skeleton-placeholder />
+            <br>
+            <app-user-skeleton-placeholder />
         </nb-list-item>
-        
     </nb-list>
 </div>

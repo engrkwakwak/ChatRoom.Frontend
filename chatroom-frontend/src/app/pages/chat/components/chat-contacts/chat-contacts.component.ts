@@ -32,12 +32,14 @@ export class ChatContactsComponent {
     PageSize  : 6,
     Name : ""
   };
+  
   contactParams : ContactParameters  = {
     PageNumber : 1,
     PageSize  : 6,
     Name : "",
     UserId : 0
   };
+
   loadingStatus : {Users:boolean, Contacts:boolean} = {
     Users: false,
     Contacts : false

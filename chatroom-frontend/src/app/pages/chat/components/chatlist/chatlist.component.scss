@@ -6,15 +6,27 @@
         padding: .5rem 1rem;
     }
     .chat-search-container{
-        padding: 0rem 1rem;
+        padding: 1rem;
     }
     nb-list{
         padding: 0.5rem 1rem;
+        height: calc(100vh - 52px - 76px - 40px - 2rem);
+        &::-webkit-scrollbar{
+            width: 8px !important;
+        }
+        &::-webkit-scrollbar-track {
+            background: nb-theme(background-basic-color-4) !important; 
+        }
+        &::-webkit-scrollbar-thumb {
+            background: nb-theme(background-basic-color-1) !important; 
+            border-radius: 5px !important;
+        }
         nb-list-item{
             border: none;
             padding: 0.5rem;
             border-radius: 3px;
             margin: 5px 0px;
+            display: block;
             cursor: pointer;
             &.active{
                 background: nb-theme(background-basic-color-1) !important;
@@ -23,6 +35,7 @@
                 background: nb-theme(background-basic-color-1) !important;
                 transition: .4s;
             }
+            
         }
     }
 }
