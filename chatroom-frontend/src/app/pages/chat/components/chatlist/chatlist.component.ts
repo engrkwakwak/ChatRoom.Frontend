@@ -46,7 +46,9 @@ export class ChatlistComponent {
     if(this.chatModuleService.isMobile){
       this.hideChatlist();
     }
-    this.router.navigate([`/chat/view/from-chatlist/${chat.chatId}`]);
+    this.router.navigate([`/chat/view/from-chatlist/${chat.chatId}`], {
+      replaceUrl: true
+    });
   }
 
   fetchChats(){

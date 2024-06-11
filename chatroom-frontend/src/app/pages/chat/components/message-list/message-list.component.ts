@@ -1,4 +1,4 @@
-import { Component, Input, OnInit, ViewChild, AfterViewInit } from '@angular/core';
+import { Component, Input, OnInit, ViewChild, AfterViewInit, SimpleChange } from '@angular/core';
 import { MessageDto } from '../../../../dtos/chat/message.dto';
 import { MessageParametersDto } from '../../../../dtos/shared/message-parameters.dto';
 import { HttpErrorResponse, HttpResponse } from '@angular/common/http';
@@ -32,7 +32,20 @@ export class MessageListComponent implements OnInit, AfterViewInit {
   }
   
   ngOnInit(): void {
-  
+    
+    // this.loadMessages();
+  }
+
+  ngOnChanges(changes:any): void {
+    this.messages = [];
+    this.messageParameters = {
+      HasNext: false,
+      HasPrevious: false,
+      PageNumber: 1,
+      PageSize: 10,
+      TotalCount: 0,
+      TotalPages: 0
+    };
     this.loadMessages();
   }
 
@@ -45,6 +58,7 @@ export class MessageListComponent implements OnInit, AfterViewInit {
   }
 
   public loadMessages(isLoadPrevious: boolean = false) {
+    
     const apiUri: string = `/chats/${this.chatId}/messages?pageNumber=${this.messageParameters.PageNumber}&pageSize=${this.messageParameters.PageSize}`
     this.messageService.getMessages(apiUri)
       .subscribe({

@@ -69,6 +69,7 @@ export class ChatViewComponent {
           this.chatId = parseInt(paramMap.get("chatId")!)
           this.userId = this.userProfileService.getUserIdFromToken();
           this.initChatFromChatlist()
+          
         }
         if(paramMap.has("userId")){
           this.receiverId = parseInt(paramMap.get("userId")!);
@@ -100,6 +101,7 @@ export class ChatViewComponent {
   }
 
   private initChatFromChatlist(){
+    console.debug("chat list")
     concat(
       this.chatService.getChatByChatId(this.chatId!).pipe(
         tap(chat => this.chat = chat)
