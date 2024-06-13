@@ -1,4 +1,4 @@
-import { Component, Input, OnInit, ViewChild, AfterViewInit } from '@angular/core';
+import { Component, Input, OnInit, ViewChild, AfterViewInit, SimpleChanges, OnChanges, EventEmitter, Output, ChangeDetectorRef } from '@angular/core';
 import { MessageDto } from '../../../../dtos/chat/message.dto';
 import { MessageParametersDto } from '../../../../dtos/shared/message-parameters.dto';
 import { HttpErrorResponse, HttpResponse } from '@angular/common/http';
@@ -10,13 +10,15 @@ import { MessageService } from '../../../../services/message.service';
   templateUrl: './message-list.component.html',
   styleUrls: ['./message-list.component.scss']
 })
-export class MessageListComponent implements OnInit, AfterViewInit {
+export class MessageListComponent implements OnInit, OnChanges, AfterViewInit {
   messages: MessageDto[] = [];
   messageParameters: MessageParametersDto;
   isLoading: boolean = false;
-  @Input() currentUserId: number = 0;
-  @Input() chatId: number = 0;
+  @Input({required: true}) currentUserId: number = 0;
+  @Input({required: true}) chatId: number = 0;
   @ViewChild('chatContainer') chatContainer!: NbChatComponent;
+  @Output() messageListUpdated = new EventEmitter<MessageDto>();
+
 
   constructor(
     private messageService: MessageService
@@ -32,7 +34,6 @@ export class MessageListComponent implements OnInit, AfterViewInit {
   }
   
   ngOnInit(): void {
-  
     this.loadMessages();
   }
 
@@ -44,13 +45,29 @@ export class MessageListComponent implements OnInit, AfterViewInit {
     });
   }
 
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes['chatId'] && !changes['chatId'].isFirstChange()) {
+      this.messages = [];
+      this.messageParameters.PageNumber = 1;
+      this.loadMessages();
+    }
+  }
+
   public loadMessages(isLoadPrevious: boolean = false) {
-    const apiUri: string = `/chats/${this.chatId}/messages?pageNumber=${this.messageParameters.PageNumber}&pageSize=${this.messageParameters.PageSize}`
+    const apiUri: string = `/chats/${this.chatId}/messages?pageNumber=${this.messageParameters.PageNumber}&pageSize=${this.messageParameters.PageSize}`;
     this.messageService.getMessages(apiUri)
       .subscribe({
         next: (res: HttpResponse<MessageDto[]>) => {
           const newMessages = res.body?.reverse() ?? [];
-          this.messages = [...newMessages, ...this.messages];
+          
+          if (isLoadPrevious) {
+            this.messages = [...newMessages, ...this.messages];
+          } else {
+            this.messages = newMessages;
+            if(this.messages && this.messages.length > 0){
+              this.messageListUpdated.emit(newMessages[newMessages.length - 1]);
+            }
+          }
 
           const paginationJson = res.headers.get('X-Pagination') ?? '{}';
           const pagination = JSON.parse(paginationJson);
@@ -79,15 +96,17 @@ export class MessageListComponent implements OnInit, AfterViewInit {
   }
 
   public loadPrevious() {
-    if (this.isLoading) {
-      return;
-    }
-    if (this.messageParameters.HasNext === false) {
+    if (this.isLoading || !this.messageParameters.HasNext) {
       return;
     }
 
     this.isLoading = true;
     this.messageParameters.PageNumber++;
     this.loadMessages(true);
+  }
+
+  public pushMessage(message: MessageDto): void {
+    this.messages.push(message);
+    this.messageListUpdated.emit(message);
   }
 }

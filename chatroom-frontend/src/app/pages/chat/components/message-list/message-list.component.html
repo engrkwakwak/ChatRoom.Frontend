@@ -2,7 +2,7 @@
     <nb-chat-message *ngFor="let message of messages"
         type="text"
         [message]="message.content"
-        [reply]="this.currentUserId === message.sender?.userId"
+        [reply]="this.currentUserId === message.sender.userId"
         [sender]="message.sender.displayName"
         [date]="message.dateSent"
         [avatar]="message.sender.displayPictureUrl">

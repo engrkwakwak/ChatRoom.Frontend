@@ -1,3 +1,5 @@
+import { UserDisplayDto } from "./user-display.dto"
+
 export interface MessageDto {
     messageId : number
     chatId : number
@@ -19,4 +21,5 @@ export interface MessageDto {
         statusId: number;
         statusName: string;
     }
+    lastSeenUsers: UserDisplayDto[]
 }
