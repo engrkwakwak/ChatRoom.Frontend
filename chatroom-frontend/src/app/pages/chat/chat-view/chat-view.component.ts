@@ -29,6 +29,7 @@ export class ChatViewComponent implements OnInit {
   userId: number = 0;
   chatId: number = 0;
   receiverId: number = 0;
+  receiverName: string = "";
   chat: ChatDto | null = null;
   members: ChatMemberDto[] = [];
   profileImageSrc: string | null = null;
@@ -122,7 +123,8 @@ export class ChatViewComponent implements OnInit {
   private updateReceiverAndProfileImage() {
     if (this.chat?.chatTypeId === ChatType.P2P) {
       const receiver = this.members.find(member => member.user.userId !== this.userId);
-      this.profileImageSrc = this.userProfileService.loadDisplayPicture(receiver!.user.displayPictureUrl!, this.members[0].user.displayName);
+      this.profileImageSrc = this.userProfileService.loadDisplayPicture(receiver!.user.displayPictureUrl!, receiver!.user.displayName);
+      this.receiverName = receiver?.user.displayName!;
     } else {
       this.profileImageSrc = this.userProfileService.loadDisplayPicture(this.chat?.displayPictureUrl!, this.chat?.chatName!);
     }

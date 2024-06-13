@@ -6,7 +6,7 @@
        </button>
        <span class="fw-bold">
               <app-avatar [src]="profileImageSrc" *ngIf="profileImageSrc"></app-avatar>
-              {{ chat?.chatTypeId === 1 ? (members && members.length > 0 ? members[0].user.displayName : 'Loading...') : (chat ? chat.chatName : "Loading...") }}
+              {{ chat?.chatTypeId === 1 ? (members && members.length > 0 ? this.receiverName : 'Loading...') : (chat ? chat.chatName : "Loading...") }}
        </span>
     </div>
     <div class=" align-items-center" id="chat-view-container">
