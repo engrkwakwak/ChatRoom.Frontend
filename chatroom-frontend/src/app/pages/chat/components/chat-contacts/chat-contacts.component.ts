@@ -60,7 +60,7 @@ export class ChatContactsComponent {
     this.chatModuleService.hideChatlist()
   }
 
-  viewChat(){
+  viewChat() {
     if(this.chatModuleService.isMobile){
       this.hideContactList();
     }
@@ -84,7 +84,6 @@ export class ChatContactsComponent {
           this.users.push(...res);
           this.userParams.PageNumber++;
         }
-        
       },
       error: () => {
         this.loadingStatus.Users = false;

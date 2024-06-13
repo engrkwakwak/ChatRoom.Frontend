@@ -7,8 +7,9 @@ import { AuthService } from '../../../../../services/auth.service';
 import { NbGlobalPhysicalPosition, NbToastrService } from '@nebular/theme';
 import { ErrorHandlerService } from '../../../../../services/error-handler.service';
 import { ContactDto } from '../../../../../dtos/chat/contact.dto';
-import { emit } from 'process';
 import { UserProfileService } from '../../../../../services/user-profile.service';
+import { ChatService } from '../../../chat.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-contact-item',
@@ -21,7 +22,9 @@ export class ContactItemComponent {
     private authService : AuthService,
     private toastrService : NbToastrService,
     private errorHandlerService : ErrorHandlerService,
-    private userProfileService : UserProfileService
+    private userProfileService : UserProfileService,
+    private chatModuleService : ChatService,
+    private router : Router
   ){}
 
   @Output() contactUpdated : EventEmitter<any> = new EventEmitter<any>();
@@ -97,6 +100,14 @@ export class ContactItemComponent {
         this.errorHandlerService.handleError(err)
       }
     });
+  }
+
+  viewMessages(user : UserDto){
+    if(this.chatModuleService.isMobile){
+      this.chatModuleService.hideChatlist()
+    }
+    this.router.navigate([`/chat/view/from-contacts/${user.userId}`]);
+    
   }
 
   fetchContactInfo(){
