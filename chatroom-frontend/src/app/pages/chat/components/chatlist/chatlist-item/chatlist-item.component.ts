@@ -6,6 +6,8 @@ import { UserProfileService } from '../../../../../services/user-profile.service
 import { MessageDto } from '../../../../../dtos/chat/message.dto';
 import { MessageService } from '../../../../../services/message.service';
 import { ErrorHandlerService } from '../../../../../services/error-handler.service';
+import { ChatMemberDto } from '../../../../../dtos/chat/chat-member.dto';
+import { UserDisplayDto } from '../../../../../dtos/chat/user-display.dto';
 
 @Component({
   selector: 'app-chatlist-item',
@@ -24,17 +26,17 @@ export class ChatlistItemComponent {
 
   @Input({required: true}) chat? : ChatDto;
 
-  receiver? : UserDto|null;
+  receiver? : UserDisplayDto|null;
   latestMessage? : MessageDto;
 
   getP2PReceiver(){
     this.chatService.getMembersByChatId(this.chat?.chatId!)
     .subscribe({
-      next :(members : UserDto[]) => {
+      next :(members : ChatMemberDto[]) => {
         const userID : number = this.userProfileService.getUserIdFromToken();
         this.receiver = members.filter(member => {
-          return member.userId != userID;
-        })[0]
+          return member.user.userId != userID;
+        })[0].user
       }
     })
   }

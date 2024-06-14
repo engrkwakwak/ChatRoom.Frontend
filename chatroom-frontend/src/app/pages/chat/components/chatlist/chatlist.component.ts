@@ -6,6 +6,8 @@ import { ChatService } from '../../../../services/chat.service';
 import { ChatParameters } from '../../../../dtos/shared/chat-parameters.dto';
 import { ChatDto } from '../../../../dtos/chat/chat.dto';
 import { ErrorHandlerService } from '../../../../services/error-handler.service';
+import { SignalRService } from '../../../../services/signal-r.service';
+import { ChatHubChatlistUpdateDto } from '../../../../dtos/chat/chathub-chatlist-update.dto';
 
 @Component({
   selector: 'app-chatlist',
@@ -18,7 +20,8 @@ export class ChatlistComponent {
     private router : Router,
     private userProfileSerview : UserProfileService,
     private chatService : ChatService,
-    private errorHandlerService : ErrorHandlerService
+    private errorHandlerService : ErrorHandlerService,
+    private signalRService : SignalRService
   ){}
 
   users: { name: string, title: string }[] = [
@@ -71,7 +74,6 @@ export class ChatlistComponent {
 
   search(ev : any){
     this.chatParams.Name = ev.target.value.trimEnd();
-    console.log(this.chatParams.Name)
     this.resetParams();
     this.fetchChats();
   }
@@ -83,5 +85,23 @@ export class ChatlistComponent {
 
   ngOnInit(){
     this.chatParams.UserId = this.userProfileSerview.getUserIdFromToken();
+
+    this.signalRService.getChatListNewMessage().subscribe((data : ChatHubChatlistUpdateDto) => {
+      this.chats.forEach((_chat : ChatDto, i:number) => {
+        if(_chat.chatId == data.chat.chatId){
+          console.log("gotchu")
+          this.chats.splice(i,1);
+        }
+      })
+      this.chats.unshift(data.chat)
+    });
+
+    this.signalRService.getChatlistDeletedChat().subscribe((data : ChatHubChatlistUpdateDto) => {
+      this.chats.forEach((_chat : ChatDto, i:number) => {
+        if(_chat.chatId == data.chat.chatId){
+          this.chats.splice(i,1);
+        }
+      })
+    });
   }
 }

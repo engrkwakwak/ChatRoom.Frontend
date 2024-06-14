@@ -18,5 +18,12 @@
             <br>
             <app-user-skeleton-placeholder />
         </nb-list-item>
+
+        <nb-list-item *ngIf="!fetchingChats && chats.length < 1">
+            <div class="">
+                <p class="text-center opacity-50">No Chats at the moment</p>
+            </div>
+        </nb-list-item>
+
     </nb-list>
 </div>

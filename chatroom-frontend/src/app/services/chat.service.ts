@@ -8,6 +8,9 @@ import { ChatDto } from '../dtos/chat/chat.dto';
 import { UserDto } from '../dtos/chat/user.dto';
 import { MessageForCreationDto } from '../dtos/chat/message-for-creation.dto';
 import { ChatParameters } from '../dtos/shared/chat-parameters.dto';
+import { ChatForCreationDto } from '../dtos/chat/chat-for-creation.dto';
+import { ChatMemberDto } from '../dtos/chat/chat-member.dto';
+import { ChatMemberForUpdateDto } from '../dtos/chat/chat-member-for-update.dto';
 
 @Injectable({
   providedIn: 'root'
@@ -32,8 +35,24 @@ export class ChatService {
     return this.http.get<ChatDto>(`${this.API_ENDPOINT}/chats/${chatId}`);
   }
 
-  getMembersByChatId(chatId : number) : Observable<UserDto[]> {
-    return this.http.get<UserDto[]>(`${this.API_ENDPOINT}/chats/${chatId}/members`);
+  getMembersByChatId(chatId : number) : Observable<ChatMemberDto[]> {
+    return this.http.get<ChatMemberDto[]>(`${this.API_ENDPOINT}/chats/${chatId}/members`);
+  }
+
+  createChat(route: string, chat: ChatForCreationDto): Observable<ChatDto> {
+    return this.http.post<ChatDto>(`${this.API_ENDPOINT}${route}`, chat);
+  }
+
+  updateLastSeenMessage(route: string, chatMember: ChatMemberForUpdateDto) : Observable<any>{
+    return this.http.put<any>(`${this.API_ENDPOINT}${route}`, chatMember);
+  }
+
+  deleteChatByChatId(chatId : number) : Observable<any> {
+    return this.http.delete<any>(`${this.API_ENDPOINT}/chats/${chatId}`);
+  }
+
+  canViewChat(chatId : number) : Observable<boolean> {
+    return this.http.get<boolean>(`${this.API_ENDPOINT}/chats/${chatId}/can-view`);
   }
 
   getChatListByUserId(chatParameters : ChatParameters) : Observable<ChatDto[]> {

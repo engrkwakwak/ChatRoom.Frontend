@@ -1,0 +1,16 @@
+@use "../../../../../themes.scss" as *;
+
+label{
+    display: block;
+    margin-bottom: 0.5rem;
+}
+textarea{
+    background-color: nb-theme(background-basic-color-2) !important;
+    width: 100%;
+    
+}
+
+button {
+    display: block;
+    margin: 1rem 0rem 0rem auto;
+}

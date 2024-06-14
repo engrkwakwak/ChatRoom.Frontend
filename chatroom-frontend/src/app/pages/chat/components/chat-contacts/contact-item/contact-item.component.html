@@ -12,7 +12,7 @@
             <p class="mb-0 username">&#64;{{ user.username }}</p>
         </div>
     </div>
-    <button class="col-auto" nbButton ghost  (click)="menu.toggle($event)">
+    <button class="col-auto" nbButton ghost  (click)="toggleMenu($event)">
         <nb-icon icon="more-horizontal"></nb-icon>
     </button>
     <p-menu #menu [popup]="true" [model]="contactInfo ? contactOptions : userOptions" />

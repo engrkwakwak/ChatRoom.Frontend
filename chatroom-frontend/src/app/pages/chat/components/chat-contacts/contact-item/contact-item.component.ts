@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { Component, EventEmitter, Input, Output, ViewChild } from '@angular/core';
 import { UserDto } from '../../../../../dtos/chat/user.dto';
 import { MenuItem } from 'primeng/api';
 import { ContactService } from '../../../../../services/contact.service';
@@ -10,6 +10,7 @@ import { ContactDto } from '../../../../../dtos/chat/contact.dto';
 import { UserProfileService } from '../../../../../services/user-profile.service';
 import { ChatService } from '../../../chat.service';
 import { Router } from '@angular/router';
+import { Menu } from 'primeng/menu';
 
 @Component({
   selector: 'app-contact-item',
@@ -36,6 +37,7 @@ export class ContactItemComponent {
     isEmailVerified: false
   }; 
   contactInfo : ContactDto | null = null;
+  @ViewChild("menu") menu? : Menu;
 
   userOptions : MenuItem[] = [
     {
@@ -122,6 +124,10 @@ export class ContactItemComponent {
 
   public loadDisplayPicture() : string {
     return this.userProfileService.loadDisplayPicture(this.user.displayPictureUrl!, this.user.displayName);
+  }
+
+  public toggleMenu(ev : any){
+    this.menu?.toggle(ev);
   }
 
   ngOnInit(){

@@ -9,6 +9,7 @@ import { UserProfileService } from '../../../../services/user-profile.service';
 import { UserDto } from '../../../../dtos/chat/user.dto';
 import { HttpErrorResponse } from '@angular/common/http';
 import { environment } from '../../../../../environments/environment.development';
+import { SignalRService } from '../../../../services/signal-r.service';
 
 @Component({
   selector: 'app-chat-sidebar',
@@ -26,7 +27,8 @@ export class ChatSidebarComponent implements OnInit {
     @Inject(NB_WINDOW) private window : Window,
     private nbWindowService: NbWindowService,
     private userService: UserProfileService,
-    private cdr: ChangeDetectorRef
+    private cdr: ChangeDetectorRef,
+    private signalRService: SignalRService
   ){}
 
   ngOnInit() {
@@ -105,8 +107,9 @@ export class ChatSidebarComponent implements OnInit {
   }
 
   logOut = () => {
+    this.signalRService.stopConnection();
     localStorage.removeItem("chatroom-token");
-    this.router.navigate(['/signin'])
+    this.router.navigate(['/signin']);
   }
 
   public loadDisplayPicture() : string {
@@ -117,5 +120,4 @@ export class ChatSidebarComponent implements OnInit {
     this.picturePath = newPath;
     this.cdr.detectChanges();
   }
-
 }
