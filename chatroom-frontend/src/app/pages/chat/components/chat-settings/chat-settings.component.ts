@@ -7,6 +7,8 @@ import { ChatService } from '../../../../services/chat.service';
 import { ErrorHandlerService } from '../../../../services/error-handler.service';
 import { ConfirmationDialogComponent } from '../confirmation-dialog/confirmation-dialog.component';
 import { Router } from '@angular/router';
+import { ChatMemberDto } from '../../../../dtos/chat/chat-member.dto';
+import { UserDisplayDto } from '../../../../dtos/chat/user-display.dto';
 
 @Component({
   selector: 'app-chat-settings',
@@ -24,7 +26,7 @@ export class ChatSettingsComponent {
   ){}
 
   @Input({required:true}) chat? : ChatDto|null = null;
-  @Input({required:true}) members : UserDto[] = [];
+  @Input({required:true}) members : ChatMemberDto[] = [];
   @Output() onChatDelete : EventEmitter<any> = new EventEmitter<any>();
 
   @ViewChild('deleteChatDialogComponent') deleteChatDialogComponent? : ConfirmationDialogComponent;
@@ -40,19 +42,19 @@ export class ChatSettingsComponent {
   }
 
   loadDisplayPicture(){
-    const receiver : UserDto|null = this.getReceiver();
+    const receiver : UserDisplayDto|null = this.getReceiver();
     if(this.chat?.chatTypeId == 1){
       return this.userProfileService.loadDisplayPicture(receiver?.displayPictureUrl!, receiver?.displayName!);
     }
     return this.userProfileService.loadDisplayPicture(this.chat?.displayPictureUrl!, this.chat?.chatName!);
   }
 
-  getReceiver() : UserDto|null{
+  getReceiver() : UserDisplayDto|null{
     const userId = this.userProfileService.getUserIdFromToken();
     if(this.chat?.chatTypeId == 1){
-      return this.members.filter((member : UserDto, i:number) => {
-        return member.userId != userId;
-      })[0]
+      return this.members.filter((member : ChatMemberDto, i:number) => {
+        return member.user.userId != userId;
+      })[0].user
     }
     return null;
   }

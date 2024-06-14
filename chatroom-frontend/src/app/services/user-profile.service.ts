@@ -5,6 +5,7 @@ import { UserForUpdateDto } from '../dtos/chat/user-for-update.dto';
 import { Observable } from 'rxjs';
 import { UserDto } from '../dtos/chat/user.dto';
 import { jwtDecode } from 'jwt-decode';
+import { urlencoded } from 'express';
 
 @Injectable({
   providedIn: 'root'
@@ -41,7 +42,7 @@ export class UserProfileService {
 
   public loadDisplayPicture(picturePath: string, name : string) : string {
     if(!picturePath || picturePath.trim().length === 0) {
-      return `https://api.dicebear.com/8.x/adventurer-neutral/svg?seed=${name}`
+      return encodeURI(`https://api.dicebear.com/8.x/adventurer-neutral/svg?seed=${name}`);
     }
     return picturePath;
   }

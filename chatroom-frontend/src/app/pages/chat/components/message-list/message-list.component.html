@@ -21,10 +21,10 @@
     <nb-chat-message *ngFor="let message of messages"
         type="app-message"
         [customMessageData]="message"
-        [reply]="this.currentUserId === message.sender?.userId"
+        [reply]="this.currentUserId === message.sender.userId"
         [sender]="message.sender.displayName"
         [date]="message.dateSent"
-        [avatar]="message.sender.displayPictureUrl">
+        [avatar]="loadProfilePicture(message)">
     </nb-chat-message>
 </nb-chat>
 
