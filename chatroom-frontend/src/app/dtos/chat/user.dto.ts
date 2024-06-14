@@ -8,4 +8,5 @@ export interface UserDto {
     isEmailVerified: boolean;
     displayPictureUrl?: string;
     dateCreated?: Date;
+
 }

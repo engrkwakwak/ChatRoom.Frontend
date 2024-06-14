@@ -1,6 +1,6 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { Subscription } from 'rxjs';
+import { Subscription, concat, tap } from 'rxjs';
 import { ChatService } from '../../../services/chat.service';
 import { AuthService } from '../../../services/auth.service';
 import { UserProfileService } from '../../../services/user-profile.service';
@@ -44,7 +44,8 @@ export class ChatViewComponent implements OnInit {
     private userProfileService: UserProfileService,
     private errorHandlerService: ErrorHandlerService,
     private messageService: MessageService,
-    private signalRService: SignalRService
+    private signalRService: SignalRService,
+    private router : Router
   ) {}
 
   ngOnInit() {
@@ -79,6 +80,32 @@ export class ChatViewComponent implements OnInit {
         console.log(`Last seen message of user ${chatMember.user.displayName} is updated to ${chatMember.lastSeenMessageId}`);
       }
     });
+
+    this.signalRService.getUpdatedMessage().subscribe((message:MessageDto) => {
+      if(message.chatId === this.chat?.chatId && this.userId != message.sender.userId){
+        this.messageListComponent.messages.forEach((_message : MessageDto, i:number) => {
+          if(_message.messageId == message.messageId){
+            this.messageListComponent.messages[i].content = message.content
+          }
+        });
+      }
+    });
+
+    this.signalRService.getDeletedMessage().subscribe((message:MessageDto) => {
+      if(message.chatId === this.chat?.chatId && this.userId != message.sender.userId){
+        this.messageListComponent.messages.forEach((_message : MessageDto, i:number) => {
+          if(_message.messageId == message.messageId){
+            this.messageListComponent.messages.splice(i,1);
+          }
+        });
+      }
+    });
+
+    this.signalRService.getDeletedChatId().subscribe((chatId:number) => {
+      if(chatId === this.chat?.chatId){
+        this.router.navigate(["/chat"]);
+      }
+    });
   }
 
   private initChatFromContacts() {
@@ -100,13 +127,11 @@ export class ChatViewComponent implements OnInit {
   }
 
   private initChatFromChatlist() {
-    this.chatService.getChatByChatId(this.chatId!).subscribe({
-      next: chat => {
+    this.chatService.getChatByChatId(this.chatId!)
+    .subscribe((chat :ChatDto) =>{
         this.chat = chat;
         this.loadChatMembers(this.chat.chatId);
         this.isInitialized = true;
-      },
-      error: err => this.errorHandlerService.handleError(err)
     });
   }
 

@@ -1,18 +1,23 @@
 <div id="chat-convo" class="h-100">
     <div class="chat-header">
+
        <app-chatlist-toggle ></app-chatlist-toggle>
-       <button nbButton ghost shape="semi-round" nbPopoverPlacement="bottom" nbPopover="Chat Settings" nbPopoverTrigger="hint" >
-              <nb-icon icon="settings"></nb-icon>
-       </button>
+
+       
        <span class="fw-bold">
               <app-avatar [src]="profileImageSrc" *ngIf="profileImageSrc"></app-avatar>
               {{ chat?.chatTypeId === 1 ? (members && members.length > 0 ? this.receiverName : 'Loading...') : (chat ? chat.chatName : "Loading...") }}
        </span>
+
+       <app-chat-settings [chat]="chat!" [members]="members!" />
+       
     </div>
     <div class=" align-items-center" id="chat-view-container">
+
       <ng-container *ngIf="isInitialized">
          <app-message-list (messageListUpdated)="onMessageListUpdated($event)" [currentUserId]="userId" [chatId]="chatId!" #messageList></app-message-list>
       </ng-container>
        <nb-chat-form (send)="sendMessage($event)"></nb-chat-form>
     </div>
+    
 </div>

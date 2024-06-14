@@ -1,3 +1,6 @@
+
+@use "../../../../themes.scss" as *;
+
 #chat-index-container{
     max-width:  800px;
     margin: 0rem auto;
@@ -14,6 +17,9 @@
     app-chatlist-toggle{
         position: fixed;
         top: 1rem;
+    }
+    h6{
+        color: nb-theme(color-basic-500);
     }
 }
 

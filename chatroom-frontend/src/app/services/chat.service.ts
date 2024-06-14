@@ -45,4 +45,12 @@ export class ChatService {
   updateLastSeenMessage(route: string, chatMember: ChatMemberForUpdateDto) : Observable<any>{
     return this.http.put<any>(`${this.API_ENDPOINT}${route}`, chatMember);
   }
+
+  deleteChatByChatId(chatId : number) : Observable<any> {
+    return this.http.delete<any>(`${this.API_ENDPOINT}/chats/${chatId}`);
+  }
+
+  canViewChat(chatId : number) : Observable<boolean> {
+    return this.http.get<boolean>(`${this.API_ENDPOINT}/chats/${chatId}/can-view`);
+  }
 }

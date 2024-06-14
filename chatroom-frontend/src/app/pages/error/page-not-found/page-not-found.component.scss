@@ -1,0 +1,16 @@
+@use "../../../../themes.scss" as *;
+
+.container{
+    height: 100%;
+    display: grid;
+    align-items: center;
+    .content{
+        h1 {
+            margin-bottom: 0px;
+        }
+        p {
+            color: nb-theme('color-basic-600');
+        }
+    }
+
+}

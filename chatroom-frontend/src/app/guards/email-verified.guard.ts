@@ -21,9 +21,13 @@ export class EmailVerifiedGuard  {
     return new Promise((resolve) => {
       this.authService.isEmailVerified(decodedToken.sub)
       .subscribe({
-        next: res => {
-          if(!res){
+        next: isVerified => {
+          if(!isVerified){
             this.router.navigate(["/email-verification"]);
+            resolve(false)
+          }
+          if(isVerified && route.routeConfig?.path === 'email-verification'){
+            this.router.navigate(["/chat"]);
             resolve(false)
           }
           resolve(true);

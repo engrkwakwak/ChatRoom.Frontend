@@ -2,8 +2,12 @@ import { Component, Input, OnInit, ViewChild, AfterViewInit, SimpleChanges, OnCh
 import { MessageDto } from '../../../../dtos/chat/message.dto';
 import { MessageParametersDto } from '../../../../dtos/shared/message-parameters.dto';
 import { HttpErrorResponse, HttpResponse } from '@angular/common/http';
-import { NbChatComponent } from '@nebular/theme';
+import { NbChatComponent, NbDialogConfig, NbDialogRef, NbDialogService, NbWindowService } from '@nebular/theme';
 import { MessageService } from '../../../../services/message.service';
+import { ErrorHandlerService } from '../../../../services/error-handler.service';
+import { UpdateMessageFormComponent } from '../update-message-form/update-message-form.component';
+import { ConfirmationDialogComponent } from '../confirmation-dialog/confirmation-dialog.component';
+import { UserProfileService } from '../../../../services/user-profile.service';
 
 @Component({
   selector: 'app-message-list',
@@ -12,16 +16,22 @@ import { MessageService } from '../../../../services/message.service';
 })
 export class MessageListComponent implements OnInit, OnChanges, AfterViewInit {
   messages: MessageDto[] = [];
+  selectedMessage : MessageDto|null = null;
   messageParameters: MessageParametersDto;
   isLoading: boolean = false;
   @Input({required: true}) currentUserId: number = 0;
   @Input({required: true}) chatId: number = 0;
   @ViewChild('chatContainer') chatContainer!: NbChatComponent;
+  @ViewChild('deleteMessageTemplate') deleteMessageTemplate : any;
+  @ViewChild('deleteDialogComponent') deleteDialogComponent? : ConfirmationDialogComponent;
+  @ViewChild('updateMessageComponent') updateMessageComponent? : UpdateMessageFormComponent;
   @Output() messageListUpdated = new EventEmitter<MessageDto>();
 
 
   constructor(
-    private messageService: MessageService
+    private messageService: MessageService,
+    private userProfileService : UserProfileService,
+    private errorHandlerService : ErrorHandlerService
   ) {
     this.messageParameters = {
       HasNext: false,
@@ -44,6 +54,41 @@ export class MessageListComponent implements OnInit, OnChanges, AfterViewInit {
       }
     });
   }
+
+  public onMessageUpdate(ev : MessageDto){
+    this.messages.forEach((message : MessageDto, i : number) => {
+      if(message.messageId == ev.messageId){
+        this.messages[i].content = ev.content
+      }
+    });
+  }
+
+  public confirmDeleteMessage(message : MessageDto){
+    this.selectedMessage = message;
+    this.deleteDialogComponent?.open();
+  }
+
+  public deleteMessage(message : MessageDto){
+    this.deleteDialogComponent?.close()
+    this.messageService.deleteMessage(message.messageId, message.chatId)
+    .subscribe({
+      next: _ => {
+        this.messages.forEach((message, i) => {
+          if(message.messageId == this.selectedMessage?.messageId){
+            this.messages.splice(i,1);
+          }
+        })
+      },
+      error: err => this.errorHandlerService.handleError(err)
+    })
+  }
+
+  public showUpdateMessageComponent(message:MessageDto){
+    this.selectedMessage = message
+    this.updateMessageComponent?.show();
+  }
+
+
 
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['chatId'] && !changes['chatId'].isFirstChange()) {
@@ -108,5 +153,9 @@ export class MessageListComponent implements OnInit, OnChanges, AfterViewInit {
   public pushMessage(message: MessageDto): void {
     this.messages.push(message);
     this.messageListUpdated.emit(message);
+  }
+
+  loadProfilePicture(message : MessageDto){
+    return this.userProfileService.loadDisplayPicture(message.sender.displayPictureUrl, message.sender.displayName);
   }
 }

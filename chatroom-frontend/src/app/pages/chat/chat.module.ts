@@ -2,7 +2,7 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ChatIndexComponent } from './chat-index/chat-index.component';
 import { ChatComponent } from './chat.component';
-import { NbActionsModule, NbButtonModule, NbCardModule, NbChatModule, NbContextMenuModule, NbDatepickerModule, NbIconModule, NbInputModule, NbLayoutModule, NbListModule, NbPopoverModule, NbTabsetModule, NbUserModule } from '@nebular/theme';
+import { NbActionsModule, NbButtonModule, NbCardModule, NbChatModule, NbContextMenuModule, NbDatepickerModule, NbDialogModule, NbDialogService, NbIconModule, NbInputModule, NbLayoutModule, NbListModule, NbPopoverModule, NbTabsetModule, NbUserModule } from '@nebular/theme';
 import { NbEvaIconsModule } from '@nebular/eva-icons';
 import { AppRoutingModule } from '../../app-routing.module';
 import { ChatlistComponent } from './components/chatlist/chatlist.component';
@@ -22,6 +22,9 @@ import { SkeletonModule } from 'primeng/skeleton';
 import { MenuModule } from 'primeng/menu';
 import { UserSkeletonPlaceholderComponent } from './components/user-skeleton-placeholder/user-skeleton-placeholder.component';
 import { MessageListComponent } from './components/message-list/message-list.component';
+import { ConfirmationDialogComponent } from './components/confirmation-dialog/confirmation-dialog.component';
+import { UpdateMessageFormComponent } from './components/update-message-form/update-message-form.component';
+import { ChatSettingsComponent } from './components/chat-settings/chat-settings.component';
 
 
 
@@ -38,7 +41,10 @@ import { MessageListComponent } from './components/message-list/message-list.com
     ContactItemComponent,
     AvatarComponent,
     UserSkeletonPlaceholderComponent,
-    MessageListComponent
+    MessageListComponent,
+    ConfirmationDialogComponent,
+    UpdateMessageFormComponent,
+    ChatSettingsComponent
   ],
   imports: [
     AppRoutingModule,
@@ -60,6 +66,7 @@ import { MessageListComponent } from './components/message-list/message-list.com
     NbCardModule,
     ReactiveFormsModule,
     NbDatepickerModule,
+    NbDialogModule.forRoot(),
     JwtModule.forRoot({
       config: {
         tokenGetter: tokenGetter,

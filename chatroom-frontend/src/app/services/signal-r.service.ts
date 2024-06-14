@@ -5,6 +5,7 @@ import { Observable, Subject } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import { ChatDto } from '../dtos/chat/chat.dto';
 import { ChatMemberDto } from '../dtos/chat/chat-member.dto';
+import { Message } from 'primeng/api';
 
 @Injectable({
   providedIn: 'root'
@@ -13,6 +14,9 @@ export class SignalRService {
   private hubConnection!: signalR.HubConnection;
   private token: string | null = null;
   private newMessageReceived = new Subject<MessageDto>();
+  private updatedMessage = new Subject<MessageDto>();
+  private deleteMessage = new Subject<MessageDto>();
+  private deleteChat = new Subject<number>();
   private lastSeenMessage = new Subject<ChatMemberDto>();
   private isConnected: boolean = false;
 
@@ -30,6 +34,18 @@ export class SignalRService {
         withCredentials: true
       })
       .build();
+
+    this.hubConnection.on('DeleteChat', (chatId : number) => {
+      this.deleteChat.next(chatId);
+    });
+
+    this.hubConnection.on('DeleteMessage', (message: MessageDto) => {
+      this.deleteMessage.next(message);
+    });
+
+    this.hubConnection.on('UpdateMessage', (message: MessageDto) => {
+      this.updatedMessage.next(message);
+    });
 
     this.hubConnection.on('ReceiveMessage', (message: MessageDto) => {
       this.newMessageReceived.next(message);
@@ -86,11 +102,23 @@ export class SignalRService {
     }
   }
 
+  public getDeletedChatId(): Observable<number> {
+    return this.deleteChat.asObservable();
+  }
+
   public getNewMessageReceived(): Observable<MessageDto> {
     return this.newMessageReceived.asObservable();
   }
 
   public getLastSeenMessage(): Observable<ChatMemberDto> {
     return this.lastSeenMessage.asObservable();
+  }
+
+  public getUpdatedMessage() : Observable<MessageDto> {
+    return this.updatedMessage.asObservable();
+  }
+
+  public getDeletedMessage() : Observable<MessageDto> {
+    return this.deleteMessage.asObservable();
   }
 }
