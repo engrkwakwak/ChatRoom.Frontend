@@ -1,167 +1,199 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { ActivatedRoute, Route, Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
+import { Subscription } from 'rxjs';
 import { ChatService } from '../../../services/chat.service';
 import { AuthService } from '../../../services/auth.service';
-import { concat, tap } from 'rxjs';
-import { UserDto } from '../../../dtos/chat/user.dto';
 import { UserProfileService } from '../../../services/user-profile.service';
 import { ErrorHandlerService } from '../../../services/error-handler.service';
 import { NbToastrService } from '@nebular/theme';
-import { NewChatMessageDto } from '../../../dtos/chat/new-chat-message.dto';
-import { ChatDto } from '../../../dtos/chat/chat.dto';
-import { MessageForCreationDto } from '../../../dtos/chat/message-for-creation.dto';
 import { MessageService } from '../../../services/message.service';
 import { MessageListComponent } from '../components/message-list/message-list.component';
+import { ChatDto } from '../../../dtos/chat/chat.dto';
+import { ChatForCreationDto } from '../../../dtos/chat/chat-for-creation.dto';
+import { UserDto } from '../../../dtos/chat/user.dto';
+import { MessageForCreationDto } from '../../../dtos/chat/message-for-creation.dto';
+import { ChatType, MessageType, Status } from '../../../shared/enums';
+import { SignalRService } from '../../../services/signal-r.service';
+import { MessageDto } from '../../../dtos/chat/message.dto';
+import { ChatMemberDto } from '../../../dtos/chat/chat-member.dto';
+import { ChatMemberForUpdateDto } from '../../../dtos/chat/chat-member-for-update.dto';
 
 @Component({
   selector: 'app-chat-view',
   templateUrl: './chat-view.component.html',
-  styleUrl: './chat-view.component.scss'
+  styleUrls: ['./chat-view.component.scss']
 })
-export class ChatViewComponent {
-  constructor(
-    private activatedRoute : ActivatedRoute,
-    private router : Router,
-    private chatService : ChatService,
-    private authService : AuthService,
-    private userProfileService : UserProfileService,
-    private errorHandlerService : ErrorHandlerService,
-    private messageService : MessageService,
-    private toast : NbToastrService
-  ){}
+export class ChatViewComponent implements OnInit {
+  @ViewChild('messageList') messageListComponent!: MessageListComponent;
 
-  @ViewChild('messageList') messageListComponent! : MessageListComponent
-  /* 
-    UserId of the current user on the session
-  */
   userId: number = 0;
-  /* 
-    ChatId of Chat usually initialize from the route
-  */
-  chatId : number | null = null;
-  /* 
-    Chat info of the conversation
-   */
-  chat : ChatDto|null = null;
-  /* 
-    List of members of the chat either a P2P chat or Group chat
-  */
-  members : UserDto[] = [];
-  /* 
-   UserId of the receiver for P2P chats
-  */
-  receiverId : number | null = null;
-  /* 
-    UserDto instance of the receiver
-  */
-  receiver : UserDto|null = null;
-  /* 
-    displayImage of the group chat or the receiver
-  */
-  profileImageSrc : string|null = null;
+  chatId: number = 0;
+  receiverId: number = 0;
+  receiverName: string = "";
+  chat: ChatDto | null = null;
+  members: ChatMemberDto[] = [];
+  profileImageSrc: string | null = null;
+  routeSub: Subscription | null = null;
+  navigationSub!: Subscription;
+  isInitialized: boolean = false;
 
+  constructor(
+    private activatedRoute: ActivatedRoute,
+    private chatService: ChatService,
+    private authService: AuthService,
+    private userProfileService: UserProfileService,
+    private errorHandlerService: ErrorHandlerService,
+    private messageService: MessageService,
+    private signalRService: SignalRService
+  ) {}
 
-  ngOnInit(){
+  ngOnInit() {
     this.activatedRoute.paramMap.subscribe({
       next: (paramMap) => {
-        this.chatId = parseInt(paramMap.get("id")!);
+        this.userId = this.userProfileService.getUserIdFromToken();
         if(paramMap.has("chatId")){
           this.chatId = parseInt(paramMap.get("chatId")!)
-          this.userId = this.userProfileService.getUserIdFromToken();
           this.initChatFromChatlist()
-        }
-        if(paramMap.has("userId")){
+        } else if(paramMap.has("userId")){
           this.receiverId = parseInt(paramMap.get("userId")!);
           this.initChatFromContacts();
         }
       }
     });
-  }
-
-  private initChatFromContacts(){
-    this.chatService.getP2PChatIdByUserIds(this.authService.getUserIdFromSession(), this.receiverId!)
-    .subscribe({
-      next : (res) => {
-        if(res){
-          this.router.navigate([`/chat/view/from-chatlist/${res}`])
+    this.signalRService.getNewMessageReceived().subscribe((message: MessageDto) => {
+      if(message.chatId === this.chat?.chatId && this.userId != message.sender.userId) {
+        const isDuplicate = this.messageListComponent.messages.some(existingMessage => existingMessage.messageId === message.messageId);
+        if(!isDuplicate){
+          this.messageListComponent.pushMessage(message);
         }
       }
     });
-    this.userProfileService.getUser(`/users/${this.receiverId}`)
-    .subscribe({
-      next: res => {
-        this.receiver = res;
-        this.profileImageSrc = this.userProfileService.loadDisplayPicture(res.displayPictureUrl!, res.displayName)
-      },
-      error : err => {
-        this.errorHandlerService.handleError(err)
+    this.signalRService.getLastSeenMessage().subscribe((chatMember: ChatMemberDto) => {
+      if(chatMember.chatId === this.chat?.chatId) {
+        let member = this.members.find(member => member.user.userId == chatMember.user.userId);
+        if(member){
+          this.reAssignSeenMessage(member, chatMember);
+          member = chatMember;
+        }
+
+        console.log(`Last seen message of user ${chatMember.user.displayName} is updated to ${chatMember.lastSeenMessageId}`);
       }
-    })
+    });
   }
 
-  private initChatFromChatlist(){
-    concat(
-      this.chatService.getChatByChatId(this.chatId!).pipe(
-        tap(chat => this.chat = chat)
-      ),
-      this.chatService.getMembersByChatId(this.chatId!).pipe(
-        tap(res => {
-          this.members = res;
-          if(this.chat?.chatTypeId == 1){
-            this.receiver = this.members.filter(member => {
-              return member.userId != this.authService.getUserIdFromSession()
-            })[0]
-            this.profileImageSrc = this.userProfileService.loadDisplayPicture(this.receiver.displayPictureUrl!, this.receiver.displayName)
-          }
-          else{
-            this.receiver = null;
-            this.profileImageSrc = this.userProfileService.loadDisplayPicture(this.chat?.displayPictureUrl!, this.chat?.chatName!)
-          }
-        })
-      )
-    ).subscribe();
-  }
-
-
-  public sendMessage(ev : any){
-    const message = ev.message;
-    if(!this.chatId || this.chatId == 0){
-      this.sendMessageForNewChat(message);
-    }
-    if(this.chatId && this.chatId > 0){
-      this.sendMessageForExistingChats(message)
-    }
-  }
-
-  private sendMessageForNewChat(content : string){
-    const message : NewChatMessageDto = {
-      Content: content,
-      SenderId : this.authService.getUserIdFromSession(),
-      ReceiverId : this.receiverId!
-    }
-    this.chatService.sendMessageForNewChat(message)
-    .subscribe({
-      next : _ => {
-        this.initChatFromContacts()
+  private initChatFromContacts() {
+    const chat: ChatForCreationDto = {
+      chatTypeId: ChatType.P2P,
+      statusId: Status.Active,
+      chatMemberIds: [this.authService.getUserIdFromSession(), this.receiverId!]
+    };
+    const route: string = `/chats`;
+    this.chatService.createChat(route, chat).subscribe({
+      next: res => {
+        this.chat = res;
+        this.chatId = res.chatId;
+        this.loadChatMembers(this.chat.chatId);
+        this.isInitialized = true;
       },
-      error : err => this.errorHandlerService.handleError(err)
-    })
+      error: err => this.errorHandlerService.handleError(err)
+    });
   }
 
-  private sendMessageForExistingChats(_message : string){  
-    const message : MessageForCreationDto = {
-      ChatId : this.chat?.chatId!,
-      Content : _message,
-      MsgTypeId : 1,
-      SenderId : this.authService.getUserIdFromSession()
-    }
-    this.messageService.sendMessage(message)
-    .subscribe({
-      next : message => {
-        this.messageListComponent.messages.push(message)
+  private initChatFromChatlist() {
+    this.chatService.getChatByChatId(this.chatId!).subscribe({
+      next: chat => {
+        this.chat = chat;
+        this.loadChatMembers(this.chat.chatId);
+        this.isInitialized = true;
       },
-      error : err => this.errorHandlerService.handleError(err)
-    })
+      error: err => this.errorHandlerService.handleError(err)
+    });
   }
 
+  private loadChatMembers(chatId: number) {
+    this.chatService.getMembersByChatId(chatId).subscribe({
+      next: members => {
+        this.members = members;
+        this.updateReceiverAndProfileImage();
+      },
+      error: err => this.errorHandlerService.handleError(err)
+    });
+  }
+
+  private updateReceiverAndProfileImage() {
+    if (this.chat?.chatTypeId === ChatType.P2P) {
+      const receiver = this.members.find(member => member.user.userId !== this.userId);
+      this.profileImageSrc = this.userProfileService.loadDisplayPicture(receiver!.user.displayPictureUrl!, receiver!.user.displayName);
+      this.receiverName = receiver?.user.displayName!;
+    } else {
+      this.profileImageSrc = this.userProfileService.loadDisplayPicture(this.chat?.displayPictureUrl!, this.chat?.chatName!);
+    }
+  }
+
+  public sendMessage(ev: any) {
+    const message: MessageForCreationDto = {
+      ChatId: this.chat?.chatId!,
+      Content: ev.message,
+      MsgTypeId: MessageType.Normal,
+      SenderId: this.authService.getUserIdFromSession()
+    };
+    this.messageService.sendMessage(message).subscribe({
+      next: message => {
+        this.messageListComponent.pushMessage(message);
+      },
+      error: err => this.errorHandlerService.handleError(err)
+    });
+  }
+
+  onMessageListUpdated(message: MessageDto) {
+    const sender = this.members.find(member => member.user.userId == this.userId);
+
+    if(sender!.lastSeenMessageId >= message.messageId){
+      return;
+    }
+
+    const chatMember: ChatMemberForUpdateDto = {
+      isAdmin: sender!.isAdmin,
+      lastSeenMessageId: message.messageId,
+      statusId: Status.Active
+    };
+
+    const route = `/chats/${this.chat!.chatId}/members/${sender!.user.userId}/last-seen-message`;
+    this.chatService.updateLastSeenMessage(route, chatMember).subscribe({
+      next: (_) => {
+        console.log(`Last seen successfully updated. ChatId: ${this.chat?.chatId}. userId: ${sender?.user.userId}`);
+      },
+      error: (err) => this.errorHandlerService.handleError(err) 
+    });
+  }
+
+  initializeReadReceipts(){
+    if(this.members){
+      this.members.forEach(member => {
+        this.assignSeenMessage(member);
+      });
+    }
+  }
+
+  reAssignSeenMessage(currentChatMember: ChatMemberDto, newChatMember: ChatMemberDto) {
+    const currentMessageAssignment = this.messageListComponent.messages.find(msg => msg.messageId === currentChatMember.lastSeenMessageId);
+    if(currentMessageAssignment){
+      const index = currentMessageAssignment.lastSeenUsers.findIndex(user => user.userId === currentChatMember.user.userId);
+      if (index >= 1){
+        currentMessageAssignment.lastSeenUsers.splice(index, 1);
+      }
+    }
+
+    const message = this.messageListComponent.messages.find(message => message.messageId === newChatMember.lastSeenMessageId);
+    if(message){
+      message.lastSeenUsers.push(newChatMember.user);
+    }
+  }
+
+  assignSeenMessage(chatMember: ChatMemberDto) {
+    const message = this.messageListComponent.messages.find(message => message.messageId === chatMember.lastSeenMessageId);
+    if(message){
+      message.lastSeenUsers.push(chatMember.user);
+    }
+  }
 }
