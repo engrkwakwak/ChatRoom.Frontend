@@ -1,7 +1,6 @@
 
 @use "../../../../../themes.scss" as *;
 .app-custom-message{
-    
     .content{
         display: flex;
         flex-direction: column;
@@ -16,6 +15,9 @@
                 background: nb-theme(color-primary-600);
                 border-radius: 0rem 0.5rem .5rem .5rem;
                 text-wrap: wrap !important;
+                // white-space: normal;
+                // width: 100% !important;
+                word-break: break-all;
             }
             &:hover .buttons{
                 position: initial;
@@ -37,15 +39,33 @@
             align-self: flex-end;
             display: flex;
             flex-direction: column;
+            // width: 400px !important;
             .message-text{
                 align-self: flex-end;
                 background: nb-theme(background-basic-color-2) !important;
                 border-radius: 0.5rem 0rem .5rem .5rem;
-    
+                // max-width: 100% !important;
+                // text-wrap: wrap !important;
             }
             .buttons{
                 align-self: flex-end;
             }
+        }
+    }
+
+    .typing-indicator{
+        opacity: .7;
+        transition-duration: 0.4s;
+        p{
+            margin: 0px;
+        }
+        &.shown {
+            // height: initial !important;
+            opacity: 0.7;
+        }
+        &.hidden {
+            opacity: 0;
+            // height: 0px !important;
         }
     }
 }

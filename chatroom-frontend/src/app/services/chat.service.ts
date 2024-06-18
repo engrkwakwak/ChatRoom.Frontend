@@ -7,6 +7,7 @@ import { MessageDto } from '../dtos/chat/message.dto';
 import { ChatDto } from '../dtos/chat/chat.dto';
 import { UserDto } from '../dtos/chat/user.dto';
 import { MessageForCreationDto } from '../dtos/chat/message-for-creation.dto';
+import { ChatParameters } from '../dtos/shared/chat-parameters.dto';
 import { ChatForCreationDto } from '../dtos/chat/chat-for-creation.dto';
 import { ChatMemberDto } from '../dtos/chat/chat-member.dto';
 import { ChatMemberForUpdateDto } from '../dtos/chat/chat-member-for-update.dto';
@@ -52,5 +53,20 @@ export class ChatService {
 
   canViewChat(chatId : number) : Observable<boolean> {
     return this.http.get<boolean>(`${this.API_ENDPOINT}/chats/${chatId}/can-view`);
+  }
+
+  getChatListByUserId(chatParameters : ChatParameters) : Observable<ChatDto[]> {
+    return this.http.get<ChatDto[]>(`${this.API_ENDPOINT}/chats/get-by-user-id`, {
+      params: {
+        PageSize : chatParameters.PageSize,
+        PageNumber : chatParameters.PageNumber,
+        UserId : chatParameters.UserId,
+        Name : chatParameters.Name
+      }
+    });
+  }
+
+  broadcastTypingStatus(chatId : number) :  Observable<null>{
+    return this.http.get<null>(`${this.API_ENDPOINT}/chats/${chatId}/typing`);
   }
 }

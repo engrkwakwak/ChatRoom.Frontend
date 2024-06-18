@@ -20,8 +20,10 @@ import { ContactItemComponent } from './components/chat-contacts/contact-item/co
 import { AvatarComponent } from './components/avatar/avatar.component';
 import { SkeletonModule } from 'primeng/skeleton';
 import { MenuModule } from 'primeng/menu';
+import { ProgressSpinnerModule  } from 'primeng/progressspinner';
 import { UserSkeletonPlaceholderComponent } from './components/user-skeleton-placeholder/user-skeleton-placeholder.component';
 import { MessageListComponent } from './components/message-list/message-list.component';
+import { ChatlistItemComponent } from './components/chatlist/chatlist-item/chatlist-item.component';
 import { ConfirmationDialogComponent } from './components/confirmation-dialog/confirmation-dialog.component';
 import { UpdateMessageFormComponent } from './components/update-message-form/update-message-form.component';
 import { ChatSettingsComponent } from './components/chat-settings/chat-settings.component';
@@ -42,6 +44,7 @@ import { ChatSettingsComponent } from './components/chat-settings/chat-settings.
     AvatarComponent,
     UserSkeletonPlaceholderComponent,
     MessageListComponent,
+    ChatlistItemComponent,
     ConfirmationDialogComponent,
     UpdateMessageFormComponent,
     ChatSettingsComponent
@@ -66,6 +69,7 @@ import { ChatSettingsComponent } from './components/chat-settings/chat-settings.
     NbCardModule,
     ReactiveFormsModule,
     NbDatepickerModule,
+    ProgressSpinnerModule,
     NbDialogModule.forRoot(),
     JwtModule.forRoot({
       config: {

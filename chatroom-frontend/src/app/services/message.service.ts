@@ -25,6 +25,10 @@ export class MessageService {
     return this.httpClient.post<MessageDto>(`${this.API_ENDPOINT}/chats/${message.ChatId}/messages`, message);
   }
 
+  public getLatestMessage(chatId : number) : Observable<MessageDto>{
+    return this.httpClient.get<MessageDto>(`${this.API_ENDPOINT}/chats/${chatId}/messages/latest`);
+  }
+  
   public deleteMessage(messageId : number, chatId : number) : Observable<any>{
     return this.httpClient.delete<any>(`${this.API_ENDPOINT}/chats/${chatId}/messages/${messageId}`);
   }

@@ -3,19 +3,22 @@
     This conponent should be  used inside an nb-list-item
  -->
 <div class="row align-items-center">
-    <div class="col-auto pe-0">
-        <app-avatar [src]="loadDisplayPicture()" />
-    </div>
-    <div class="col pe-0 name-container">
-        <p class="mb-0" >{{ user.displayName }}</p>
-        <p class="mb-0 username">&#64;{{ user.username }}</p>
+    <div class="col row align-items-center" (click)="viewMessages(user)">
+        <div class="pe-0 col-auto">
+            <app-avatar [src]="loadDisplayPicture()" />
+        </div>
+        <div class="name-container col">
+            <p class="mb-0" >{{ user.displayName }}</p>
+            <p class="mb-0 username">&#64;{{ user.username }}</p>
+        </div>
     </div>
     <button class="col-auto" nbButton ghost  (click)="toggleMenu($event)">
         <nb-icon icon="more-horizontal"></nb-icon>
     </button>
-
     <p-menu #menu [popup]="true" [model]="contactInfo ? contactOptions : userOptions" />
 </div>
+
+
 <!-- 
     Dont put any elements outside the div
  -->

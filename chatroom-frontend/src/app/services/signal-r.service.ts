@@ -6,6 +6,8 @@ import { HttpClient } from '@angular/common/http';
 import { ChatDto } from '../dtos/chat/chat.dto';
 import { ChatMemberDto } from '../dtos/chat/chat-member.dto';
 import { Message } from 'primeng/api';
+import { ChatHubChatlistUpdateDto } from '../dtos/chat/chathub-chatlist-update.dto';
+import { UserProfileService } from './user-profile.service';
 
 @Injectable({
   providedIn: 'root'
@@ -17,11 +19,15 @@ export class SignalRService {
   private updatedMessage = new Subject<MessageDto>();
   private deleteMessage = new Subject<MessageDto>();
   private deleteChat = new Subject<number>();
+  private isUserTyping = new Subject<ChatMemberDto>()
   private lastSeenMessage = new Subject<ChatMemberDto>();
+  private chatListNewMessage = new Subject<ChatHubChatlistUpdateDto>();
+  private chatListDeletedChat = new Subject<ChatHubChatlistUpdateDto>();
   private isConnected: boolean = false;
 
   constructor(
-    private http: HttpClient
+    private http: HttpClient,
+    private userProfileService : UserProfileService
   ) {
   }
 
@@ -34,6 +40,13 @@ export class SignalRService {
         withCredentials: true
       })
       .build();
+
+    this.hubConnection.on('UserTyping', (chatMember : ChatMemberDto) => {
+      if(chatMember.userId != this.userProfileService.getUserIdFromToken())
+      {
+        this.isUserTyping.next(chatMember)
+      }
+    });
 
     this.hubConnection.on('DeleteChat', (chatId : number) => {
       this.deleteChat.next(chatId);
@@ -57,6 +70,22 @@ export class SignalRService {
 
     this.hubConnection.on('NotifyMessageSeen', (chatMember: ChatMemberDto) => {
       this.lastSeenMessage.next(chatMember);
+    });
+
+    this.hubConnection.on('ChatlistNewMessage', (data: ChatHubChatlistUpdateDto) => {
+      data.chatMembers.forEach((member : ChatMemberDto) => {
+        if(this.userProfileService.getUserIdFromToken() == member.user.userId){
+          this.chatListNewMessage.next(data);
+        }
+      })
+    });
+
+    this.hubConnection.on('ChatlistDeleteChat', (data: ChatHubChatlistUpdateDto) => {
+      data.chatMembers.forEach((member : ChatMemberDto) => {
+        if(this.userProfileService.getUserIdFromToken() == member.user.userId){
+          this.chatListDeletedChat.next(data);
+        }
+      })
     });
 
     this.hubConnection.start()
@@ -120,5 +149,17 @@ export class SignalRService {
 
   public getDeletedMessage() : Observable<MessageDto> {
     return this.deleteMessage.asObservable();
+  }
+
+  public getChatListNewMessage() : Observable<ChatHubChatlistUpdateDto> {
+    return this.chatListNewMessage.asObservable();
+  }
+
+  public getChatlistDeletedChat() : Observable<ChatHubChatlistUpdateDto> {
+    return this.chatListDeletedChat.asObservable();
+  }
+
+  public getTypingUser() : Observable<ChatMemberDto> {
+    return this.isUserTyping.asObservable();
   }
 }

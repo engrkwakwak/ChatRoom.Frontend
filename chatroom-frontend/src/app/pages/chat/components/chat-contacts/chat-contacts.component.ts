@@ -56,7 +56,7 @@ export class ChatContactsComponent {
   }
 
   viewChat() {
-    if (this.chatModuleService.isMobile) {
+    if(this.chatModuleService.isMobile){
       this.hideContactList();
     }
     this.router.navigate(['/chat/view/1']);
