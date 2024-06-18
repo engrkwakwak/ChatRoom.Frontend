@@ -6,4 +6,5 @@ export interface ChatMemberDto {
     lastSeenMessageId: number;
     isAdmin: boolean;
     statusId: number;
+    userId : number
 }

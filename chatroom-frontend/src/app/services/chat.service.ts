@@ -65,4 +65,8 @@ export class ChatService {
       }
     });
   }
+
+  broadcastTypingStatus(chatId : number) :  Observable<null>{
+    return this.http.get<null>(`${this.API_ENDPOINT}/chats/${chatId}/typing`);
+  }
 }

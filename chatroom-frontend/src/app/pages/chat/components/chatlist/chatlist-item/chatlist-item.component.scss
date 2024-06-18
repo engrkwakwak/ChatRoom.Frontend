@@ -5,3 +5,9 @@
     color: nb-theme(color-basic-600);
     font-size: 12px;
 }
+.latest-message{
+    max-width: 250px !important;
+    overflow: hidden;
+    text-overflow: ellipsis;
+
+}

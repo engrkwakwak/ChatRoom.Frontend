@@ -19,6 +19,7 @@ export class SignalRService {
   private updatedMessage = new Subject<MessageDto>();
   private deleteMessage = new Subject<MessageDto>();
   private deleteChat = new Subject<number>();
+  private isUserTyping = new Subject<ChatMemberDto>()
   private lastSeenMessage = new Subject<ChatMemberDto>();
   private chatListNewMessage = new Subject<ChatHubChatlistUpdateDto>();
   private chatListDeletedChat = new Subject<ChatHubChatlistUpdateDto>();
@@ -39,6 +40,13 @@ export class SignalRService {
         withCredentials: true
       })
       .build();
+
+    this.hubConnection.on('UserTyping', (chatMember : ChatMemberDto) => {
+      if(chatMember.userId != this.userProfileService.getUserIdFromToken())
+      {
+        this.isUserTyping.next(chatMember)
+      }
+    });
 
     this.hubConnection.on('DeleteChat', (chatId : number) => {
       this.deleteChat.next(chatId);
@@ -149,5 +157,9 @@ export class SignalRService {
 
   public getChatlistDeletedChat() : Observable<ChatHubChatlistUpdateDto> {
     return this.chatListDeletedChat.asObservable();
+  }
+
+  public getTypingUser() : Observable<ChatMemberDto> {
+    return this.isUserTyping.asObservable();
   }
 }

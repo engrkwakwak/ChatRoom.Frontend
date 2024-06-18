@@ -8,6 +8,8 @@ import { ErrorHandlerService } from '../../../../services/error-handler.service'
 import { UpdateMessageFormComponent } from '../update-message-form/update-message-form.component';
 import { ConfirmationDialogComponent } from '../confirmation-dialog/confirmation-dialog.component';
 import { UserProfileService } from '../../../../services/user-profile.service';
+import { SignalRService } from '../../../../services/signal-r.service';
+import { ChatMemberDto } from '../../../../dtos/chat/chat-member.dto';
 
 @Component({
   selector: 'app-message-list',
@@ -21,6 +23,7 @@ export class MessageListComponent implements OnInit, OnChanges, AfterViewInit {
   isLoading: boolean = false;
   @Input({required: true}) currentUserId: number = 0;
   @Input({required: true}) chatId: number = 0;
+  typingIndicatorStatus: boolean = false;
   @ViewChild('chatContainer') chatContainer!: NbChatComponent;
   @ViewChild('deleteMessageTemplate') deleteMessageTemplate : any;
   @ViewChild('deleteDialogComponent') deleteDialogComponent? : ConfirmationDialogComponent;
@@ -31,7 +34,8 @@ export class MessageListComponent implements OnInit, OnChanges, AfterViewInit {
   constructor(
     private messageService: MessageService,
     private userProfileService : UserProfileService,
-    private errorHandlerService : ErrorHandlerService
+    private errorHandlerService : ErrorHandlerService,
+    private signalRService :SignalRService
   ) {
     this.messageParameters = {
       HasNext: false,
@@ -45,6 +49,14 @@ export class MessageListComponent implements OnInit, OnChanges, AfterViewInit {
   
   ngOnInit(): void {
     this.loadMessages();
+    this.signalRService.getTypingUser().subscribe((chatMember : ChatMemberDto) => {
+      if(this.chatId == chatMember.chatId){
+        this.typingIndicatorStatus = true;
+        setTimeout(() => {
+          this.typingIndicatorStatus = false;
+        }, 2000);
+      }
+    });
   }
 
   ngAfterViewInit(): void {
