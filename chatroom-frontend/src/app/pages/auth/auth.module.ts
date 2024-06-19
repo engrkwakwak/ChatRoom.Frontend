@@ -8,6 +8,9 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
 import { EmailVerificationComponent } from './email-verification/email-verification.component';
 import { EmailVerifiedComponent } from './email-verified/email-verified.component';
+import { ResetPasswordComponent } from './reset-password/reset-password.component';
+import { ChatModule } from '../chat/chat.module';
+import { ResetPasswordByEmailComponent } from './reset-password-by-email/reset-password-by-email.component';
 
 
 
@@ -17,9 +20,12 @@ import { EmailVerifiedComponent } from './email-verified/email-verified.componen
     SignupComponent,
     BrandNameComponent,
     EmailVerificationComponent,
-    EmailVerifiedComponent
+    EmailVerifiedComponent,
+    ResetPasswordComponent,
+    ResetPasswordByEmailComponent
   ],
   imports: [
+    ChatModule,
     CommonModule,
     NbLayoutModule,
     NbInputModule,

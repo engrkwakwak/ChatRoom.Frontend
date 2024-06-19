@@ -13,10 +13,25 @@ import { EmailVerificationComponent } from './pages/auth/email-verification/emai
 import { EmailVerifiedGuard } from './guards/email-verified.guard';
 import { EmailVerifiedComponent } from './pages/auth/email-verified/email-verified.component';
 import { ChatGuard } from './guards/chat.guard';
+import { ResetPasswordComponent } from './pages/auth/reset-password/reset-password.component';
+import { ResetPasswordByEmailComponent } from './pages/auth/reset-password-by-email/reset-password-by-email.component';
 
 const routes: Routes = [
   {path: "", component: HomeComponent},
   {path: "home", redirectTo: ""},
+  {
+    path: "auth", 
+    children : [
+      {
+        path: "reset-password",
+        component: ResetPasswordComponent
+      },
+      {
+        path: "reset-password/email",
+        component: ResetPasswordByEmailComponent
+      }
+    ]
+  },
   {path: "signin", component: SigninComponent, canActivate: [AuthGuard]},
   {path: "signup", component: SignupComponent, canActivate: [AuthGuard]},
   {path: "email-verification", component: EmailVerificationComponent, canActivate: [AuthGuard, EmailVerifiedGuard]}, 

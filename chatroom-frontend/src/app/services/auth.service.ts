@@ -8,6 +8,9 @@ import { AuthenticatedResponseDto } from '../dtos/auth/authenticated-response.dt
 import { response } from 'express';
 import { JWT_OPTIONS, JwtHelperService } from '@auth0/angular-jwt';
 import { jwtDecode } from 'jwt-decode';
+import { UpdatePasswordDto } from '../dtos/auth/update-password.dto';
+import { SignalRService } from './signal-r.service';
+import { Router } from '@angular/router';
 
 
 
@@ -25,7 +28,9 @@ export class AuthService {
 
   constructor(
     private http : HttpClient,
-    private jwtHelper : JwtHelperService
+    private jwtHelper : JwtHelperService,
+    private signalRService : SignalRService,
+    private router : Router
   ) { }
 
   private API_ENDPOINT = environment.apiUrl;
@@ -82,5 +87,22 @@ export class AuthService {
     });
   }
 
+  public sendPasswordResetLink(id : number): Observable<any> {
+    return this.http.post<any>(`${this.API_ENDPOINT}/auth/send-password-reset-link?userId=${id}`, {});
+  }
+
+  public sendPasswordResetLinkByEmail(email : string): Observable<any> {
+    return this.http.post<any>(`${this.API_ENDPOINT}/auth/send-password-reset-link-via-email?email=${email}`, {});
+  }
+
+  public updatePassword(updatePasswordDto : UpdatePasswordDto): Observable<any> {
+    return this.http.put<any>(`${this.API_ENDPOINT}/auth/update-password`, updatePasswordDto);
+  }
+
+  public logout(){
+    this.signalRService.stopConnection();
+    localStorage.removeItem("chatroom-token");
+    this.router.navigate(['/signin']);
+  }
 
 }
