@@ -3,10 +3,10 @@ import { UserService } from '../../../../services/user.service';
 import { ContactService } from '../../../../services/contact.service';
 import { AuthService } from '../../../../services/auth.service';
 import { Router } from '@angular/router';
-import { ChatService } from '../../chat.service';
 import { UserSearchParameters } from '../../../../dtos/shared/user-search-parameters.dto';
 import { ContactParameters } from '../../../../dtos/shared/contact-parameters.dto';
 import { UserDto } from '../../../../dtos/chat/user.dto';
+import { ChatService } from '../../../../services/chat.service';
 
 @Component({
   selector: 'app-chat-contacts',

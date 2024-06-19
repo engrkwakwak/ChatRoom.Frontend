@@ -2,7 +2,7 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ChatIndexComponent } from './chat-index/chat-index.component';
 import { ChatComponent } from './chat.component';
-import { NbActionsModule, NbButtonModule, NbCardModule, NbChatModule, NbContextMenuModule, NbDatepickerModule, NbDialogModule, NbDialogService, NbIconModule, NbInputModule, NbLayoutModule, NbListModule, NbPopoverModule, NbTabsetModule, NbUserModule } from '@nebular/theme';
+import { NbActionsModule, NbButtonModule, NbCardModule, NbChatModule, NbCheckboxModule, NbContextMenuModule, NbDatepickerModule, NbDialogModule, NbDialogService, NbIconModule, NbInputModule, NbLayoutModule, NbListModule, NbPopoverModule, NbTabsetModule, NbUserModule } from '@nebular/theme';
 import { NbEvaIconsModule } from '@nebular/eva-icons';
 import { AppRoutingModule } from '../../app-routing.module';
 import { ChatlistComponent } from './components/chatlist/chatlist.component';
@@ -27,6 +27,9 @@ import { ChatlistItemComponent } from './components/chatlist/chatlist-item/chatl
 import { ConfirmationDialogComponent } from './components/confirmation-dialog/confirmation-dialog.component';
 import { UpdateMessageFormComponent } from './components/update-message-form/update-message-form.component';
 import { ChatSettingsComponent } from './components/chat-settings/chat-settings.component';
+import { CreateGroupChatModalComponent } from './components/create-group-chat-modal/create-group-chat-modal.component';
+import { AddMembersModalComponent } from './components/add-members-modal/add-members-modal.component';
+import { UserItemComponent } from './components/user-item/user-item.component';
 
 
 
@@ -47,7 +50,10 @@ import { ChatSettingsComponent } from './components/chat-settings/chat-settings.
     ChatlistItemComponent,
     ConfirmationDialogComponent,
     UpdateMessageFormComponent,
-    ChatSettingsComponent
+    ChatSettingsComponent,
+    CreateGroupChatModalComponent,
+    AddMembersModalComponent,
+    UserItemComponent
   ],
   imports: [
     AppRoutingModule,
@@ -79,7 +85,9 @@ import { ChatSettingsComponent } from './components/chat-settings/chat-settings.
       }
     }),
     SkeletonModule,
-    MenuModule
+    MenuModule,
+    NbDialogModule.forRoot(),
+    NbCheckboxModule
   ]
 })
 export class ChatModule { }

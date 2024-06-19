@@ -1,6 +1,9 @@
 <div id="chatlist">
     <div class="chat-search-container">
         <input nbInput fullWidth type="text" placeholder="Search Messages" (input)="search($event)" />
+        <br/>
+        <br/>
+        <button nbButton outline shape="round" size="small" fullWidth status="success" (click)="openCreateGCFirstModal()">+ Create Group Chat</button>
     </div>
     
     <nb-list

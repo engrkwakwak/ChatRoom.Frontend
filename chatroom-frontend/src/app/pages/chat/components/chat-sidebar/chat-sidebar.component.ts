@@ -1,5 +1,4 @@
 import { ChangeDetectorRef, Component, Inject, OnInit } from '@angular/core';
-import { ChatService } from '../../chat.service';
 import { Router } from '@angular/router';
 import { NB_WINDOW, NbMenuService, NbWindowControlButtonsConfig, NbWindowService } from '@nebular/theme';
 import { filter, map } from 'rxjs/operators';
@@ -10,6 +9,7 @@ import { UserDto } from '../../../../dtos/chat/user.dto';
 import { HttpErrorResponse } from '@angular/common/http';
 import { environment } from '../../../../../environments/environment.development';
 import { SignalRService } from '../../../../services/signal-r.service';
+import { ChatService } from '../../../../services/chat.service';
 
 @Component({
   selector: 'app-chat-sidebar',

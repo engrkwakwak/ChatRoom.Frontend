@@ -1,0 +1,42 @@
+nb-card {
+    width: 500px; // Adjust the width as needed
+    height: 600px; // Adjust the height as needed
+    max-width: 90%; // Ensure it is responsive
+    max-height: 90%; // Ensure it is responsive
+    padding: 20px;
+    border-radius: 8px;
+    overflow: auto; // Ensure content is scrollable if it exceeds the height
+  }
+
+nb-card-header {
+    text-align: center; /* Center align text within the header */
+    width: 100%; /* Ensure header fills the width */
+}
+
+nb-card-footer {
+    text-align: right; /* Center align text within the header */
+    width: 100%; /* Ensure header fills the width */
+}
+
+nb-card-body {
+    display: flex;
+    flex-direction: column;
+}
+
+.group-name {
+    width: 100%;
+    margin-bottom: 10px; /* Adjust margin as needed */
+    text-align: center;
+}
+
+#groupName {
+    width: 100%;
+    box-sizing: border-box; /* Include padding and border in width calculation */
+    text-align: center; /* Center align text within the input */
+}
+
+.text-danger {
+    font-style: italic;
+    font-size: small;
+    color: red;
+}  

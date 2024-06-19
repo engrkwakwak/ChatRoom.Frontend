@@ -1,5 +1,4 @@
 import { Component } from '@angular/core';
-import { ChatService as chatModuleService } from '../../chat.service' ;
 import { Router } from '@angular/router';
 import { UserProfileService } from '../../../../services/user-profile.service';
 import { ChatService } from '../../../../services/chat.service';
@@ -8,6 +7,11 @@ import { ChatDto } from '../../../../dtos/chat/chat.dto';
 import { ErrorHandlerService } from '../../../../services/error-handler.service';
 import { SignalRService } from '../../../../services/signal-r.service';
 import { ChatHubChatlistUpdateDto } from '../../../../dtos/chat/chathub-chatlist-update.dto';
+import { NbDialogService } from '@nebular/theme';
+import { CreateGroupChatModalComponent } from '../create-group-chat-modal/create-group-chat-modal.component';
+import { ChatForCreationDto } from '../../../../dtos/chat/chat-for-creation.dto';
+import { AddMembersDialogContext } from '../../../../dtos/chat/add-members-dialog-context';
+import { AddMembersModalComponent } from '../add-members-modal/add-members-modal.component';
 
 @Component({
   selector: 'app-chatlist',
@@ -16,12 +20,12 @@ import { ChatHubChatlistUpdateDto } from '../../../../dtos/chat/chathub-chatlist
 })
 export class ChatlistComponent {
   constructor(
-    private chatModuleService : chatModuleService,
     private router : Router,
     private userProfileSerview : UserProfileService,
     private chatService : ChatService,
     private errorHandlerService : ErrorHandlerService,
-    private signalRService : SignalRService
+    private signalRService : SignalRService,
+    private dialogService: NbDialogService
   ){}
 
   users: { name: string, title: string }[] = [
@@ -42,11 +46,11 @@ export class ChatlistComponent {
   }
 
   hideChatlist(){
-    this.chatModuleService.hideChatlist()
+    this.chatService.hideChatlist()
   }
 
   viewChat(chat:ChatDto){
-    if(this.chatModuleService.isMobile){
+    if(this.chatService.isMobile){
       this.hideChatlist();
     }
     this.router.navigate([`/chat/view/from-chatlist/${chat.chatId}`], {
@@ -102,6 +106,37 @@ export class ChatlistComponent {
           this.chats.splice(i,1);
         }
       })
+    });
+  }
+
+  openCreateGCFirstModal(){
+    this.dialogService.open(CreateGroupChatModalComponent)
+      .onClose.subscribe(groupChatData => {
+        if(groupChatData) {
+          this.openCreateGCSecondModal(groupChatData);
+        }
+      })
+  }
+
+  openCreateGCSecondModal(chat: ChatForCreationDto) {
+    const context: AddMembersDialogContext = { chat };
+    this.dialogService.open(AddMembersModalComponent, { context })
+      .onClose.subscribe(updatedGroupChatData => {
+        if(updatedGroupChatData) {
+          this.createGroupChat(updatedGroupChatData);
+        }
+      });
+  }
+
+  createGroupChat(chat: ChatForCreationDto) {
+    const uri: string = `/chats`
+    this.chatService.createChat(uri, chat).subscribe({
+      next: (createdChat) => {
+        this.router.navigate([`/chat/view/from-chatlist/${createdChat.chatId}`]);
+      },
+      error: (err) => {
+        this.errorHandlerService.handleError(err);
+      }
     });
   }
 }
