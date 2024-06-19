@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { ChatService } from '../../chat.service';
+import { ChatService } from '../../../../services/chat.service';
 
 @Component({
   selector: 'app-chatlist-toggle',

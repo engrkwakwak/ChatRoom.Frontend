@@ -1,0 +1,44 @@
+<nb-card>
+    <nb-card-header>Add Members</nb-card-header>
+    <nb-card-body>
+        <form [formGroup]="searchForm">
+            <div class="form-group">
+                <input nbInput fullWidth shape="semi-round" status="info" id="search" formControlName="search"  placeholder="Search people" >
+            </div>
+        </form>
+        <br />
+        <nb-list
+            nbInfiniteList
+            [threshold]="100"
+            [throttleTime]="1000"
+            (bottomThreshold)="fetchNext()">
+            @for (user of selectedUsers; track user.userId){
+                <nb-list-item class="d-flex align-items-center mb-3" style="width: 100%;">
+                    <div class="p-2">
+                        <app-user-item [user]="user"></app-user-item>
+                    </div>
+                    <div class="ms-auto p-2">
+                        <nb-checkbox status="primary" checked="true" (checkedChange)="toggleUserSelection(user, $event)"></nb-checkbox>
+                    </div>
+                </nb-list-item>
+            }
+            
+            @for (user of filteredUsers; track user.userId){
+                <nb-list-item class="d-flex align-items-center mb-3" style="width: 100%;">
+                    <div class="p-2">
+                        <app-user-item [user]="user"></app-user-item>
+                    </div>
+                    <div class="ms-auto p-2">
+                        <nb-checkbox status="primary" (checkedChange)="toggleUserSelection(user, $event)"></nb-checkbox>
+                    </div>
+                </nb-list-item>
+            }
+        </nb-list>
+        
+        
+    </nb-card-body>
+    <nb-card-footer>
+      <button nbButton status="danger" (click)="dismiss()">Close</button>
+      <button nbButton status="primary" (click)="complete()">Complete</button>
+    </nb-card-footer>
+</nb-card>

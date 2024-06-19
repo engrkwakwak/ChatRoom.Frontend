@@ -8,9 +8,9 @@ import { NbGlobalPhysicalPosition, NbToastrService } from '@nebular/theme';
 import { ErrorHandlerService } from '../../../../../services/error-handler.service';
 import { ContactDto } from '../../../../../dtos/chat/contact.dto';
 import { UserProfileService } from '../../../../../services/user-profile.service';
-import { ChatService } from '../../../chat.service';
 import { Router } from '@angular/router';
 import { Menu } from 'primeng/menu';
+import { ChatService } from '../../../../../services/chat.service';
 
 @Component({
   selector: 'app-contact-item',

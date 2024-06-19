@@ -16,12 +16,33 @@ import { ChatMemberForUpdateDto } from '../dtos/chat/chat-member-for-update.dto'
   providedIn: 'root'
 })
 export class ChatService {
+  public isChatlistVisible : boolean = false;
+  public isMobile = true;
 
   constructor(
     private http : HttpClient
   ) { }
 
   private API_ENDPOINT = environment.apiUrl;
+
+  showChatlist(){
+    this.isChatlistVisible = true;
+  }
+
+  hideChatlist(){
+    this.isChatlistVisible = false;
+  }
+
+  showChatlistByScreenWidth(width:number){
+    if(width > 768){
+      this.showChatlist();
+      this.isMobile = false;
+    }
+    else{
+      this.hideChatlist();
+      this.isMobile = true;
+    }
+  }
 
   getP2PChatIdByUserIds(userId1 : number, userId2 : number) : Observable<number|null>{
     return this.http.get<number | null>(`${this.API_ENDPOINT}/chats/get-p2p-chatid-by-userids?userId1=${userId1}&userId2=${userId2}`);

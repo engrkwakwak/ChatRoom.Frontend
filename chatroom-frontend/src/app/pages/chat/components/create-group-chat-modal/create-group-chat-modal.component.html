@@ -1,0 +1,22 @@
+<nb-card>
+    <nb-card-header>Create Group Chat</nb-card-header>
+    <nb-card-body>
+        <form [formGroup]="groupChatForm">
+            <div class="form-group">
+                <input type="file" #file placeholder="Choose an image" accept="image/*" (change)="onFileChange($event)" style="display: none;">
+                <app-avatar class="d-block mb-2 mx-auto" style="width: fit-content;" [width]="70" [height]="70" [src]="loadDisplayImage()" (click)="file.click()"  />
+            </div>
+            <div class="form-group group-name">
+                <input nbInput fullWidth shape="semi-round" status="primary" id="groupName" formControlName="groupName"  placeholder="Group name">
+                <div>
+                    <em *ngIf="validateControl('groupName') && hasError('groupName', 'maxlength')" class="text-danger">*Group Name cannot be more than 50 characters long.</em>
+                    <em *ngIf="validateControl('groupName') && hasError('groupName', 'whitespace')" class="text-danger">*Group name is required.</em>
+                </div>
+            </div>
+        </form>
+    </nb-card-body>
+    <nb-card-footer>
+        <button nbButton status="danger" (click)="dismiss()">Close</button>
+        <button nbButton status="primary" (click)="continue()">Continue</button>
+    </nb-card-footer>
+</nb-card>
