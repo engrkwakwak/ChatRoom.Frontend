@@ -221,4 +221,8 @@ export class ChatViewComponent implements OnInit {
       message.lastSeenUsers.push(chatMember.user);
     }
   }
+
+  chatformInputChange(){
+    this.chatService.broadcastTypingStatus(this.chatId).subscribe();
+  }
 }

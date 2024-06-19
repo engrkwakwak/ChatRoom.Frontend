@@ -2,7 +2,7 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ChatIndexComponent } from './chat-index/chat-index.component';
 import { ChatComponent } from './chat.component';
-import { NbActionsModule, NbButtonModule, NbCardModule, NbChatModule, NbContextMenuModule, NbDatepickerModule, NbDialogModule, NbDialogService, NbIconModule, NbInputModule, NbLayoutModule, NbListModule, NbPopoverModule, NbSpinnerModule, NbTabsetModule, NbUserModule } from '@nebular/theme';
+import { NbActionsModule, NbButtonModule, NbCardModule, NbChatModule, NbCheckboxModule, NbContextMenuModule, NbDatepickerModule, NbDialogModule, NbDialogService, NbIconModule, NbInputModule, NbLayoutModule, NbListModule, NbPopoverModule, NbSpinnerModule, NbTabsetModule, NbUserModule } from '@nebular/theme';
 import { NbEvaIconsModule } from '@nebular/eva-icons';
 import { AppRoutingModule } from '../../app-routing.module';
 import { ChatlistComponent } from './components/chatlist/chatlist.component';
@@ -20,11 +20,16 @@ import { ContactItemComponent } from './components/chat-contacts/contact-item/co
 import { AvatarComponent } from './components/avatar/avatar.component';
 import { SkeletonModule } from 'primeng/skeleton';
 import { MenuModule } from 'primeng/menu';
+import { ProgressSpinnerModule  } from 'primeng/progressspinner';
 import { UserSkeletonPlaceholderComponent } from './components/user-skeleton-placeholder/user-skeleton-placeholder.component';
 import { MessageListComponent } from './components/message-list/message-list.component';
+import { ChatlistItemComponent } from './components/chatlist/chatlist-item/chatlist-item.component';
 import { ConfirmationDialogComponent } from './components/confirmation-dialog/confirmation-dialog.component';
 import { UpdateMessageFormComponent } from './components/update-message-form/update-message-form.component';
 import { ChatSettingsComponent } from './components/chat-settings/chat-settings.component';
+import { CreateGroupChatModalComponent } from './components/create-group-chat-modal/create-group-chat-modal.component';
+import { AddMembersModalComponent } from './components/add-members-modal/add-members-modal.component';
+import { UserItemComponent } from './components/user-item/user-item.component';
 
 
 
@@ -42,9 +47,13 @@ import { ChatSettingsComponent } from './components/chat-settings/chat-settings.
     AvatarComponent,
     UserSkeletonPlaceholderComponent,
     MessageListComponent,
+    ChatlistItemComponent,
     ConfirmationDialogComponent,
     UpdateMessageFormComponent,
-    ChatSettingsComponent
+    ChatSettingsComponent,
+    CreateGroupChatModalComponent,
+    AddMembersModalComponent,
+    UserItemComponent
   ],
   imports: [
     AppRoutingModule,
@@ -66,6 +75,7 @@ import { ChatSettingsComponent } from './components/chat-settings/chat-settings.
     NbCardModule,
     ReactiveFormsModule,
     NbDatepickerModule,
+    ProgressSpinnerModule,
     NbDialogModule.forRoot(),
     JwtModule.forRoot({
       config: {
@@ -75,7 +85,9 @@ import { ChatSettingsComponent } from './components/chat-settings/chat-settings.
       }
     }),
     SkeletonModule,
-    MenuModule
+    MenuModule,
+    NbDialogModule.forRoot(),
+    NbCheckboxModule
   ]
 })
 export class ChatModule { }

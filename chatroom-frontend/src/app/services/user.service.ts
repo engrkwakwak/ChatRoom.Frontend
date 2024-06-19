@@ -3,7 +3,7 @@ import { environment } from '../../environments/environment';
 import { Observable } from 'rxjs';
 import { UserDto } from '../dtos/chat/user.dto';
 // import { UserSearchParameters } from '../dtos/shared/user-search-parameters.dto.ts';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpResponse } from '@angular/common/http';
 import { UserSearchParameters } from '../dtos/shared/user-search-parameters.dto';
 
 @Injectable({
@@ -23,5 +23,10 @@ export class UserService {
       PageSize : parameter.PageSize,
       PageNumber : parameter.PageNumber
     }});
+  }
+
+  public getUsers(route: string): Observable<HttpResponse<UserDto[]>> {
+    const url = `${this.API_ENDPOINT}${route}`;
+    return this.http.get<UserDto[]>(url, {observe: "response"});
   }
 }

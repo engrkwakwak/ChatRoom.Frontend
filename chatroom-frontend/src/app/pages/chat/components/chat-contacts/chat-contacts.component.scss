@@ -24,12 +24,6 @@
     .search-container{
         padding: 19px 1rem;
     }
-    #loader {
-        position: relative !important;
-        margin: 0px;
-        height: 350px;
-    }
-    
 
     .contacts-list-container{
         .people-title,.contact-title{
@@ -39,8 +33,8 @@
         nb-card.user-container{
             margin: 0px;
             padding: 0rem ;
-            height: 50%;
-            max-height: 50%; 
+            height: 48%;
+            max-height: 48%; 
             background-color: nb-theme(background-basic-color-4 );
             nb-list{
                 @include scrollbar;

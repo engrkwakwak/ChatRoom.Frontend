@@ -5,7 +5,7 @@
 
        
        <span class="fw-bold">
-              <app-avatar [src]="profileImageSrc" *ngIf="profileImageSrc"></app-avatar>
+              <app-avatar [src]="profileImageSrc" *ngIf="profileImageSrc" ></app-avatar>
               {{ chat?.chatTypeId === 1 ? (members && members.length > 0 ? this.receiverName : 'Loading...') : (chat ? chat.chatName : "Loading...") }}
        </span>
 
@@ -17,7 +17,8 @@
       <ng-container *ngIf="isInitialized">
          <app-message-list (messageListUpdated)="onMessageListUpdated($event)" [currentUserId]="userId" [chatId]="chatId!" #messageList></app-message-list>
       </ng-container>
-       <nb-chat-form (send)="sendMessage($event)"></nb-chat-form>
+      
+       <nb-chat-form (send)="sendMessage($event)" (onInputChange)="chatformInputChange()"></nb-chat-form>
     </div>
     
 </div>

@@ -17,6 +17,14 @@
         </div>
     </div>
 
+    <div *nbCustomMessage="'app-typing';noStyles:true" class="app-custom-message">
+        <div class="typing-indicator {{ typingIndicatorStatus ? 'shown' : 'hidden' }}">
+            <p class="text-center">
+                Someones typing...
+            </p>
+        </div>
+    </div>
+
 
     <nb-chat-message *ngFor="let message of messages"
         type="app-message"
@@ -26,6 +34,10 @@
         [date]="message.dateSent"
         [avatar]="loadProfilePicture(message)">
     </nb-chat-message>
+    
+    <nb-chat-message type="app-typing" [reply]="true"> </nb-chat-message>
+
+
 </nb-chat>
 
 <app-confirmation-dialog 

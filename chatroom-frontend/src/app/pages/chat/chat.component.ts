@@ -1,8 +1,8 @@
 import { Component, HostListener, ViewChild } from '@angular/core';
-import { ChatService } from './chat.service';
 import { SignalRService } from '../../services/signal-r.service';
 import { tokenGetter } from '../../app.module';
 import { UserProfileService } from '../../services/user-profile.service';
+import { ChatService } from '../../services/chat.service';
 
 @Component({
   selector: 'app-chat',
