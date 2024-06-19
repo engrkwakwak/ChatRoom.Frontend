@@ -29,6 +29,11 @@
                         <div *ngIf="loginForm.controls['password'].errors?.['required'] && loginForm.controls['password'].touched" class="text-danger">*Password is required.</div>
                         <div *ngIf="loginForm.controls['password'].errors?.['serverError']" class="text-danger">{{ loginForm.controls['password'].errors?.['serverError'] }}</div>
                     </div>
+
+                    <button nbButton ghost size="small" (click)="showResetPassword()">
+                        <nb-icon icon="question-mark-circle"></nb-icon>
+                        Reset Password
+                    </button>
                     <div *ngIf="invalidLogin" class="alert alert-danger">Invalid username or password.</div>
                 </form>
             </nb-card-body>
@@ -47,3 +52,4 @@
         </nb-card>
     </nb-layout-column>
 </nb-layout>
+

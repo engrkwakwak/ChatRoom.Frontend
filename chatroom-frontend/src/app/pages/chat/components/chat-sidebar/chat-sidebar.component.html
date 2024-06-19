@@ -20,4 +20,12 @@
             <app-chat-contacts />
         </nb-tab>
     </nb-tabset>
+
+
+    <app-confirmation-dialog 
+        #changePasswordDialog 
+        message="We will send a password reset link to your email. Do you want to continue?"  
+        title="Reset Password"
+        status="primary"
+        (onContinue)="sendPasswordResetLink()" />
 </div>

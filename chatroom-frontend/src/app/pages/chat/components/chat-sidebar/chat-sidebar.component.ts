@@ -1,6 +1,6 @@
-import { ChangeDetectorRef, Component, Inject, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, Inject, OnInit, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
-import { NB_WINDOW, NbMenuService, NbWindowControlButtonsConfig, NbWindowService } from '@nebular/theme';
+import { NB_WINDOW, NbDialogService, NbMenuService, NbToastrService, NbWindowControlButtonsConfig, NbWindowService } from '@nebular/theme';
 import { filter, map } from 'rxjs/operators';
 import { UserProfileComponent } from '../user-profile/user-profile.component';
 import { jwtDecode } from 'jwt-decode'; 
@@ -9,6 +9,9 @@ import { UserDto } from '../../../../dtos/chat/user.dto';
 import { HttpErrorResponse } from '@angular/common/http';
 import { environment } from '../../../../../environments/environment.development';
 import { SignalRService } from '../../../../services/signal-r.service';
+import { ConfirmationDialogComponent } from '../confirmation-dialog/confirmation-dialog.component';
+import { AuthService } from '../../../../services/auth.service';
+import { ErrorHandlerService } from '../../../../services/error-handler.service';
 import { ChatService } from '../../../../services/chat.service';
 
 @Component({
@@ -19,6 +22,7 @@ import { ChatService } from '../../../../services/chat.service';
 export class ChatSidebarComponent implements OnInit {
   username: string = '';
   picturePath: string = '';
+  @ViewChild('changePasswordDialog') changePasswordDialog? : ConfirmationDialogComponent;
 
   constructor(
     private chatService : ChatService,
@@ -26,9 +30,12 @@ export class ChatSidebarComponent implements OnInit {
     private nbMenuService: NbMenuService,
     @Inject(NB_WINDOW) private window : Window,
     private nbWindowService: NbWindowService,
-    private userService: UserProfileService,
+    private userProfileService: UserProfileService,
     private cdr: ChangeDetectorRef,
-    private signalRService: SignalRService
+    private signalRService: SignalRService,
+    private authService : AuthService,
+    private errorHandlerService : ErrorHandlerService,
+    private nbToastService : NbToastrService
   ){}
 
   ngOnInit() {
@@ -41,8 +48,11 @@ export class ChatSidebarComponent implements OnInit {
         if(title === 'Logout'){
           this.logOut();
         }
-        else if(title === 'Profile'){
+        if(title === 'Profile'){
           this.viewUserProfile();
+        }
+        if(title === 'Change Password'){
+          this.changePassword();
         }
       });
       this.loadDisplayName();
@@ -58,6 +68,7 @@ export class ChatSidebarComponent implements OnInit {
 
   userActionItems: {title: string}[] = [
     { title: 'Profile' },
+    { title: 'Change Password' },
     { title: 'Logout' }
   ]
 
@@ -87,6 +98,26 @@ export class ChatSidebarComponent implements OnInit {
     });
   }
 
+  changePassword(){
+    this.changePasswordDialog?.open();
+  }
+
+  sendPasswordResetLink(){
+    this.changePasswordDialog!.loading = true;
+    this.authService.sendPasswordResetLink(this.userProfileService.getUserIdFromToken())
+    .subscribe({
+      next : _ =>  {
+        this.changePasswordDialog?.close()
+        this.nbToastService.success("Password reset link was sent successfully. Please check your email.", "Email Sent Successfully",
+        {
+          duration : 4000
+        });
+      },
+      error : err => this.errorHandlerService.handleError(err),
+      complete : () => this.changePasswordDialog!.loading = false
+    })
+  }
+
   private loadDisplayName() : void {
     var userId: number = 0;
     const token = localStorage.getItem('chatroom-token');
@@ -96,7 +127,7 @@ export class ChatSidebarComponent implements OnInit {
     }
     const userByIdUri: string = `/users/${userId}`;
   
-    this.userService.getUser(userByIdUri)
+    this.userProfileService.getUser(userByIdUri)
     .subscribe({
       next: (userEntity: UserDto) => {
         this.username = userEntity.displayName;
@@ -113,7 +144,7 @@ export class ChatSidebarComponent implements OnInit {
   }
 
   public loadDisplayPicture() : string {
-    return this.userService.loadDisplayPicture(this.picturePath, this.username);
+    return this.userProfileService.loadDisplayPicture(this.picturePath, this.username);
   }
 
   public updatePicturePath(newPath: string): void{

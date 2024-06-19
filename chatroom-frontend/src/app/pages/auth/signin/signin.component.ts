@@ -1,10 +1,7 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
-import { SigninDto } from '../../../dtos/auth/signin.dto';
 import { AuthService } from '../../../services/auth.service';
-import { AuthenticatedResponseDto } from '../../../dtos/auth/authenticated-response.dto';
-import { HttpErrorResponse } from '@angular/common/http';
 
 @Component({
   selector: 'app-signin',
@@ -19,7 +16,7 @@ export class SigninComponent {
   constructor(
     private router : Router,
     private fb : FormBuilder,
-    private auth : AuthService
+    private authService : AuthService
   ){
     this.loginForm = this.fb.group({
       username: ['', [Validators.required, this.usernameValidator]],
@@ -38,7 +35,7 @@ export class SigninComponent {
   onSubmit(): void {
     if (this.loginForm.valid) {
       const { username, password } = this.loginForm.value;
-      this.auth.signin({ username, password }).subscribe({
+      this.authService.signin({ username, password }).subscribe({
         next: ({ token }) => {
           localStorage.setItem('chatroom-token', token);
           this.invalidLogin = false;
@@ -49,6 +46,10 @@ export class SigninComponent {
     } else {
       this.markAllFieldsAsTouched();
     }
+  }
+
+  showResetPassword(){
+    this.router.navigate([ '/auth/reset-password/email' ]);
   }
 
   private handleLoginError(err: any): void {
@@ -80,4 +81,6 @@ export class SigninComponent {
       return value.length <= 20 ? null : { maxLength: true };
     }
   }
+
+  
 }

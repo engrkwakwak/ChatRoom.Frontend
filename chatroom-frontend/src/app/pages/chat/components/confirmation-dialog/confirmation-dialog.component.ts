@@ -19,6 +19,7 @@ export class ConfirmationDialogComponent {
   @Input({required :true}) title : string|null = null; 
   @Output() onContinue : EventEmitter<any> = new EventEmitter<any>();
   @ViewChild('dialogTemplate') dialogTemplate? : TemplateRef<any>
+  loading : boolean = false;
   dialogRef? : NbDialogRef<any>
 
 
