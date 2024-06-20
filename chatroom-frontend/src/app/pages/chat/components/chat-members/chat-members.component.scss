@@ -1,0 +1,22 @@
+@use "../../../../../themes.scss" as *;
+
+nb-card{
+    width: 600px;
+    max-width: 100vw;
+    nb-card-body{
+        padding: 0rem;
+        .search-form{
+            padding: 0.5rem 1rem;
+            input{
+                background: nb-theme(background-basic-color-2);
+            }
+        }
+        nb-list{
+            nb-list-item{
+                border: none;
+                padding: 0.5rem 1rem;
+                margin: 0rem;
+            }
+        }
+    }
+}

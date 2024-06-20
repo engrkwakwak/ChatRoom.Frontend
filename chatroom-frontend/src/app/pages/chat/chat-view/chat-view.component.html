@@ -9,7 +9,7 @@
               {{ chat?.chatTypeId === 1 ? (members && members.length > 0 ? this.receiverName : 'Loading...') : (chat ? chat.chatName : "Loading...") }}
        </span>
 
-       <app-chat-settings [chat]="chat!" [members]="members!" />
+       <app-chat-settings [chat]="chat!" [members]="members!"  />
        
     </div>
     <div class=" align-items-center" id="chat-view-container">
@@ -20,5 +20,8 @@
       
        <nb-chat-form (send)="sendMessage($event)" (onInputChange)="chatformInputChange()"></nb-chat-form>
     </div>
+
     
-</div>
+   </div>
+
+  

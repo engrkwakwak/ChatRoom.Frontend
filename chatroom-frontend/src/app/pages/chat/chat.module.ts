@@ -30,6 +30,8 @@ import { ChatSettingsComponent } from './components/chat-settings/chat-settings.
 import { CreateGroupChatModalComponent } from './components/create-group-chat-modal/create-group-chat-modal.component';
 import { AddMembersModalComponent } from './components/add-members-modal/add-members-modal.component';
 import { UserItemComponent } from './components/user-item/user-item.component';
+import { ChatMembersComponent } from './components/chat-members/chat-members.component';
+import { ChatMemberItemComponent } from './components/chat-member-item/chat-member-item.component';
 
 
 
@@ -53,7 +55,9 @@ import { UserItemComponent } from './components/user-item/user-item.component';
     ChatSettingsComponent,
     CreateGroupChatModalComponent,
     AddMembersModalComponent,
-    UserItemComponent
+    UserItemComponent,
+    ChatMembersComponent,
+    ChatMemberItemComponent
   ],
   imports: [
     AppRoutingModule,

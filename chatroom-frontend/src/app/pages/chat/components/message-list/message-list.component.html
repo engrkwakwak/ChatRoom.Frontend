@@ -1,5 +1,6 @@
 <nb-chat #chatContainer>
     <div *nbCustomMessage="'app-message'; let message;noStyles:true" class="app-custom-message">
+
         <div [class]="currentUserId == message.sender?.userId ? 'content reply' : 'content'">
             <div class="message-con">
                 <div class="message-text">
@@ -24,15 +25,22 @@
             </p>
         </div>
     </div>
-
+    
+    <div *nbCustomMessage="'app-notif';noStyles:true;let message" class="app-custom-message">
+        <div class="">
+            <p class="text-center">
+                <span class="opacity-75">{{ message.dateSent | date:"LLL d, YYYY h:mm a" }}</span>  {{ message.content }}
+            </p>
+        </div>
+    </div>
 
     <nb-chat-message *ngFor="let message of messages"
-        type="app-message"
+        [type]="message.messageType.msgTypeId == 1 ? 'app-message' : 'app-notif' "
         [customMessageData]="message"
-        [reply]="this.currentUserId === message.sender.userId"
-        [sender]="message.sender.displayName"
-        [date]="message.dateSent"
-        [avatar]="loadProfilePicture(message)">
+        [reply]="message.messageType.msgTypeId == 1 ? this.currentUserId === message.sender.userId : true"
+        [avatar]="loadProfilePicture(message)"
+        [sender]="message.messageType.msgTypeId == 1 ? message.sender.displayName : ''"
+        >
     </nb-chat-message>
     
     <nb-chat-message type="app-typing" [reply]="true"> </nb-chat-message>

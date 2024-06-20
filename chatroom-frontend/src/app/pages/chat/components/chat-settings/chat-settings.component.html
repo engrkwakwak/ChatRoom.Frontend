@@ -12,15 +12,14 @@
         <app-avatar [src]="loadDisplayPicture()" [width]="100" [height]="100" />
         <h6>{{ chat?.chatTypeId == 2 ? chat?.chatName : getReceiver()?.displayName }}</h6>
         <div class="action-buttons">
+            <nb-list *ngIf="chat?.chatTypeId == 2">
+                <nb-list-item (click)="showMembersDialog()">
+                    <nb-icon icon="people" class="me-2"></nb-icon>
+                    144 Members
+                </nb-list-item>
+            </nb-list>
+
             <nb-list>
-                <nb-list-item >
-                    <nb-icon icon="brush" class="me-2"></nb-icon>
-                    Action 1
-                </nb-list-item>
-                <nb-list-item >
-                    <nb-icon icon="brush" class="me-2"></nb-icon>
-                    Action 2
-                </nb-list-item>
                 <nb-list-item class="delete-chat-item" (click)="confirmDeleteChat()">
                     <nb-icon icon="trash-2" class="me-2"></nb-icon>
                     Delete Chat
@@ -37,3 +36,5 @@
     status="danger"
     message="Are you sure you want to delete this whole conversation?"
     (onContinue)="deleteChat()" />
+
+<app-chat-members #chatMembersRef [chat]="chat!" />

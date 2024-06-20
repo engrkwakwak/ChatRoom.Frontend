@@ -1,0 +1,37 @@
+
+<div class="con">
+    <div  *ngIf="type=='member'; else userTemplateRef">
+        <div class="row justify-content-between align-items-center m-0">
+            <div class="col-auto p-0">
+                <app-avatar [src]="loadProfilePicture()"  />
+            </div>
+            <div class="col">
+                <p class="mb-0">{{ member!.user.displayName! }} {{ userId && userId == member!.user.userId ? '(You)' : '' }} </p>
+                <p *ngIf="member!.isAdmin" class="mb-0 opacity-50">Admin</p>
+            </div>
+            <div class="col-auto p-0">
+                <button nbButton size="small" ghost [nbContextMenu]="memberOptions" nbContextMenuTag="member-actions-menu" >
+                    <nb-icon icon="more-horizontal"></nb-icon>
+                </button>
+            </div>
+        </div>
+    </div>
+    <ng-template #userTemplateRef>
+        <div class="row justify-content-between align-items-center m-0">
+            <div class="col-auto p-0">
+                <app-avatar [src]="loadProfilePicture()"  />
+            </div>
+            <div class="col">
+                <p class="mb-0">{{ user?.displayName! }}</p>
+                <!-- <p *ngIf="member!.isAdmin" class="mb-0 opacity-50">Admin</p> -->
+            </div>
+            <div class="col-auto p-0">
+                <button nbButton size="small" status="primary" class="add-button">
+                    <nb-icon icon="person-add"></nb-icon>
+                    Add
+                </button>
+            </div>
+        </div>
+    </ng-template>
+</div>
+

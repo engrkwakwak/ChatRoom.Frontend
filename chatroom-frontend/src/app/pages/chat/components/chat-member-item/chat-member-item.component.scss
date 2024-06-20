@@ -1,0 +1,18 @@
+@use "../../../../../themes.scss" as *;
+
+
+.con{
+    padding: 0.5rem;
+    .add-button{
+        visibility: hidden;
+    }
+    &:hover {
+        background-color: nb-theme(background-basic-color-2);
+        .add-button{
+            visibility: visible;
+        }
+    }
+}
+p-menu{
+    z-index: 100 !important;
+}

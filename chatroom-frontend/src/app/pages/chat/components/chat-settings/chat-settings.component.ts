@@ -1,7 +1,6 @@
 import { Component, ElementRef, EventEmitter, Input, Output, TemplateRef, ViewChild } from '@angular/core';
 import { NbDialogRef, NbDialogService, NbWindowService } from '@nebular/theme';
 import { ChatDto } from '../../../../dtos/chat/chat.dto';
-import { UserDto } from '../../../../dtos/chat/user.dto';
 import { UserProfileService } from '../../../../services/user-profile.service';
 import { ChatService } from '../../../../services/chat.service';
 import { ErrorHandlerService } from '../../../../services/error-handler.service';
@@ -9,6 +8,7 @@ import { ConfirmationDialogComponent } from '../confirmation-dialog/confirmation
 import { Router } from '@angular/router';
 import { ChatMemberDto } from '../../../../dtos/chat/chat-member.dto';
 import { UserDisplayDto } from '../../../../dtos/chat/user-display.dto';
+import { ChatMembersComponent } from '../chat-members/chat-members.component';
 
 @Component({
   selector: 'app-chat-settings',
@@ -31,6 +31,7 @@ export class ChatSettingsComponent {
 
   @ViewChild('deleteChatDialogComponent') deleteChatDialogComponent? : ConfirmationDialogComponent;
   @ViewChild('chatSettingsRef') chatSettingsRef? : TemplateRef<any>;
+  @ViewChild('chatMembersRef') chatMembersComponent? : ChatMembersComponent;
   dialogRef! : NbDialogRef<any>;
 
   open(){
@@ -77,6 +78,12 @@ export class ChatSettingsComponent {
       error : err => this.errorHandlerService.handleError(err)
     })
   }
+
+  showMembersDialog(){
+    this.close()
+    this.chatMembersComponent?.open();
+  }
+
 
   ngAfterViewInit(){
   }

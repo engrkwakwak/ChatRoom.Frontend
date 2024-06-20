@@ -26,6 +26,7 @@ import { ChatMemberForUpdateDto } from '../../../dtos/chat/chat-member-for-updat
 export class ChatViewComponent implements OnInit {
   @ViewChild('messageList') messageListComponent!: MessageListComponent;
 
+
   userId: number = 0;
   chatId: number = 0;
   receiverId: number = 0;
@@ -225,4 +226,5 @@ export class ChatViewComponent implements OnInit {
   chatformInputChange(){
     this.chatService.broadcastTypingStatus(this.chatId).subscribe();
   }
+
 }
