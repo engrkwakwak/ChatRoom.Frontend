@@ -1,57 +1,64 @@
-<nb-card-body >
-        <input type="file" #file placeholder="Choose an image" accept="image/*" (change)="file.files && uploadPicture(file.files)" style="display: none;">
-        <app-avatar class="d-block mb-2 mx-auto" style="width: fit-content;" [width]="70" [height]="70" [src]="loadDisplayPicture()" (click)="file.click()"  />
-        <p class="mb-0 text-center fw-bold">{{displayName}}</p>
-    <br>
-    <form [formGroup]="userForm" autocomplete="off" (ngSubmit)="updateUser(userForm.value)">
-        <nb-layout-column>
-            
-            <div class="form-group">
-                <label for="username">Username</label>
-                <input nbInput fullWidth id="username" formControlName="username" placeholder="johndoe">
-            </div>
-            <div>
-                <em *ngIf="validateControl('username') && hasError('username', 'required')" class="text-danger">*Username is required</em>
-                <em *ngIf="validateControl('username') && hasError('username', 'maxlength')" class="text-danger">*Max characters for Username is 20.</em>
-                <em *ngIf="validateControl('username') && hasError('username', 'usernameTaken')" class="text-danger">*Username is already taken</em>
-                <em *ngIf="validateControl('username') && hasError('username', 'pattern')" class="text-danger">*Username must only contain alpha numeric characters</em>
-            </div>
-            <div class="form-group">
-                <label for="displayName">Display name</label>
-                <input nbInput fullWidth id="displayName" formControlName="displayName" placeholder="John Doe">
-            </div>
-            <div>
-                <em *ngIf="validateControl('displayName') && hasError('displayName', 'required')" class="text-danger">*Display name is required</em>
-                <em *ngIf="validateControl('displayName') && hasError('displayName', 'maxlength')" class="text-danger">*Max characters for Display name is 20.</em>
-            </div>
-            <div class="form-group">
-                <label for="email">Email</label>
-                <input nbInput fullWidth type="email" id="email" formControlName="email" placeholder="example@example.com">
-            </div>
-            <div>
-                <em *ngIf="validateControl('email') && hasError('email', 'required')" class="text-danger">*Email is required</em>
-                <em *ngIf="validateControl('email') && hasError('email', 'maxlength')" class="text-danger">*Max characters for Email is 100</em>
-                <em *ngIf="validateControl('email') && hasError('email', 'email')" class="text-danger">*Invalid email address</em>
-                <em *ngIf="validateControl('email') && hasError('email', 'emailTaken')" class="text-danger">*Email address is already taken</em>
-            </div>
-            <div class="form-group">
-                <label for="birthDate">Birthday</label>
-                <input [nbDatepicker]="datepicker" id="birthDate" formControlName="birthDate" nbInput format="MM\dd\yyyy"><nb-datepicker #datepicker></nb-datepicker>
-            </div>
-            <div>
-                <em *ngIf="validateControl('birthDate') && hasError('birthDate', 'futureDate')" class="text-danger">*Birthday cannot be in the future.</em>
-            </div>
-            <div class="form-group">
-                <label for="address">Address</label>
-                <textarea nbInput fullWidth id="address" formControlName="address" placeholder="Barangay, Municipality, Province, Country"></textarea>
-            </div>
-            <div>
-                <em *ngIf="validateControl('address') && hasError('address', 'maxlength')" class="text-danger">*Max characters for Address name is 100.</em>
-            </div>
-        </nb-layout-column>
+<nb-card>
+    <nb-card-body >
+        <input type="file" #file placeholder="Choose an image" accept="image/*" (change)="onFileChange($event)" style="display: none;">
+        <app-avatar 
+            class="d-block mb-2 mx-auto" 
+            style="width: fit-content;" 
+            [width]="70" 
+            [height]="70" 
+            [src]="loadDisplayPicture()" 
+            (click)="isUserFormEditable ? file.click() : null" 
+        />
+        <p class="mb-0 text-center fw-bold">{{ this.user ? this.user.displayName : ''}}</p>
         <br>
-        <button nbButton status="primary" [disabled]="!userForm.valid">Save Changes</button>
-    </form>
-    
-    
-</nb-card-body>
+        <form [formGroup]="userForm" autocomplete="off">
+            <div class="mb-3 row">
+                <label for="username" class="col-sm-3 col-form-label">Username</label>
+                <div class="col-sm-9">
+                    <input nbInput status="basic" shape="semi-round" class="form-control" id="username" formControlName="username" placeholder="johndoe" spellcheck="false">
+                    <span *ngIf="validateControl('username') && hasError('username', 'required')" class="form-text text-danger">Username is required.</span>
+                    <span *ngIf="validateControl('username') && hasError('username', 'maxlength')" class="form-text text-danger">Max characters for Username is 20.</span>
+                    <span *ngIf="validateControl('username') && hasError('username', 'usernameTaken')" class="form-text text-danger">Username is already taken.</span>
+                    <span *ngIf="validateControl('username') && hasError('username', 'pattern')" class="form-text text-danger">Username must only contain alpha numeric characters.</span>
+                </div>
+            </div>
+            <div class="mb-3 row" *ngIf="isUserFormEditable">
+                <label for="displayName" class="col-sm-3 col-form-label">Name</label>
+                <div class="col-sm-9">
+                    <input nbInput status="basic" shape="semi-round" class="form-control" id="displayName" formControlName="displayName" placeholder="John Doe" spellcheck="false">
+                    <span *ngIf="validateControl('displayName') && hasError('displayName', 'whitespace')" class="form-text text-danger">Display name is required.</span>
+                    <span *ngIf="validateControl('displayName') && hasError('displayName', 'maxlength')" class="form-text text-danger">Max characters for Display name is 20.</span>
+                </div>
+            </div>
+            <div class="mb-3 row">
+                <label for="email" class="col-sm-3 col-form-label">Email</label>
+                <div class="col-sm-9">
+                    <input nbInput status="basic" shape="semi-round" class="form-control" id="email" formControlName="email" placeholder="john@doe.com" spellcheck="false">
+                    <span *ngIf="validateControl('email') && hasError('email', 'whitespace')" class="form-text text-danger">Email is required.</span>
+                    <span *ngIf="validateControl('email') && hasError('email', 'maxlength')" class="form-text text-danger">Max characters for Email is 100.</span>
+                    <span *ngIf="validateControl('email') && hasError('email', 'email')" class="form-text text-danger">Invalid email address.</span>
+                    <span *ngIf="validateControl('email') && hasError('email', 'emailTaken')" class="form-text text-danger">Email address is already taken.</span>
+                </div>
+            </div>
+            <div class="mb-3 row">
+                <label for="birthDate" class="col-sm-3 col-form-label">Birthday</label>
+                <div class="col-sm-9">
+                    <input nbInput [nbDatepicker]="datepicker" format="MM\dd\yyyy" status="basic" shape="semi-round" class="form-control" id="birth-date" formControlName="birthDate">
+                    <nb-datepicker #datepicker></nb-datepicker>
+                    <span *ngIf="validateControl('birthDate') && hasError('birthDate', 'futureDate')" class="form-text text-danger">Birthday cannot be set in the future.</span>
+                </div>
+            </div>
+            <div class="mb-3 row">
+                <label for="address" class="col-sm-3 col-form-label">Address</label>
+                <div class="col-sm-9">
+                    <textarea nbInput status="basic" shape="semi-round" id="address" class="form-control" formControlName="address" placeholder="Barangay, Municipality, Province, Country" spellcheck="false"></textarea>
+                    <span *ngIf="validateControl('address') && hasError('address', 'maxlength')" class="form-text text-danger">Max characters for Address name is 100.</span>
+                </div>
+            </div>   
+        </form>
+    </nb-card-body>
+    <nb-card-footer class="d-flex justify-content-end">
+        <button nbButton outline status="primary" [disabled]="!userForm.valid" (click)="updateUser()" *ngIf="isUserFormEditable">Save Changes</button>
+        <button nbButton outline status="primary" (click)="sendMessage()" *ngIf="!isUserFormEditable">Send A Message</button>
+    </nb-card-footer>
+</nb-card>

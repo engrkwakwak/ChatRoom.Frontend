@@ -44,8 +44,8 @@ const routes: Routes = [
       { 
         path: "view", 
         children: [
-          { path : "from-contacts/:userId", component : ChatViewComponent },
-          { path: "from-chatlist/:chatId", component: ChatViewComponent, canActivate: [ChatGuard] },
+          { path : "from-contacts/:userId", component : ChatViewComponent, canActivate: [AuthGuard] },
+          { path: "from-chatlist/:chatId", component: ChatViewComponent, canActivate: [ChatGuard, AuthGuard] },
         ]
       }
     ],
