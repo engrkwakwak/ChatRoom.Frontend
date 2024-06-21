@@ -2,8 +2,17 @@
     <div *nbCustomMessage="'app-message'; let message;noStyles:true" class="app-custom-message">
         <div [class]="currentUserId == message.sender?.userId ? 'content reply' : 'content'">
             <div class="message-con">
-                <div class="message-text">
-                    {{message.content}}
+                <div class="d-flex align-items-end flex-column mb-3">
+                    <div class="p-2 message-text">
+                        {{message.content}}
+                    </div>
+                    <div class="mt-auto p-2 align-self-end" *ngIf="hasLastSeenUsers(message)">                    
+                        <app-avatar *ngFor="let user of message.lastSeenUsers"
+                            [width]="15" 
+                            [height]="15" 
+                            [src]="loadProfilePicture(user)"
+                        />
+                    </div>
                 </div>
                 <div class="buttons" *ngIf="currentUserId == message.sender?.userId">
                     <button nbButton size="tiny" ghost status="danger" (click)="confirmDeleteMessage(message)">
@@ -32,7 +41,7 @@
         [reply]="this.currentUserId === message.sender.userId"
         [sender]="message.sender.displayName"
         [date]="message.dateSent"
-        [avatar]="loadProfilePicture(message)">
+        [avatar]="loadProfilePicture(message.sender)">
     </nb-chat-message>
     
     <nb-chat-message type="app-typing" [reply]="true"> </nb-chat-message>
