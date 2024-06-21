@@ -1,10 +1,12 @@
 <div id="chatlist">
-    <div class="chat-search-container">
-        <input nbInput fullWidth type="text" placeholder="Search Messages" (input)="search($event)" />
-        <br/>
-        <br/>
-        <button nbButton outline shape="round" size="small" fullWidth status="success" (click)="openCreateGCFirstModal()">+ Create Group Chat</button>
-    </div>
+    <div class="d-flex flex-column justify-content-evenly">
+        <div class="p-2 chat-search-container">
+            <input nbInput fullWidth type="text" placeholder="Search Messages" (input)="search($event)" />
+        </div>
+        <div class="p-2">
+            <button nbButton outline shape="round" size="small" fullWidth status="success" (click)="openCreateGCFirstModal()">+ Create Group Chat</button>
+        </div>
+    </div>    
     
     <nb-list
         nbInfiniteList

@@ -10,6 +10,7 @@ import { ConfirmationDialogComponent } from '../confirmation-dialog/confirmation
 import { UserProfileService } from '../../../../services/user-profile.service';
 import { SignalRService } from '../../../../services/signal-r.service';
 import { ChatMemberDto } from '../../../../dtos/chat/chat-member.dto';
+import { UserDisplayDto } from '../../../../dtos/chat/user-display.dto';
 
 @Component({
   selector: 'app-message-list',
@@ -29,7 +30,7 @@ export class MessageListComponent implements OnInit, OnChanges, AfterViewInit {
   @ViewChild('deleteDialogComponent') deleteDialogComponent? : ConfirmationDialogComponent;
   @ViewChild('updateMessageComponent') updateMessageComponent? : UpdateMessageFormComponent;
   @Output() messageListUpdated = new EventEmitter<MessageDto>();
-
+  @Output() componentReady = new EventEmitter<void>();
 
   constructor(
     private messageService: MessageService,
@@ -75,6 +76,10 @@ export class MessageListComponent implements OnInit, OnChanges, AfterViewInit {
     });
   }
 
+  hasLastSeenUsers(message: MessageDto): boolean {
+    return message.lastSeenUsers && message.lastSeenUsers.length > 0;
+  }
+
   public confirmDeleteMessage(message : MessageDto){
     this.selectedMessage = message;
     this.deleteDialogComponent?.open();
@@ -112,44 +117,49 @@ export class MessageListComponent implements OnInit, OnChanges, AfterViewInit {
 
   public loadMessages(isLoadPrevious: boolean = false) {
     const apiUri: string = `/chats/${this.chatId}/messages?pageNumber=${this.messageParameters.PageNumber}&pageSize=${this.messageParameters.PageSize}`;
-    this.messageService.getMessages(apiUri)
-      .subscribe({
-        next: (res: HttpResponse<MessageDto[]>) => {
-          const newMessages = res.body?.reverse() ?? [];
-          
-          if (isLoadPrevious) {
-            this.messages = [...newMessages, ...this.messages];
-          } else {
-            this.messages = newMessages;
-            if(this.messages && this.messages.length > 0){
-              this.messageListUpdated.emit(newMessages[newMessages.length - 1]);
-            }
-          }
-
-          const paginationJson = res.headers.get('X-Pagination') ?? '{}';
-          const pagination = JSON.parse(paginationJson);
-
-          this.messageParameters.HasNext = pagination.HasNext ?? false;
-          this.messageParameters.HasPrevious = pagination.HasPrevious ?? false;
-          this.messageParameters.PageNumber = pagination.CurrentPage ?? 1;
-          this.messageParameters.PageSize = pagination.PageSize ?? 10;
-          this.messageParameters.TotalCount = pagination.TotalCount ?? 0;
-          this.messageParameters.TotalPages = pagination.TotalPages ?? 0;
-
-          if (isLoadPrevious) {
-            const currentScrollHeight = this.chatContainer.scrollable.nativeElement.scrollHeight;
-            setTimeout(() => {
-              const newScrollHeight = this.chatContainer.scrollable.nativeElement.scrollHeight;
-              this.chatContainer.scrollable.nativeElement.scrollTop = newScrollHeight - currentScrollHeight;
-            }, 0);
-          }
-
-          this.isLoading = false;
-        },
-        error: (err: HttpErrorResponse) => {
-          this.isLoading = false;
+    this.messageService.getMessages(apiUri).subscribe({
+      next: (res: HttpResponse<MessageDto[]>) => {
+        const newMessages = res.body?.reverse() ?? [];
+        
+        if (isLoadPrevious) {
+          this.messages = [...newMessages, ...this.messages];
+        } else {
+          this.messages = newMessages;
         }
-      });
+
+        const paginationJson = res.headers.get('X-Pagination') ?? '{}';
+        this.messageParameters = this.getPaginationValues(paginationJson);
+
+        if (isLoadPrevious) {
+          const currentScrollHeight = this.chatContainer.scrollable.nativeElement.scrollHeight;
+          setTimeout(() => {
+            const newScrollHeight = this.chatContainer.scrollable.nativeElement.scrollHeight;
+            this.chatContainer.scrollable.nativeElement.scrollTop = newScrollHeight - currentScrollHeight;
+          }, 0);
+        }
+
+        this.isLoading = false;
+        if(!isLoadPrevious) {
+          this.componentReady.emit();
+        }
+      },
+      error: (err: HttpErrorResponse) => {
+        this.isLoading = false;
+      }
+    });
+  }
+
+  getPaginationValues(paginationJson: string): MessageParametersDto {
+    const pagination = JSON.parse(paginationJson);
+
+    return {
+      PageNumber: pagination.CurrentPage ?? 1,
+      PageSize: pagination.PageSize ?? 10,
+      HasNext: pagination.HasNext ?? false,
+      HasPrevious: pagination.HasPrevious ?? false,
+      TotalCount: pagination.TotalCount ?? 0,
+      TotalPages: pagination.TotalPages ?? 0
+    }
   }
 
   public loadPrevious() {
@@ -167,7 +177,7 @@ export class MessageListComponent implements OnInit, OnChanges, AfterViewInit {
     this.messageListUpdated.emit(message);
   }
 
-  loadProfilePicture(message : MessageDto){
-    return this.userProfileService.loadDisplayPicture(message.sender.displayPictureUrl, message.sender.displayName);
+  loadProfilePicture(user : UserDisplayDto){
+    return this.userProfileService.loadDisplayPicture(user.displayPictureUrl, user.displayName);
   }
 }

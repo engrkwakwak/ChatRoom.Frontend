@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { AfterViewInit, ChangeDetectorRef, Component, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Subscription, concat, tap } from 'rxjs';
 import { ChatService } from '../../../services/chat.service';
@@ -45,8 +45,20 @@ export class ChatViewComponent implements OnInit {
     private errorHandlerService: ErrorHandlerService,
     private messageService: MessageService,
     private signalRService: SignalRService,
-    private router : Router
+    private router : Router,
   ) {}
+
+  initializeMessageListComponent(): void {
+    if(!this.messageListComponent || this.messageListComponent.messages.length <= 0){
+      return;
+    }
+
+    const message = this.messageListComponent.messages[this.messageListComponent.messages.length-1];
+    if(message) {
+      this.onMessageListUpdated(message);
+      this.initializeReadReceipts();
+    }
+  }
 
   ngOnInit() {
     this.activatedRoute.paramMap.subscribe({
@@ -71,13 +83,11 @@ export class ChatViewComponent implements OnInit {
     });
     this.signalRService.getLastSeenMessage().subscribe((chatMember: ChatMemberDto) => {
       if(chatMember.chatId === this.chat?.chatId) {
-        let member = this.members.find(member => member.user.userId == chatMember.user.userId);
+        const member = this.members.find(member => member.user.userId == chatMember.user.userId);
         if(member){
           this.reAssignSeenMessage(member, chatMember);
-          member = chatMember;
+          member.lastSeenMessageId = chatMember.lastSeenMessageId;
         }
-
-        console.log(`Last seen message of user ${chatMember.user.displayName} is updated to ${chatMember.lastSeenMessageId}`);
       }
     });
 
@@ -140,6 +150,7 @@ export class ChatViewComponent implements OnInit {
       next: members => {
         this.members = members;
         this.updateReceiverAndProfileImage();
+        this.initializeMessageListComponent();
       },
       error: err => this.errorHandlerService.handleError(err)
     });
@@ -177,6 +188,11 @@ export class ChatViewComponent implements OnInit {
     if(currentLastSeenMessageId >= message.messageId || sender?.chatId != message.chatId){
       return;
     }
+
+    this.executeLastSeenMessageUpdate(sender, message);
+  }
+
+  executeLastSeenMessageUpdate(sender: ChatMemberDto, message: MessageDto): void {
     const chatMember: ChatMemberForUpdateDto = {
       isAdmin: sender!.isAdmin,
       lastSeenMessageId: message.messageId,
@@ -186,7 +202,7 @@ export class ChatViewComponent implements OnInit {
     const route = `/chats/${this.chat!.chatId}/members/${sender!.user.userId}/last-seen-message`;
     this.chatService.updateLastSeenMessage(route, chatMember).subscribe({
       next: (_) => {
-        console.log(`Last seen successfully updated. ChatId: ${this.chat?.chatId}. userId: ${sender?.user.userId}`);
+        
       },
       error: (err) => this.errorHandlerService.handleError(err) 
     });
@@ -204,7 +220,7 @@ export class ChatViewComponent implements OnInit {
     const currentMessageAssignment = this.messageListComponent.messages.find(msg => msg.messageId === currentChatMember.lastSeenMessageId);
     if(currentMessageAssignment){
       const index = currentMessageAssignment.lastSeenUsers.findIndex(user => user.userId === currentChatMember.user.userId);
-      if (index >= 1){
+      if (index >= 0){
         currentMessageAssignment.lastSeenUsers.splice(index, 1);
       }
     }
@@ -218,7 +234,10 @@ export class ChatViewComponent implements OnInit {
   assignSeenMessage(chatMember: ChatMemberDto) {
     const message = this.messageListComponent.messages.find(message => message.messageId === chatMember.lastSeenMessageId);
     if(message){
-      message.lastSeenUsers.push(chatMember.user);
+      const userExists = message.lastSeenUsers.some(user => user.userId === chatMember.user.userId);
+      if (!userExists) {
+        message.lastSeenUsers.push(chatMember.user);
+      }
     }
   }
 

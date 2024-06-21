@@ -2,7 +2,7 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ChatIndexComponent } from './chat-index/chat-index.component';
 import { ChatComponent } from './chat.component';
-import { NbActionsModule, NbButtonModule, NbCardModule, NbChatModule, NbCheckboxModule, NbContextMenuModule, NbDatepickerModule, NbDialogModule, NbDialogService, NbIconModule, NbInputModule, NbLayoutModule, NbListModule, NbPopoverModule, NbSpinnerModule, NbTabsetModule, NbUserModule } from '@nebular/theme';
+import { NbActionsModule, NbButtonModule, NbCardModule, NbChatModule, NbCheckboxModule, NbContextMenuModule, NbDatepickerModule, NbDialogModule, NbDialogService, NbIconModule, NbInputModule, NbLayoutModule, NbListModule, NbPopoverModule, NbSpinnerModule, NbTabsetModule, NbTooltipModule, NbUserModule } from '@nebular/theme';
 import { NbEvaIconsModule } from '@nebular/eva-icons';
 import { AppRoutingModule } from '../../app-routing.module';
 import { ChatlistComponent } from './components/chatlist/chatlist.component';
@@ -87,7 +87,8 @@ import { UserItemComponent } from './components/user-item/user-item.component';
     SkeletonModule,
     MenuModule,
     NbDialogModule.forRoot(),
-    NbCheckboxModule
+    NbCheckboxModule,
+    NbTooltipModule
   ]
 })
 export class ChatModule { }
