@@ -115,7 +115,7 @@ export class ChatlistComponent {
         if(groupChatData) {
           this.openCreateGCSecondModal(groupChatData);
         }
-      })
+      });
   }
 
   openCreateGCSecondModal(chat: ChatForCreationDto) {

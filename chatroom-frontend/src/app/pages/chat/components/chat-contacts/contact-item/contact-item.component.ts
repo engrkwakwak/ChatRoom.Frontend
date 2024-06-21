@@ -4,13 +4,14 @@ import { MenuItem } from 'primeng/api';
 import { ContactService } from '../../../../../services/contact.service';
 import { ContactForCreationDto } from '../../../../../dtos/chat/contact-for-creation.dto';
 import { AuthService } from '../../../../../services/auth.service';
-import { NbGlobalPhysicalPosition, NbToastrService } from '@nebular/theme';
+import { NbDialogService, NbGlobalPhysicalPosition, NbToastrService } from '@nebular/theme';
 import { ErrorHandlerService } from '../../../../../services/error-handler.service';
 import { ContactDto } from '../../../../../dtos/chat/contact.dto';
 import { UserProfileService } from '../../../../../services/user-profile.service';
 import { Router } from '@angular/router';
 import { Menu } from 'primeng/menu';
 import { ChatService } from '../../../../../services/chat.service';
+import { UserProfileComponent } from '../../user-profile/user-profile.component';
 
 @Component({
   selector: 'app-contact-item',
@@ -25,7 +26,8 @@ export class ContactItemComponent {
     private errorHandlerService : ErrorHandlerService,
     private userProfileService : UserProfileService,
     private chatModuleService : ChatService,
-    private router : Router
+    private router : Router,
+    private dialogService: NbDialogService
   ){}
 
   @Output() contactUpdated : EventEmitter<any> = new EventEmitter<any>();
@@ -42,7 +44,8 @@ export class ContactItemComponent {
   userOptions : MenuItem[] = [
     {
       label : "View Profile",
-      icon: "pi pi-user"
+      icon: "pi pi-user",
+      command: () => this.viewProfile()
     },
     {
       label : "Add Contact",
@@ -54,14 +57,24 @@ export class ContactItemComponent {
   contactOptions : MenuItem[] = [
     {
       label : "View Profile",
-      icon: "pi pi-user"
+      icon: "pi pi-user",
+      command: () => this.viewProfile()
     },
     {
       label : "Remove Contact",
       icon: "pi pi-user-minus",
       command: () => this.deleteContact()
     }
-  ]; 
+  ];
+
+  viewProfile(): void {
+    const userId: number = this.user.userId;
+    this.dialogService.open(UserProfileComponent, {
+      context: {
+        userId: userId
+      }
+    });
+  }
 
   private addContact(){
     const contact : ContactForCreationDto = {

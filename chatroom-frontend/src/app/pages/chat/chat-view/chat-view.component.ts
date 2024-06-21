@@ -172,11 +172,11 @@ export class ChatViewComponent implements OnInit {
 
   onMessageListUpdated(message: MessageDto) {
     const sender = this.members.find(member => member.user.userId == this.userId);
+    const currentLastSeenMessageId: number = sender?.lastSeenMessageId ?? 0;
 
-    if(sender!.lastSeenMessageId >= message.messageId){
+    if(currentLastSeenMessageId >= message.messageId || sender?.chatId != message.chatId){
       return;
     }
-
     const chatMember: ChatMemberForUpdateDto = {
       isAdmin: sender!.isAdmin,
       lastSeenMessageId: message.messageId,
