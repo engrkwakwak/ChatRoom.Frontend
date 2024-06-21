@@ -2,7 +2,7 @@
     <div class="col ">
         <img class="chat-image" src="../../../../assets/images/chat-image.png" alt="">
         <h1 class="text-center">
-            👋Hi {{ user!.displayName }}, Your Contacts are waiting!
+            👋Hi {{ user && user!.displayName }}, Your Contacts are waiting!
         </h1>
         <h6 class="text-center fw-normal fs-6">Find your friends, family, or colleagues in just a tap. Begin your conversation journey now!</h6>
         <app-chatlist-toggle />
