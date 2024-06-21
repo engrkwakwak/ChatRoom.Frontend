@@ -7,7 +7,7 @@
             </div>
             <div class="col">
                 <p class="mb-0">{{ member!.user.displayName! }} {{ userId && userId == member!.user.userId ? '(You)' : '' }} </p>
-                <p *ngIf="member!.isAdmin" class="mb-0 opacity-50">Admin</p>
+                <p class="mb-0 opacity-50">{{ member!.isAdmin ? 'Admin' : 'Member'}}</p>
             </div>
             <div class="col-auto p-0">
                 <p-progressSpinner [style]="{width: '30px', height: '30px'}" *ngIf="loading"  />

@@ -29,13 +29,14 @@ export class ChatSidebarComponent implements OnInit {
     private router : Router,
     private nbMenuService: NbMenuService,
     @Inject(NB_WINDOW) private window : Window,
-    private nbWindowService: NbWindowService,
+    private dialogService: NbDialogService,
     private userProfileService: UserProfileService,
     private cdr: ChangeDetectorRef,
     private signalRService: SignalRService,
     private authService : AuthService,
     private errorHandlerService : ErrorHandlerService,
-    private nbToastService : NbToastrService
+    private nbToastService : NbToastrService,
+
   ){}
 
   ngOnInit() {
@@ -84,16 +85,12 @@ export class ChatSidebarComponent implements OnInit {
   }
 
   viewUserProfile(){
-    const buttonsConfig: NbWindowControlButtonsConfig = {
-      minimize: false,
-      maximize: false,
-      fullScreen: false,
-      close: true
-    };
-    const windowRef = this.nbWindowService.open(UserProfileComponent, { buttons: buttonsConfig } );
-
-    windowRef.onClose.subscribe(() => {
-
+    const userId: number = this.userProfileService.getUserIdFromToken();
+    this.dialogService.open(UserProfileComponent, {
+      context: {
+        userId: userId
+      }
+    }).onClose.subscribe(() => {
       this.loadDisplayName();
     });
   }

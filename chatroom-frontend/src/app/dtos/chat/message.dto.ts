@@ -8,11 +8,7 @@ export interface MessageDto {
     content : string
     dateSent : Date
     statusId : number
-    sender: {
-        userId: number;
-        displayName: string;
-        displayPictureUrl: string;
-    }
+    sender: UserDisplayDto
     messageType: {
         msgTypeId: number;
         msgTypeName: string;

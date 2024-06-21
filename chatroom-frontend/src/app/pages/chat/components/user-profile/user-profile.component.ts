@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { UserProfileService } from '../../../../services/user-profile.service';
 import { formatDate } from '@angular/common';
 import { AbstractControl, AsyncValidatorFn, FormControl, FormGroup, ValidationErrors, Validators } from '@angular/forms';
@@ -7,33 +7,59 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { UserForUpdateDto } from '../../../../dtos/chat/user-for-update.dto';
 import { jwtDecode } from 'jwt-decode';
 import { Observable, map, of } from 'rxjs';
-import { NbToastrService } from '@nebular/theme';
+import { NbDialogRef, NbToastrService } from '@nebular/theme';
+import { ErrorHandlerService } from '../../../../services/error-handler.service';
+import { ChatService } from '../../../../services/chat.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-user-profile',
   templateUrl: './user-profile.component.html',
   styleUrl: './user-profile.component.scss'
 })
-export class UserProfileComponent {
+export class UserProfileComponent implements OnInit {
+  @Input({required: true}) userId!: number;
+  isUserFormEditable: boolean = false;
   user!: UserDto;
   userForm!: FormGroup;
-  displayName: string = "";
-  picturePath: string = "";
 
   constructor(
     private userService: UserProfileService,
     private toastrService: NbToastrService,
-    private cdr: ChangeDetectorRef
+    private errorHandlerService: ErrorHandlerService,
+    private chatService: ChatService,
+    private router: Router,
+    protected dialogRef: NbDialogRef<UserProfileComponent>,
   ){
   }
 
   ngOnInit(): void {
-    this.userForm = new FormGroup({
+    this.userForm = this.createUserForm();
+    this.isUserFormEditable = this.checkIfUserFormEditable();
+    this.setUserFormState();
+    this.getUserById();
+  }
+
+  sendMessage(): void {
+    if (this.chatService.isMobile) {
+      this.chatService.hideChatlist();
+    }
+    this.router.navigate([`/chat/view/from-contacts/${this.user.userId}`]);
+    this.dialogRef.close();
+  }
+
+  checkIfUserFormEditable(): boolean {
+    const sessionUserId: number = this.userService.getUserIdFromToken();
+    return sessionUserId === this.userId
+  }
+
+  createUserForm(): FormGroup {
+    return new FormGroup({
       username: new FormControl('', {
         validators: [Validators.required, Validators.maxLength(20), Validators.pattern("[A-Za-z0-9_]+")],
         asyncValidators: [this.isUsernameTakenValidator]
       }),
-      displayName: new FormControl('', [Validators.required, Validators.maxLength(50)]),
+      displayName: new FormControl('', [this.noWhiteSpaceValidator, Validators.maxLength(50)]),
       email: new FormControl('', {
         validators: [Validators.required, Validators.maxLength(100), Validators.email],
         asyncValidators: [this.isEmailTakenValidator]
@@ -41,8 +67,22 @@ export class UserProfileComponent {
       address: new FormControl('', Validators.maxLength(100)),
       birthDate: new FormControl('', [this.pastDateValidator])
     });
+  }
 
-    this.getUserById();
+  setUserFormState(): void {
+    if(!this.isUserFormEditable) {
+      this.userForm.get('birthDate')?.disable();
+      this.userForm.get('displayName')?.disable();
+      this.userForm.get('email')?.disable();
+      this.userForm.get('username')?.disable();
+      this.userForm.get('address')?.disable();
+    }
+  }
+
+  private noWhiteSpaceValidator(control: AbstractControl): ValidationErrors | null {
+    const isWhitespace = (control.value || '').trim().length === 0;
+    const isValid = !isWhitespace;
+    return isValid ? null : { whitespace: true };
   }
 
   private isUsernameTakenValidator: AsyncValidatorFn = (control: AbstractControl): Observable<ValidationErrors | null> => {
@@ -77,95 +117,97 @@ export class UserProfileComponent {
   }
 
   private getUserById(): void {
-    var userId: number = 0;
-    const token = localStorage.getItem('chatroom-token');
-    if(token){
-      const decodedToken = jwtDecode<any>(token);
-      userId = decodedToken['sub'];
-    }
-    const userByIdUri: string = `/users/${userId}`;
+    const uri: string = `/users/${this.userId}`;
   
-    this.userService.getUser(userByIdUri)
-    .subscribe({
+    this.userService.getUser(uri).subscribe({
       next: (userEntity: UserDto) => {
-
         this.user = { 
           ...userEntity,
           birthDate: userEntity.birthDate ? new Date(userEntity.birthDate) : undefined,
-          dateCreated: userEntity.dateCreated ? new Date(userEntity.dateCreated) : undefined
-        }
-        this.displayName = userEntity.displayName;
-        this.updatePicturePath(userEntity.displayPictureUrl ?? "");
+          dateCreated: userEntity.dateCreated ? new Date(userEntity.dateCreated) : undefined,
+          displayPictureUrl: userEntity.displayPictureUrl ?? ''
+        };
+
         this.userForm.patchValue(this.user);
       },
       error: (err: HttpErrorResponse) => console.log(err),
-    })
+    });
   }
 
   validateControl = (controlName: string) => {
-    if (this.userForm.get(controlName)?.invalid && this.userForm.get(controlName)?.touched)
-      return true;
-    return false;
+    const control = this.userForm.get(controlName);
+    return control?.invalid && (control?.touched || control?.dirty);
   }
 
   hasError = (controlName: string, errorName: string) => {
-    if(this.userForm.get(controlName)?.hasError(errorName))
-      return true;
-    return false;
+    return this.userForm.get(controlName)?.hasError(errorName);
   }
   
-  public updateUser = (userFormValue: UserDto) => {
-    if(this.userForm.valid)
-      this.executeUserUpdate(userFormValue);
+  public updateUser() {
+    if(this.userForm.valid) {
+      this.executeUserUpdate();
+    }
   }
 
-  private executeUserUpdate = (userFormValue: UserDto) => {
-    const userForUpd: UserForUpdateDto = {
-      Username: userFormValue.username,
-      DisplayName: userFormValue.displayName,
-      Email: userFormValue.email,
-      Address: userFormValue.address,
-      BirthDate: userFormValue.birthDate ? formatDate(userFormValue.birthDate, 'yyyy-MM-dd', 'en-US') : undefined,
+  private mapUserFormValuesToDto(formValues: any): UserForUpdateDto {
+    return {
+      DisplayName: formValues.displayName,
+      Email: formValues.email,
+      Username: formValues.username,
+      Address: formValues.address,
+      BirthDate: formValues.birthDate  ? formatDate(formValues.birthDate, 'yyyy-MM-dd', 'en-US') : undefined,
       DisplayPictureUrl: this.user.displayPictureUrl
     }
+  }
+
+  private executeUserUpdate() {
+    const user: UserForUpdateDto = this.mapUserFormValuesToDto(this.userForm.value);
     const apiUri: string = `/users/${this.user.userId}`;
-    this.userService.updateUser(apiUri, userForUpd)
+
+    this.userService.updateUser(apiUri, user)
     .subscribe({
       next: (_) => {
         this.toastrService.success("User profile updated successfully!", 'Success');
-        this.displayName= userForUpd.DisplayName;
+        this.dialogRef.close();
       },
        error: (err: HttpErrorResponse) => console.log(err)//this.errorHandler.handleError(err)
     })
   }
 
-  public uploadPicture = (files:FileList) => {
-    if(files.length === 0){
-      return;
-    }
-
-    let fileToUpload = <File>files[0];
+  public uploadPicture(file:File) {
     const formData = new FormData();
-    formData.append('file', fileToUpload, fileToUpload.name);
-
+    formData.append('file', file, file.name);
     const apiUri: string = `/users/${this.user.userId}/picture`;
-    this.userService.uploadPicture(apiUri, formData)
-    .subscribe({
-      next: (dbPath: string) => {
-        console.log('Upload success.');
-        this.user.displayPictureUrl = dbPath;
-        this.updatePicturePath(dbPath);
+    this.userService.uploadPicture(apiUri, formData).subscribe({
+      next: (fileUrl) => {
+        this.user.displayPictureUrl = fileUrl;
       },
-      error: (err: HttpErrorResponse) => console.log(err)
-    })
+      error: (err) => this.errorHandlerService.handleError(err)
+    });
+  }
+
+  public onFileChange(event: any) {
+    const input = event.target as HTMLInputElement;
+    if(input.files && input.files.length > 0) {
+      const file = input.files[0];
+      if(this.validateFile(file)) {
+        this.uploadPicture(file);
+      }
+    }
+  }
+
+  validateFile(file: File): boolean {
+    const validImageTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif', 'image/bmp', 'image/webp'];
+    if (!validImageTypes.includes(file.type)) {
+      alert('Invalid file type. Please select an image file. Available image types are "jpeg, jpg, png, gif, bmp, and webp".');
+      return false;
+    }
+    return true;
   }
 
   public loadDisplayPicture() : string {
-    return this.userService.loadDisplayPicture(this.picturePath, this.displayName);
-  }
-
-  public updatePicturePath(newPath: string): void{
-    this.picturePath = newPath;
-    this.cdr.detectChanges();
+    const pictureUrl: string = this.user?.displayPictureUrl ?? '';
+    const name: string = this.user?.displayName ?? 'default';
+    return this.userService.loadDisplayPicture(pictureUrl, name);
   }
 }

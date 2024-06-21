@@ -28,14 +28,6 @@ export class ChatlistComponent {
     private dialogService: NbDialogService
   ){}
 
-  users: { name: string, title: string }[] = [
-    { name: 'Carla Espinosa', title: 'Nurse' },
-    { name: 'Bob Kelso', title: 'Doctor of Medicine' },
-    { name: 'Janitor', title: 'Janitor' },
-    { name: 'Perry Cox', title: 'Doctor of Medicine' },
-    { name: 'Ben Sullivan', title: 'Carpenter and photographer' },
-  ];
-
   chats : ChatDto[] = [];
   fetchingChats : boolean = false;
   chatParams : ChatParameters = {
@@ -92,7 +84,7 @@ export class ChatlistComponent {
 
     this.signalRService.getChatListNewMessage().subscribe((data : ChatHubChatlistUpdateDto) => {
       this.chats.forEach((_chat : ChatDto, i:number) => {
-        if(_chat.chatId == data.chat.chatId){
+        if(_chat.chatId == data.chat.chatId) {
           this.chats.splice(i,1);
         }
       })
@@ -128,7 +120,7 @@ export class ChatlistComponent {
         if(groupChatData) {
           this.openCreateGCSecondModal(groupChatData);
         }
-      })
+      });
   }
 
   openCreateGCSecondModal(chat: ChatForCreationDto) {
