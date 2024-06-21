@@ -63,6 +63,9 @@ export class ChatViewComponent implements OnInit {
       }
     });
     this.signalRService.getNewMessageReceived().subscribe((message: MessageDto) => {
+      if(message.messageType.msgTypeId == 2 && this.userId == message.sender.userId){
+        this.messageListComponent.pushMessage(message);
+      }
       if(message.chatId === this.chat?.chatId && this.userId != message.sender.userId) {
         const isDuplicate = this.messageListComponent.messages.some(existingMessage => existingMessage.messageId === message.messageId);
         if(!isDuplicate){

@@ -24,7 +24,7 @@
                     </p>
                     <nb-list >
                         <nb-list-item *ngFor="let member of members">
-                            <app-chat-member-item type="member" [member]="member" class="w-100" />
+                            <app-chat-member-item type="member" [member]="member" [chat]="chat!"  class="w-100" />
                         </nb-list-item>
                     </nb-list>
                 </ng-container>
@@ -35,10 +35,10 @@
                     <nb-list >
                         <nb-list-item *ngFor="let user of users">
                             <ng-container *ngIf="getMembership(user); else notMemberRef">
-                                <app-chat-member-item type="member" [member]="getMembership(user)" class="w-100" />
+                                <app-chat-member-item type="member" [member]="getMembership(user)" [chat]="chat!"  class="w-100" />
                             </ng-container>
                             <ng-template #notMemberRef>
-                                <app-chat-member-item type="user" [user]="user" class="w-100" />
+                                <app-chat-member-item type="user" [user]="user" class="w-100" [chat]="chat!" (onMemberAdded)="close()" />
                             </ng-template>
                             
                         </nb-list-item>

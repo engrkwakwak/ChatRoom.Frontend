@@ -30,6 +30,7 @@ export class ChatSettingsComponent {
   @Output() onChatDelete : EventEmitter<any> = new EventEmitter<any>();
 
   @ViewChild('deleteChatDialogComponent') deleteChatDialogComponent? : ConfirmationDialogComponent;
+  @ViewChild('leaveChatDialogComponent') leaveChatDialogComponent? : ConfirmationDialogComponent;
   @ViewChild('chatSettingsRef') chatSettingsRef? : TemplateRef<any>;
   @ViewChild('chatMembersRef') chatMembersComponent? : ChatMembersComponent;
   dialogRef! : NbDialogRef<any>;
@@ -48,6 +49,13 @@ export class ChatSettingsComponent {
       return this.userProfileService.loadDisplayPicture(receiver?.displayPictureUrl!, receiver?.displayName!);
     }
     return this.userProfileService.loadDisplayPicture(this.chat?.displayPictureUrl!, this.chat?.chatName!);
+  }
+
+  isAdmin(){
+    const userId = this.userProfileService.getUserIdFromToken()
+    return this.members.filter(member => {
+      return member.user?.userId == userId || member.userId == userId
+    })[0].isAdmin
   }
 
   getReceiver() : UserDisplayDto|null{
@@ -84,6 +92,25 @@ export class ChatSettingsComponent {
     this.chatMembersComponent?.open();
   }
 
+  confirmLeaveChat(){
+    this.dialogRef.close();
+    this.leaveChatDialogComponent?.open();
+  }
+
+  leaveChat(){
+    
+    this.chatService.leaveChat(this.chat?.chatId!)
+    .subscribe({
+      next : _ => {
+        this.router.navigate(["/chat"]);
+        this.leaveChatDialogComponent?.close();
+      },
+      error : err => {
+        this.leaveChatDialogComponent?.close();
+        this.errorHandlerService.handleError(err);
+      }
+    });
+  }
 
   ngAfterViewInit(){
   }

@@ -87,6 +87,18 @@ export class ChatService {
     });
   }
 
+  addChatMember(chatId : number, memberUserId : number) : Observable<ChatMemberDto> {
+    return this.http.post<ChatMemberDto>(`${this.API_ENDPOINT}/chats/${chatId}/add-member/${memberUserId}`, {});
+  }
+
+  setChatAdmin(chatId : number, memberUserId : number) : Observable<any> {
+    return this.http.post<any>(`${this.API_ENDPOINT}/chats/${chatId}/set-admin/${memberUserId}`, {});
+  }
+
+  leaveChat(chatId : number) : Observable<any> {
+    return this.http.put<any>(`${this.API_ENDPOINT}/chats/${chatId}/leave`, {});
+  }
+
   broadcastTypingStatus(chatId : number) :  Observable<null>{
     return this.http.get<null>(`${this.API_ENDPOINT}/chats/${chatId}/typing`);
   }

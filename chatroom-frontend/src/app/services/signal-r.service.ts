@@ -61,6 +61,10 @@ export class SignalRService {
     });
 
     this.hubConnection.on('ReceiveMessage', (message: MessageDto) => {
+      console.log("*************************")
+      console.log("new message received")
+      console.log(message)
+      console.log("*************************")
       this.newMessageReceived.next(message);
     });
 

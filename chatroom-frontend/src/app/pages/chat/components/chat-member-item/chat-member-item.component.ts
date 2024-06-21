@@ -1,12 +1,13 @@
-import { Component, Input, ViewChild, input } from '@angular/core';
+import { Component, ErrorHandler, EventEmitter, Input, Output, ViewChild, input } from '@angular/core';
 import { ChatMemberDto } from '../../../../dtos/chat/chat-member.dto';
 import { UserProfileService } from '../../../../services/user-profile.service';
 import { Menu } from 'primeng/menu';
-import { MenuItem } from 'primeng/api';
 import { NbMenuItem, NbMenuService } from '@nebular/theme';
 import { filter, map } from 'rxjs';
-import { FormBuilder, FormGroup } from '@angular/forms';
 import { UserDto } from '../../../../dtos/chat/user.dto';
+import { ChatService } from '../../../../services/chat.service';
+import { ChatDto } from '../../../../dtos/chat/chat.dto';
+import { ErrorHandlerService } from '../../../../services/error-handler.service';
 
 @Component({
   selector: 'app-chat-member-item',
@@ -17,21 +18,24 @@ export class ChatMemberItemComponent {
   
   constructor(
     private userProfileService : UserProfileService,
-    private nbMenuService : NbMenuService
+    private nbMenuService : NbMenuService,
+    private chatService : ChatService,
+    private errorHandlerService : ErrorHandlerService
   ){}
   
   userId? : number;
+  @Input({required:true}) chat? : ChatDto;
   @Input({required:true}) type : string = "member";
   @Input() member? : ChatMemberDto;
   @Input() user? : UserDto;
   @ViewChild("menu") menu? : Menu;
-
+  @Output() onMemberAdded : EventEmitter<ChatMemberDto> = new EventEmitter<ChatMemberDto>();
 
   ngOnInit(): void {
     this.userId = this.userProfileService.getUserIdFromToken()
     this.nbMenuService.onItemClick()
       .pipe(
-        filter(({ tag  }) => tag === 'user-actions-menu'),
+        filter(({ tag  }) => tag === `member-actions-menu-${this.member?.user.userId}`),
         map(({ item: { title } }) => title),
       )
       .subscribe(title => {
@@ -39,7 +43,7 @@ export class ChatMemberItemComponent {
           // this.logOut();
         }
         if(title === 'Set as Admin'){
-          // this.logOut();
+          this.setAsAdmin()
         }
       });
   }
@@ -50,11 +54,34 @@ export class ChatMemberItemComponent {
       icon : "person-remove"
     },
     {
-      title: "Set as Admin",
+    title: "Set as Admin",
       icon: "lock"
     }
-  ]
+  ];
 
+  private setAsAdmin(){
+    this.chatService.setChatAdmin(this.chat?.chatId!, this.member?.user?.userId!)
+    .subscribe({
+      next : _ => {
+        this.member!.isAdmin = true;
+      },
+      error : err => {
+        this.errorHandlerService.handleError(err)
+      }
+    })
+  }
+
+  addMember(){
+    this.chatService.addChatMember(this.chat?.chatId!, this.user?.userId!)
+    .subscribe({
+      next: chatMember => {
+        this.onMemberAdded.emit(chatMember)
+      },
+      error : err => {
+        this.errorHandlerService.handleError(err)
+      }
+    })
+  }
 
   loadProfilePicture(){
     return this.type =='member' ? 
