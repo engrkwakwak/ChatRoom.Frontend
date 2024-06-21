@@ -139,7 +139,9 @@ export class MessageListComponent implements OnInit, OnChanges, AfterViewInit {
         }
 
         this.isLoading = false;
-        this.componentReady.emit();
+        if(!isLoadPrevious) {
+          this.componentReady.emit();
+        }
       },
       error: (err: HttpErrorResponse) => {
         this.isLoading = false;

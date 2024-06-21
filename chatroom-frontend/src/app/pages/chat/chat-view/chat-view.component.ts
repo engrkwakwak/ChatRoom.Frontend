@@ -188,6 +188,11 @@ export class ChatViewComponent implements OnInit {
     if(currentLastSeenMessageId >= message.messageId || sender?.chatId != message.chatId){
       return;
     }
+
+    this.executeLastSeenMessageUpdate(sender, message);
+  }
+
+  executeLastSeenMessageUpdate(sender: ChatMemberDto, message: MessageDto): void {
     const chatMember: ChatMemberForUpdateDto = {
       isAdmin: sender!.isAdmin,
       lastSeenMessageId: message.messageId,
@@ -197,7 +202,7 @@ export class ChatViewComponent implements OnInit {
     const route = `/chats/${this.chat!.chatId}/members/${sender!.user.userId}/last-seen-message`;
     this.chatService.updateLastSeenMessage(route, chatMember).subscribe({
       next: (_) => {
-        console.log(`Last seen successfully updated. ChatId: ${this.chat?.chatId}. userId: ${sender?.user.userId}`);
+        
       },
       error: (err) => this.errorHandlerService.handleError(err) 
     });
@@ -229,7 +234,10 @@ export class ChatViewComponent implements OnInit {
   assignSeenMessage(chatMember: ChatMemberDto) {
     const message = this.messageListComponent.messages.find(message => message.messageId === chatMember.lastSeenMessageId);
     if(message){
-      message.lastSeenUsers.push(chatMember.user);
+      const userExists = message.lastSeenUsers.some(user => user.userId === chatMember.user.userId);
+      if (!userExists) {
+        message.lastSeenUsers.push(chatMember.user);
+      }
     }
   }
 
