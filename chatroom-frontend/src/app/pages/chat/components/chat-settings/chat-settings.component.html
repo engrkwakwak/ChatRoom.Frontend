@@ -15,7 +15,7 @@
             <nb-list *ngIf="chat?.chatTypeId == 2">
                 <nb-list-item (click)="showMembersDialog()">
                     <nb-icon icon="people" class="me-2"></nb-icon>
-                    144 Members
+                    {{members.length}} Members
                 </nb-list-item>
                 <nb-list-item (click)="confirmLeaveChat()">
                     <nb-icon icon="log-out" class="me-2"></nb-icon>
@@ -24,7 +24,7 @@
             </nb-list>
 
             <nb-list>
-                <nb-list-item class="delete-chat-item" (click)="confirmDeleteChat()">
+                <nb-list-item class="delete-chat-item" (click)="confirmDeleteChat()" *ngIf="chat!.chatTypeId == 1 || (chat!.chatTypeId == 2 && isAdmin())">
                     <nb-icon icon="trash-2" class="me-2"></nb-icon>
                     Delete Chat
                 </nb-list-item>

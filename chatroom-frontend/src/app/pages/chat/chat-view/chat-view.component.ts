@@ -110,6 +110,14 @@ export class ChatViewComponent implements OnInit {
         this.router.navigate(["/chat"]);
       }
     });
+
+    this.chatService.onMemberRemove.subscribe((chatMember : ChatMemberDto) => {
+      this.members.forEach((_member:ChatMemberDto, i) => {
+        if(_member.user.userId == chatMember.user.userId && chatMember.chatId == _member.chatId){
+          this.members.splice(i, 1);
+        }
+      });
+    });
   }
 
   private initChatFromContacts() {

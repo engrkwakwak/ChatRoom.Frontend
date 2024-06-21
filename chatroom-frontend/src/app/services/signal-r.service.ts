@@ -23,6 +23,7 @@ export class SignalRService {
   private lastSeenMessage = new Subject<ChatMemberDto>();
   private chatListNewMessage = new Subject<ChatHubChatlistUpdateDto>();
   private chatListDeletedChat = new Subject<ChatHubChatlistUpdateDto>();
+  private chatlistRemovedFromChat = new Subject<ChatDto>();
   private isConnected: boolean = false;
 
   constructor(
@@ -61,10 +62,6 @@ export class SignalRService {
     });
 
     this.hubConnection.on('ReceiveMessage', (message: MessageDto) => {
-      console.log("*************************")
-      console.log("new message received")
-      console.log(message)
-      console.log("*************************")
       this.newMessageReceived.next(message);
     });
 
@@ -77,19 +74,16 @@ export class SignalRService {
     });
 
     this.hubConnection.on('ChatlistNewMessage', (data: ChatHubChatlistUpdateDto) => {
-      data.chatMembers.forEach((member : ChatMemberDto) => {
-        if(this.userProfileService.getUserIdFromToken() == member.user.userId){
-          this.chatListNewMessage.next(data);
-        }
-      })
+      console.log(data)
+      this.chatListNewMessage.next(data);
     });
 
     this.hubConnection.on('ChatlistDeleteChat', (data: ChatHubChatlistUpdateDto) => {
-      data.chatMembers.forEach((member : ChatMemberDto) => {
-        if(this.userProfileService.getUserIdFromToken() == member.user.userId){
-          this.chatListDeletedChat.next(data);
-        }
-      })
+      this.chatListDeletedChat.next(data);
+    });
+
+    this.hubConnection.on('ChatlistRemovedFromChat', (chat: ChatDto) => {
+      this.chatlistRemovedFromChat.next(chat);
     });
 
     this.hubConnection.start()
@@ -165,5 +159,9 @@ export class SignalRService {
 
   public getTypingUser() : Observable<ChatMemberDto> {
     return this.isUserTyping.asObservable();
+  }
+
+  public getRemovedFromChat() : Observable<ChatDto>{
+    return this.chatlistRemovedFromChat.asObservable();
   }
 }

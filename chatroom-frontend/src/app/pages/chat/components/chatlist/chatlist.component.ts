@@ -93,7 +93,6 @@ export class ChatlistComponent {
     this.signalRService.getChatListNewMessage().subscribe((data : ChatHubChatlistUpdateDto) => {
       this.chats.forEach((_chat : ChatDto, i:number) => {
         if(_chat.chatId == data.chat.chatId){
-          console.log("gotchu")
           this.chats.splice(i,1);
         }
       })
@@ -101,11 +100,25 @@ export class ChatlistComponent {
     });
 
     this.signalRService.getChatlistDeletedChat().subscribe((data : ChatHubChatlistUpdateDto) => {
-      this.chats.forEach((_chat : ChatDto, i:number) => {
-        if(_chat.chatId == data.chat.chatId){
-          this.chats.splice(i,1);
-        }
-      })
+      this.removeFromChats(data.chat);
+    });
+
+    this.chatService.onGroupChatLeave.subscribe((chat : ChatDto) => {
+      this.removeFromChats(chat);
+    });
+    this.signalRService.getRemovedFromChat().subscribe((chat :ChatDto) => {
+      this.removeFromChats(chat);
+      if(`/chat/view/from-chatlist/${chat.chatId}`){
+        this.router.navigate(["/chat"]);
+      }
+    });
+  }
+
+  removeFromChats(chat:ChatDto){
+    this.chats.forEach((_chat:ChatDto, i) =>{
+      if(chat.chatId == _chat.chatId){
+        this.chats.splice(i,1);
+      }
     });
   }
 

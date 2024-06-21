@@ -98,20 +98,25 @@ export class ChatSettingsComponent {
   }
 
   leaveChat(){
-    
+    this.leaveChatDialogComponent!.loading = true;
     this.chatService.leaveChat(this.chat?.chatId!)
     .subscribe({
       next : _ => {
+        this.chatService.onGroupChatLeave.next(this.chat!);
         this.router.navigate(["/chat"]);
         this.leaveChatDialogComponent?.close();
+        this.leaveChatDialogComponent!.loading = false;
       },
       error : err => {
         this.leaveChatDialogComponent?.close();
         this.errorHandlerService.handleError(err);
+        this.leaveChatDialogComponent!.loading = false;
       }
     });
   }
 
-  ngAfterViewInit(){
-  }
+
+ ngOnInit(){
+  
+ }
 }

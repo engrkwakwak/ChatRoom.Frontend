@@ -9,6 +9,7 @@ import { FormBuilder, FormGroup } from '@angular/forms';
 import { UserSearchParameters } from '../../../../dtos/shared/user-search-parameters.dto';
 import { UserService } from '../../../../services/user.service';
 import { UserDto } from '../../../../dtos/chat/user.dto';
+import { Subject } from '@microsoft/signalr';
 
 @Component({
   selector: 'app-chat-members',
@@ -48,11 +49,11 @@ export class ChatMembersComponent {
   ngOnDestroy(): void {
     this.subscriptions.forEach((val, i) => {
       this.subscriptions[i].unsubscribe();
-    })
+    });
   }
 
   ngOnInit() : void{
-    const _subscription  = this.search?.valueChanges
+    const _s1  = this.search?.valueChanges
     .pipe(
       debounceTime(300),
       distinctUntilChanged()
@@ -60,25 +61,23 @@ export class ChatMembersComponent {
     .subscribe((value : string) => {
       this.userParameters.Name = value;
       this.userParameters.PageNumber = 1;
-      console.log(value)
-      if((!value) || value.trim() == "" ){
-        // display members
-      }
-      else{
-        // display user results
-        this.searchUsers()
-      }
+      this.searchUsers()
     });
 
-    this.subscriptions.push(_subscription!);
+    const _s2 = this.chatService.onMemberRemove.subscribe((chatMember : ChatMemberDto) => {
+      this.close();
+    });
+
+    this.subscriptions.push(...[_s1!, _s2!]);
   }
 
   get search(){
     return this.searchForm.get("search")
   }
 
-
-  private searchUsers(){
+  searchUsers(){
+    console.log("load mpre")
+    this.isProcessing = true;
     this.userService.searchUsersByName(this.userParameters)
     .subscribe({
       next: (users : UserDto[]) => {
@@ -89,17 +88,30 @@ export class ChatMembersComponent {
           this.users.push(...users);
         }
         this.userParameters.PageNumber++;
-      }
+        this.isProcessing = false;
+      },
+      error : err => {
+        this.isProcessing = false
+      },
     });
   }
 
   close(){
     this.dialogRef?.close();
+    this.members = [];
+    this.users = [];
+    this.userParameters.PageNumber = 1;
+    this.userParameters.Name = ""
+    this.search?.setValue("");
   }
 
   open(){
     this.dialogRef = this.nbDialogService.open(this.chatMembersRef!)
-    console.log(this.chat)
+    this.isProcessing = true;
+    this.fetchMembers();
+  }
+
+  fetchMembers(){
     this.chatService.getMembersByChatId(this.chat?.chatId!)
     .pipe(
       take(1)
@@ -107,9 +119,12 @@ export class ChatMembersComponent {
     .subscribe({
       next : (members : ChatMemberDto[]) =>{
         this.members = members;
-        console.log(members)
+        this.isProcessing = false;
       },
-      error : err => this.errorHandlerService.handleError(err)
+      error : err => {
+        this.errorHandlerService.handleError(err);
+        this.isProcessing = false;
+      }
     })
   }
 
@@ -119,7 +134,10 @@ export class ChatMembersComponent {
     })[0];
   }
 
-  
+  memberAdded(){
+    this.fetchMembers()
+  }
 
-  
+
+
 }

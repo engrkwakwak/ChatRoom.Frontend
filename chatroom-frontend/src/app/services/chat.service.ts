@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { environment } from '../../environments/environment';
 import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { Observable, Subject } from 'rxjs';
 import { NewChatMessageDto } from '../dtos/chat/new-chat-message.dto';
 import { MessageDto } from '../dtos/chat/message.dto';
 import { ChatDto } from '../dtos/chat/chat.dto';
@@ -18,6 +18,9 @@ import { ChatMemberForUpdateDto } from '../dtos/chat/chat-member-for-update.dto'
 export class ChatService {
   public isChatlistVisible : boolean = false;
   public isMobile = true;
+
+  onGroupChatLeave : Subject<ChatDto> = new Subject<ChatDto>();
+  onMemberRemove : Subject<ChatMemberDto> = new Subject<ChatMemberDto>();
 
   constructor(
     private http : HttpClient
@@ -60,6 +63,10 @@ export class ChatService {
     return this.http.get<ChatMemberDto[]>(`${this.API_ENDPOINT}/chats/${chatId}/members`);
   }
 
+  getMemberByChatIdAndUserId(chatId : number, userId:number) : Observable<ChatMemberDto> {
+    return this.http.get<ChatMemberDto>(`${this.API_ENDPOINT}/chats/${chatId}/members/${userId}`);
+  }
+
   createChat(route: string, chat: ChatForCreationDto): Observable<ChatDto> {
     return this.http.post<ChatDto>(`${this.API_ENDPOINT}${route}`, chat);
   }
@@ -93,6 +100,14 @@ export class ChatService {
 
   setChatAdmin(chatId : number, memberUserId : number) : Observable<any> {
     return this.http.post<any>(`${this.API_ENDPOINT}/chats/${chatId}/set-admin/${memberUserId}`, {});
+  }
+
+  removeAdminRole(chatId : number, memberUserId : number) : Observable<any> {
+    return this.http.post<any>(`${this.API_ENDPOINT}/chats/${chatId}/remove-admin/${memberUserId}`, {});
+  }
+
+  removeChatMember(chatId : number, memberUserId : number) : Observable<any> {
+    return this.http.delete<any>(`${this.API_ENDPOINT}/chats/${chatId}/remove-member/${memberUserId}`, {});
   }
 
   leaveChat(chatId : number) : Observable<any> {

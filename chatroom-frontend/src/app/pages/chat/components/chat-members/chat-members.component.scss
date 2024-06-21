@@ -1,5 +1,19 @@
 @use "../../../../../themes.scss" as *;
 
+@mixin scrollbar {
+    &::-webkit-scrollbar{
+        width: 8px !important;
+
+    }
+    &::-webkit-scrollbar-track {
+        background: nb-theme(background-basic-color-1) !important; 
+    }
+    &::-webkit-scrollbar-thumb {
+        background: nb-theme(background-basic-color-4) !important; 
+        border-radius: 5px !important;
+    }
+}
+
 nb-card{
     width: 600px;
     max-width: 100vw;
@@ -16,6 +30,15 @@ nb-card{
                 border: none;
                 padding: 0.5rem 1rem;
                 margin: 0rem;
+            }
+        }
+        .list-con{
+            height: 50vh;
+            display: flex;
+            flex-direction: column;
+            nb-list{
+                @include scrollbar;
+                height: 100%;
             }
         }
     }
