@@ -84,10 +84,7 @@ export class ChatViewComponent implements OnInit, OnDestroy {
         this.messageListComponent.pushMessage(message);
       }
       if(message.chatId === this.chat?.chatId && this.userId != message.sender.userId) {
-        const isDuplicate = this.messageListComponent.messages.some(existingMessage => existingMessage.messageId === message.messageId);
-        if(!isDuplicate){
-          this.messageListComponent.pushMessage(message);
-        }
+        this.messageListComponent.pushMessage(message);
       }
     }));
 

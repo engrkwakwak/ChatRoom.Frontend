@@ -105,6 +105,12 @@ export class SignalRService {
       .catch(err => console.error('Error while joining group: ', err));
   }
 
+  public leaveGroup(chatId: number): void {
+    this.hubConnection.invoke('RemoveFromGroupAsync', chatId)
+      .then(() => console.log(`Remove from group chat-${chatId}`))
+      .catch(err => console.error('Error while leaving group: ', err));
+  }
+
   public updateConnection(token: string | null): void {
     this.token = token;
   
