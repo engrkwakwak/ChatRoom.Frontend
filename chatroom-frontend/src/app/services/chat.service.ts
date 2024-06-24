@@ -11,6 +11,7 @@ import { ChatParameters } from '../dtos/shared/chat-parameters.dto';
 import { ChatForCreationDto } from '../dtos/chat/chat-for-creation.dto';
 import { ChatMemberDto } from '../dtos/chat/chat-member.dto';
 import { ChatMemberForUpdateDto } from '../dtos/chat/chat-member-for-update.dto';
+import { ChatForUpdateDto } from '../dtos/chat/chat-for-update.dto';
 
 @Injectable({
   providedIn: 'root'
@@ -116,5 +117,9 @@ export class ChatService {
 
   broadcastTypingStatus(chatId : number) :  Observable<null>{
     return this.http.get<null>(`${this.API_ENDPOINT}/chats/${chatId}/typing`);
+  }
+
+  updateChat(route: string, chat: ChatForUpdateDto): Observable<void> {
+    return this.http.put<void>(`${this.API_ENDPOINT}${route}`, chat);
   }
 }

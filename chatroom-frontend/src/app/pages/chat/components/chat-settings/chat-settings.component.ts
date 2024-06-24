@@ -1,5 +1,5 @@
-import { Component, ElementRef, EventEmitter, Input, Output, TemplateRef, ViewChild } from '@angular/core';
-import { NbDialogRef, NbDialogService, NbWindowService } from '@nebular/theme';
+import { Component, ElementRef, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChange, SimpleChanges, TemplateRef, ViewChild } from '@angular/core';
+import { NbDialogRef, NbDialogService, NbToastrService, NbWindowService } from '@nebular/theme';
 import { ChatDto } from '../../../../dtos/chat/chat.dto';
 import { UserProfileService } from '../../../../services/user-profile.service';
 import { ChatService } from '../../../../services/chat.service';
@@ -9,31 +9,49 @@ import { Router } from '@angular/router';
 import { ChatMemberDto } from '../../../../dtos/chat/chat-member.dto';
 import { UserDisplayDto } from '../../../../dtos/chat/user-display.dto';
 import { ChatMembersComponent } from '../chat-members/chat-members.component';
+import { AbstractControl, FormControl, FormGroup, ValidationErrors, Validators } from '@angular/forms';
+import { HttpErrorResponse } from '@angular/common/http';
+import { ChatForUpdateDto } from '../../../../dtos/chat/chat-for-update.dto';
 
 @Component({
   selector: 'app-chat-settings',
   templateUrl: './chat-settings.component.html',
   styleUrl: './chat-settings.component.scss'
 })
-export class ChatSettingsComponent {
+export class ChatSettingsComponent implements OnInit, OnChanges {
 
   constructor(
     private nbDialogService : NbDialogService,
     private userProfileService : UserProfileService,
     private chatService : ChatService,
     private errorHandlerService : ErrorHandlerService,
-    private router : Router
+    private router : Router,
+    private toastrService: NbToastrService
   ){}
+
+  ngOnInit(): void {
+    this.chatForm = this.createGroupChatForm();
+  }
+
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes['chat'] && changes['chat'].currentValue) {
+      this.chatForm.patchValue({
+        chatName: this.chat?.chatName
+      });
+    }
+  }
 
   @Input({required:true}) chat? : ChatDto|null = null;
   @Input({required:true}) members : ChatMemberDto[] = [];
   @Output() onChatDelete : EventEmitter<any> = new EventEmitter<any>();
+  @Output() chatChangesSaved = new EventEmitter<ChatDto>();
 
   @ViewChild('deleteChatDialogComponent') deleteChatDialogComponent? : ConfirmationDialogComponent;
   @ViewChild('leaveChatDialogComponent') leaveChatDialogComponent? : ConfirmationDialogComponent;
   @ViewChild('chatSettingsRef') chatSettingsRef? : TemplateRef<any>;
   @ViewChild('chatMembersRef') chatMembersComponent? : ChatMembersComponent;
   dialogRef! : NbDialogRef<any>;
+  chatForm!: FormGroup;
 
   open(){
     this.dialogRef = this.nbDialogService.open(this.chatSettingsRef!);
@@ -41,6 +59,21 @@ export class ChatSettingsComponent {
 
   close(){
     this.dialogRef.close();
+  }
+
+  createGroupChatForm(): FormGroup {
+    return new FormGroup({
+      chatName: new FormControl('', [
+        Validators.maxLength(50),
+        this.noWhiteSpaceValidator
+      ])
+    });
+  }
+
+  noWhiteSpaceValidator(control: AbstractControl): ValidationErrors | null {
+    const isWhitespace = (control.value || '').trim().length === 0;
+    const isValid = !isWhitespace;
+    return isValid ? null : { whitespace: true };
   }
 
   loadDisplayPicture(){
@@ -115,8 +148,54 @@ export class ChatSettingsComponent {
     });
   }
 
+  public onFileChange(event: any) {
+    const input = event.target as HTMLInputElement;
+    if(input.files && input.files.length > 0) {
+      const file = input.files[0];
+      if(this.validateFile(file)) {
+        this.uploadPicture(file);
+      }
+    }
+  }
+  uploadPicture(file: File) {
+    const formData = new FormData();
+    formData.append('file', file, file.name);
 
- ngOnInit(){
-  
- }
+    const apiUri: string = `/chats/display-picture`;
+    this.userProfileService.uploadPicture(apiUri, formData).subscribe({
+      next: (fileUrl) => {
+        if(fileUrl && this.chat){
+          this.chat!.displayPictureUrl = fileUrl
+        }
+        
+      },
+      error: (err) => this.errorHandlerService.handleError(err)
+    });
+  }
+
+  validateFile(file: File): boolean {
+    const validImageTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif', 'image/bmp', 'image/webp'];
+    if (!validImageTypes.includes(file.type)) {
+      alert('Invalid file type. Please select an image file. Available image types are "jpeg, jpg, png, gif, bmp, and webp".');
+      return false;
+    }
+    return true;
+  }
+
+  updateChat() {
+    const chat: ChatForUpdateDto = {
+      chatName: this.chatForm.value.chatName,
+      displayPictureUrl: this.chat?.displayPictureUrl
+    };
+
+    const apiUrl: string =  `/chats/${this.chat?.chatId}`;
+    this.chatService.updateChat(apiUrl, chat).subscribe({
+      next: () => {
+        this.chat!.chatName = chat.chatName;
+        this.chatChangesSaved.emit(this.chat!);
+        this.toastrService.success('Group chat information is successfully updated.');
+      },
+      error: (err: HttpErrorResponse) => this.errorHandlerService.handleError(err)
+    });
+  }
 }

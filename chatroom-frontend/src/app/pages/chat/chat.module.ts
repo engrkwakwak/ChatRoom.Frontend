@@ -92,7 +92,8 @@ import { ChatMemberItemComponent } from './components/chat-member-item/chat-memb
     MenuModule,
     NbDialogModule.forRoot(),
     NbCheckboxModule,
-    NbTooltipModule
+    NbTooltipModule,
+    NbEvaIconsModule
   ]
 })
 export class ChatModule { }
