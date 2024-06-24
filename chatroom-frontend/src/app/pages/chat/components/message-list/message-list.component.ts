@@ -50,14 +50,14 @@ export class MessageListComponent implements OnInit, OnChanges, AfterViewInit {
   
   ngOnInit(): void {
     this.loadMessages();
-    this.signalRService.getTypingUser().subscribe((chatMember : ChatMemberDto) => {
-      if(this.chatId == chatMember.chatId){
-        this.typingIndicatorStatus = true;
-        setTimeout(() => {
-          this.typingIndicatorStatus = false;
-        }, 2000);
-      }
-    });
+    // this.signalRService.getTypingUser().subscribe((chatMember : ChatMemberDto) => {
+    //   if(this.chatId == chatMember.chatId){
+    //     this.typingIndicatorStatus = true;
+    //     setTimeout(() => {
+    //       this.typingIndicatorStatus = false;
+    //     },500);
+    //   }
+    // });
   }
 
   ngAfterViewInit(): void {

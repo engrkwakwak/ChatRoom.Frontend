@@ -74,7 +74,6 @@ export class SignalRService {
     });
 
     this.hubConnection.on('ChatlistNewMessage', (data: ChatHubChatlistUpdateDto) => {
-      console.log(data)
       this.chatListNewMessage.next(data);
     });
 

@@ -6,6 +6,8 @@
                 <div class="d-flex align-items-end flex-column mb-3">
                     <div class="p-2 message-text">
                         {{message.content}}
+                        <br>
+                        <span class="opacity-50 small">{{message.dateSent | date:"MMM d, y, h:mm a"}}</span>
                     </div>
                     <div class="mt-auto p-2 align-self-end" *ngIf="hasLastSeenUsers(message)">                
                         <app-avatar *ngFor="let user of message.lastSeenUsers" 
