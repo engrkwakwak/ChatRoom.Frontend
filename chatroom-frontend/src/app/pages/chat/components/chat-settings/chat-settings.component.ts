@@ -1,4 +1,4 @@
-import { Component, ElementRef, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChange, SimpleChanges, TemplateRef, ViewChild } from '@angular/core';
+import { Component, ElementRef, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChange, SimpleChanges, TemplateRef, ViewChild, ɵgetUnknownElementStrictMode } from '@angular/core';
 import { NbDialogRef, NbDialogService, NbToastrService, NbWindowService } from '@nebular/theme';
 import { ChatDto } from '../../../../dtos/chat/chat.dto';
 import { UserProfileService } from '../../../../services/user-profile.service';
@@ -39,6 +39,14 @@ export class ChatSettingsComponent implements OnInit, OnChanges {
         chatName: this.chat?.chatName
       });
     }
+    if (changes['members'] && changes['members'].currentValue) {
+      const sessionUserId = this.userProfileService.getUserIdFromToken();
+      const member = this.members.find(member => member.user.userId == sessionUserId);
+
+      if(member){
+        this.rightToMakeChanges = member.isAdmin;
+      }
+    }
   }
 
   @Input({required:true}) chat? : ChatDto|null = null;
@@ -52,6 +60,7 @@ export class ChatSettingsComponent implements OnInit, OnChanges {
   @ViewChild('chatMembersRef') chatMembersComponent? : ChatMembersComponent;
   dialogRef! : NbDialogRef<any>;
   chatForm!: FormGroup;
+  rightToMakeChanges: boolean = false;
 
   open(){
     this.dialogRef = this.nbDialogService.open(this.chatSettingsRef!);

@@ -10,10 +10,10 @@
             </button>
         </div>
         <input type="file" #file placeholder="Choose an image" accept="image/*" (change)="onFileChange($event)" style="display: none;">
-        <app-avatar [width]="100" [height]="100" [src]="loadDisplayPicture()" (click)="file.click()" />
+        <app-avatar [width]="100" [height]="100" [src]="loadDisplayPicture()" (click)="this.rightToMakeChanges ? file.click() : ''" />
         <form [formGroup]="chatForm">
-            <h6 *ngIf="chat?.chatTypeId === 1">{{ chat?.chatTypeId == 2 ? chat?.chatName : getReceiver()?.displayName }}</h6>
-            <div *ngIf="chat?.chatTypeId === 2" class="row form-group">
+            <h6 *ngIf="chat?.chatTypeId === 1 || !this.rightToMakeChanges">{{ chat?.chatTypeId == 2 ? chat?.chatName : getReceiver()?.displayName }}</h6>
+            <div *ngIf="chat?.chatTypeId === 2  && this.rightToMakeChanges" class="row form-group">
                 <div class="col">
                 </div>
                 <div class="col-6">
