@@ -26,6 +26,7 @@ import { ChatMemberForUpdateDto } from '../../../dtos/chat/chat-member-for-updat
 export class ChatViewComponent implements OnInit {
   @ViewChild('messageList') messageListComponent!: MessageListComponent;
 
+
   userId: number = 0;
   chatId: number = 0;
   receiverId: number = 0;
@@ -74,6 +75,9 @@ export class ChatViewComponent implements OnInit {
       }
     });
     this.signalRService.getNewMessageReceived().subscribe((message: MessageDto) => {
+      if(message.messageType.msgTypeId == 2 && this.userId == message.sender.userId){
+        this.messageListComponent.pushMessage(message);
+      }
       if(message.chatId === this.chat?.chatId && this.userId != message.sender.userId) {
         const isDuplicate = this.messageListComponent.messages.some(existingMessage => existingMessage.messageId === message.messageId);
         if(!isDuplicate){
@@ -115,6 +119,14 @@ export class ChatViewComponent implements OnInit {
       if(chatId === this.chat?.chatId){
         this.router.navigate(["/chat"]);
       }
+    });
+
+    this.chatService.onMemberRemove.subscribe((chatMember : ChatMemberDto) => {
+      this.members.forEach((_member:ChatMemberDto, i) => {
+        if(_member.user.userId == chatMember.user.userId && chatMember.chatId == _member.chatId){
+          this.members.splice(i, 1);
+        }
+      });
     });
   }
 
@@ -244,4 +256,5 @@ export class ChatViewComponent implements OnInit {
   chatformInputChange(){
     this.chatService.broadcastTypingStatus(this.chatId).subscribe();
   }
+
 }

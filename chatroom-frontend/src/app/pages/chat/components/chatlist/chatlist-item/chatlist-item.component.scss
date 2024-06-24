@@ -9,5 +9,6 @@
     max-width: 250px !important;
     overflow: hidden;
     text-overflow: ellipsis;
-
+    text-wrap: nowrap;
+    color: nb-theme(color-basic-300);
 }

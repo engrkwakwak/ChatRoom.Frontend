@@ -1,0 +1,67 @@
+<ng-template #chatMembersRef>
+    <div class="">
+        <nb-card >
+            <nb-card-header>
+                <div class="row">
+                    <div class="col">
+                        <nb-icon icon="people"></nb-icon>
+                        Members
+                    </div>
+                    <div class="col-auto">
+                        <button nbButton size="small" ghost (click)="close()">
+                            <nb-icon icon="close"></nb-icon>
+                        </button>
+                    </div>
+                </div>
+            </nb-card-header>
+            <nb-card-body>
+                <form [formGroup]="searchForm" class="search-form">
+                    <input placeholder="Search Member or User to add or remove members" type="search" formControlName="search" nbInput fullWidth>
+                </form>
+                <div class="list-con">
+                    <ng-container *ngIf="!search?.value || search?.value.trim() == ''; else usersTemplate " >
+                        <p class="px-3">
+                            Members
+                        </p>
+                        <nb-list >
+                            <nb-list-item *ngFor="let member of members">
+                                <app-chat-member-item type="member" [member]="member" [chat]="chat!"  class="w-100" />
+                            </nb-list-item>
+                        </nb-list>
+                    </ng-container>
+                    <ng-template #usersTemplate>
+                        <p class="px-3">
+                            Users
+                        </p>
+                        <nb-list 
+                            nbInfiniteList
+                            [threshold]="200"
+                            [throttleTime]="1000"
+                            (bottomThreshold)="searchUsers()">
+                            <nb-list-item *ngFor="let user of users">
+                                <ng-container *ngIf="getMembership(user); else notMemberRef">
+                                    <app-chat-member-item type="member" [member]="getMembership(user)" [chat]="chat!"  class="w-100" />
+                                </ng-container>
+                                <ng-template #notMemberRef>
+                                    <app-chat-member-item type="user" [user]="user" class="w-100" [chat]="chat!" (onMemberAdded)="memberAdded()" />
+                                </ng-template>
+                                
+                            </nb-list-item>
+                            <nb-list-item *ngIf="users.length == 0">
+                                <p class="text-center opacity-50">
+                                    No Results found
+                                </p>
+                            </nb-list-item>
+                        </nb-list>
+                    </ng-template>
+                </div>
+
+                <div class="p-3" *ngIf="isProcessing">
+                    <p-skeleton styleClass="mb-2" height="2rem" />
+                    <p-skeleton styleClass="mb-2" height="1rem" />
+                </div>
+                
+            </nb-card-body>
+        </nb-card>
+    </div>
+</ng-template>

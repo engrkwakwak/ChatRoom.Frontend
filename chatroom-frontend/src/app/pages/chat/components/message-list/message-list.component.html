@@ -1,10 +1,13 @@
 <nb-chat #chatContainer>
     <div *nbCustomMessage="'app-message'; let message;noStyles:true" class="app-custom-message">
+
         <div [class]="currentUserId == message.sender?.userId ? 'content reply' : 'content'">
             <div class="message-con">
                 <div class="d-flex align-items-end flex-column mb-3">
                     <div class="p-2 message-text">
                         {{message.content}}
+                        <br>
+                        <span class="opacity-50 small">{{message.dateSent | date:"MMM d, y, h:mm a"}}</span>
                     </div>
                     <div class="mt-auto p-2 align-self-end" *ngIf="hasLastSeenUsers(message)">                
                         <app-avatar *ngFor="let user of message.lastSeenUsers" 
@@ -34,15 +37,22 @@
             </p>
         </div>
     </div>
-
+    
+    <div *nbCustomMessage="'app-notif';noStyles:true;let message" class="app-custom-message">
+        <div class="">
+            <p class="text-center">
+                <span class="opacity-75">{{ message.dateSent | date:"LLL d, YYYY h:mm a" }}</span>  {{ message.content }}
+            </p>
+        </div>
+    </div>
 
     <nb-chat-message *ngFor="let message of messages"
-        type="app-message"
+        [type]="message.messageType.msgTypeId == 1 ? 'app-message' : 'app-notif' "
         [customMessageData]="message"
-        [reply]="this.currentUserId === message.sender.userId"
-        [sender]="message.sender.displayName"
-        [date]="message.dateSent"
-        [avatar]="loadProfilePicture(message.sender)">
+        [reply]="message.messageType.msgTypeId == 1 ? this.currentUserId === message.sender.userId : true"
+        [avatar]="loadProfilePicture(message.sender)"
+        [sender]="message.messageType.msgTypeId == 1 ? message.sender.displayName : ''"
+        >
     </nb-chat-message>
     
     <nb-chat-message type="app-typing" [reply]="true"> </nb-chat-message>

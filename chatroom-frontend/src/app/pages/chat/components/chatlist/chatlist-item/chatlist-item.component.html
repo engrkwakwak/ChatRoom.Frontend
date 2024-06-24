@@ -6,7 +6,7 @@
         <app-avatar [src]="loadProfilePicture()" />
     </div>
     <div class="col pe-0 name-container">
-        <p class="mb-0" >{{ chat?.chatTypeId == 2 ?  chat?.chatName : receiver?.displayName }}</p>
+        <p class="mb-0 fw-bold opacity-75" >{{ chat?.chatTypeId == 2 ?  chat?.chatName : receiver?.displayName }}</p>
         <p class="latest-message">{{ latestMessage?.content }}</p>
         <p class="date-sent">{{ latestMessage?.dateSent | date:"LLL d, YYYY h:m a" }}</p>
     </div>

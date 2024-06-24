@@ -1,7 +1,6 @@
 import { Component, ElementRef, EventEmitter, Input, Output, TemplateRef, ViewChild } from '@angular/core';
 import { NbDialogRef, NbDialogService, NbWindowService } from '@nebular/theme';
 import { ChatDto } from '../../../../dtos/chat/chat.dto';
-import { UserDto } from '../../../../dtos/chat/user.dto';
 import { UserProfileService } from '../../../../services/user-profile.service';
 import { ChatService } from '../../../../services/chat.service';
 import { ErrorHandlerService } from '../../../../services/error-handler.service';
@@ -9,6 +8,7 @@ import { ConfirmationDialogComponent } from '../confirmation-dialog/confirmation
 import { Router } from '@angular/router';
 import { ChatMemberDto } from '../../../../dtos/chat/chat-member.dto';
 import { UserDisplayDto } from '../../../../dtos/chat/user-display.dto';
+import { ChatMembersComponent } from '../chat-members/chat-members.component';
 
 @Component({
   selector: 'app-chat-settings',
@@ -30,7 +30,9 @@ export class ChatSettingsComponent {
   @Output() onChatDelete : EventEmitter<any> = new EventEmitter<any>();
 
   @ViewChild('deleteChatDialogComponent') deleteChatDialogComponent? : ConfirmationDialogComponent;
+  @ViewChild('leaveChatDialogComponent') leaveChatDialogComponent? : ConfirmationDialogComponent;
   @ViewChild('chatSettingsRef') chatSettingsRef? : TemplateRef<any>;
+  @ViewChild('chatMembersRef') chatMembersComponent? : ChatMembersComponent;
   dialogRef! : NbDialogRef<any>;
 
   open(){
@@ -47,6 +49,13 @@ export class ChatSettingsComponent {
       return this.userProfileService.loadDisplayPicture(receiver?.displayPictureUrl!, receiver?.displayName!);
     }
     return this.userProfileService.loadDisplayPicture(this.chat?.displayPictureUrl!, this.chat?.chatName!);
+  }
+
+  isAdmin(){
+    const userId = this.userProfileService.getUserIdFromToken()
+    return this.members.filter(member => {
+      return member.user?.userId == userId || member.userId == userId
+    })[0].isAdmin
   }
 
   getReceiver() : UserDisplayDto|null{
@@ -78,6 +87,36 @@ export class ChatSettingsComponent {
     })
   }
 
-  ngAfterViewInit(){
+  showMembersDialog(){
+    this.close()
+    this.chatMembersComponent?.open();
   }
+
+  confirmLeaveChat(){
+    this.dialogRef.close();
+    this.leaveChatDialogComponent?.open();
+  }
+
+  leaveChat(){
+    this.leaveChatDialogComponent!.loading = true;
+    this.chatService.leaveChat(this.chat?.chatId!)
+    .subscribe({
+      next : _ => {
+        this.chatService.onGroupChatLeave.next(this.chat!);
+        this.router.navigate(["/chat"]);
+        this.leaveChatDialogComponent?.close();
+        this.leaveChatDialogComponent!.loading = false;
+      },
+      error : err => {
+        this.leaveChatDialogComponent?.close();
+        this.errorHandlerService.handleError(err);
+        this.leaveChatDialogComponent!.loading = false;
+      }
+    });
+  }
+
+
+ ngOnInit(){
+  
+ }
 }
