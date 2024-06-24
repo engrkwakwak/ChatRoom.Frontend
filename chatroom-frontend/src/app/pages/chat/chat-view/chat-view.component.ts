@@ -1,4 +1,4 @@
-import { AfterViewInit, ChangeDetectorRef, Component, OnInit, ViewChild } from '@angular/core';
+import { AfterViewInit, ChangeDetectorRef, Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Subscription, concat, tap } from 'rxjs';
 import { ChatService } from '../../../services/chat.service';
@@ -23,9 +23,9 @@ import { ChatMemberForUpdateDto } from '../../../dtos/chat/chat-member-for-updat
   templateUrl: './chat-view.component.html',
   styleUrls: ['./chat-view.component.scss']
 })
-export class ChatViewComponent implements OnInit {
+export class ChatViewComponent implements OnInit, OnDestroy {
   @ViewChild('messageList') messageListComponent!: MessageListComponent;
-
+  private subscriptions: Subscription = new Subscription();
 
   userId: number = 0;
   chatId: number = 0;
@@ -49,6 +49,10 @@ export class ChatViewComponent implements OnInit {
     private router : Router,
   ) {}
 
+  ngOnDestroy(): void {
+    this.subscriptions.unsubscribe();
+  }
+
   initializeMessageListComponent(): void {
     if(!this.messageListComponent || this.messageListComponent.messages.length <= 0){
       return;
@@ -62,7 +66,7 @@ export class ChatViewComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.activatedRoute.paramMap.subscribe({
+    this.subscriptions.add(this.activatedRoute.paramMap.subscribe({
       next: (paramMap) => {
         this.userId = this.userProfileService.getUserIdFromToken();
         if(paramMap.has("chatId")){
@@ -73,8 +77,9 @@ export class ChatViewComponent implements OnInit {
           this.initChatFromContacts();
         }
       }
-    });
-    this.signalRService.getNewMessageReceived().subscribe((message: MessageDto) => {
+    }));
+
+    this.subscriptions.add(this.signalRService.getNewMessageReceived().subscribe((message: MessageDto) => {
       if(message.messageType.msgTypeId == 2 && this.userId == message.sender.userId){
         this.messageListComponent.pushMessage(message);
       }
@@ -84,8 +89,9 @@ export class ChatViewComponent implements OnInit {
           this.messageListComponent.pushMessage(message);
         }
       }
-    });
-    this.signalRService.getLastSeenMessage().subscribe((chatMember: ChatMemberDto) => {
+    }));
+
+    this.subscriptions.add(this.signalRService.getLastSeenMessage().subscribe((chatMember: ChatMemberDto) => {
       if(chatMember.chatId === this.chat?.chatId) {
         const member = this.members.find(member => member.user.userId == chatMember.user.userId);
         if(member){
@@ -93,9 +99,9 @@ export class ChatViewComponent implements OnInit {
           member.lastSeenMessageId = chatMember.lastSeenMessageId;
         }
       }
-    });
+    }));
 
-    this.signalRService.getUpdatedMessage().subscribe((message:MessageDto) => {
+    this.subscriptions.add(this.signalRService.getUpdatedMessage().subscribe((message:MessageDto) => {
       if(message.chatId === this.chat?.chatId && this.userId != message.sender.userId){
         this.messageListComponent.messages.forEach((_message : MessageDto, i:number) => {
           if(_message.messageId == message.messageId){
@@ -103,9 +109,9 @@ export class ChatViewComponent implements OnInit {
           }
         });
       }
-    });
+    }));
 
-    this.signalRService.getDeletedMessage().subscribe((message:MessageDto) => {
+    this.subscriptions.add(this.signalRService.getDeletedMessage().subscribe((message:MessageDto) => {
       if(message.chatId === this.chat?.chatId && this.userId != message.sender.userId){
         this.messageListComponent.messages.forEach((_message : MessageDto, i:number) => {
           if(_message.messageId == message.messageId){
@@ -113,21 +119,21 @@ export class ChatViewComponent implements OnInit {
           }
         });
       }
-    });
+    }));
 
-    this.signalRService.getDeletedChatId().subscribe((chatId:number) => {
+    this.subscriptions.add(this.signalRService.getDeletedChatId().subscribe((chatId:number) => {
       if(chatId === this.chat?.chatId){
         this.router.navigate(["/chat"]);
       }
-    });
+    }));
 
-    this.chatService.onMemberRemove.subscribe((chatMember : ChatMemberDto) => {
+    this.subscriptions.add(this.chatService.onMemberRemove.subscribe((chatMember : ChatMemberDto) => {
       this.members.forEach((_member:ChatMemberDto, i) => {
         if(_member.user.userId == chatMember.user.userId && chatMember.chatId == _member.chatId){
           this.members.splice(i, 1);
         }
       });
-    });
+    }));
   }
 
   private initChatFromContacts() {
@@ -204,6 +210,12 @@ export class ChatViewComponent implements OnInit {
     this.executeLastSeenMessageUpdate(sender, message);
   }
 
+  onChatChangesSaved(chat: ChatDto) {
+    if(chat) {
+      this.profileImageSrc = chat.displayPictureUrl ?? '';
+    }
+  }
+
   executeLastSeenMessageUpdate(sender: ChatMemberDto, message: MessageDto): void {
     const chatMember: ChatMemberForUpdateDto = {
       isAdmin: sender!.isAdmin,
@@ -254,7 +266,7 @@ export class ChatViewComponent implements OnInit {
   }
 
   chatformInputChange(){
-    this.chatService.broadcastTypingStatus(this.chatId).subscribe();
+    //this.chatService.broadcastTypingStatus(this.chatId).subscribe();
   }
 
 }
