@@ -82,7 +82,6 @@ export class AddMembersModalComponent implements OnInit {
     this.userService.getUsers(uri).subscribe({
       next: (res) => {
         const newUsers = res.body || [];
-        console.log(newUsers)
         this.selectedUsers.forEach(selectedUser => {
           const index = newUsers.findIndex(user => user.userId === selectedUser.userId);
           if (index !== -1) {

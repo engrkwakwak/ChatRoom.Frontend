@@ -76,7 +76,6 @@ export class ChatMembersComponent {
   }
 
   searchUsers(){
-    console.log("load mpre")
     this.isProcessing = true;
     this.userService.searchUsersByName(this.userParameters)
     .subscribe({
