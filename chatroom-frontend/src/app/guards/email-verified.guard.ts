@@ -22,19 +22,19 @@ export class EmailVerifiedGuard  {
       this.authService.isEmailVerified(decodedToken.sub)
       .subscribe({
         next: isVerified => {
-          if(!isVerified){
+          if(!isVerified && route.routeConfig?.path === 'email-verification'){
+            resolve(true)
+          }
+          if(!isVerified && route.routeConfig?.path != 'email-verification'){
             this.router.navigate(["/email-verification"]);
-            resolve(false)
           }
           if(isVerified && route.routeConfig?.path === 'email-verification'){
             this.router.navigate(["/chat"]);
-            resolve(false)
           }
           resolve(true);
         },
         error: err => {
           this.router.navigate(["/email-verification"]);
-          resolve(false)
         }
       })
     })
