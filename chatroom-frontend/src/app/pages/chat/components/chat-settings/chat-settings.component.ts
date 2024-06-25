@@ -12,6 +12,7 @@ import { ChatMembersComponent } from '../chat-members/chat-members.component';
 import { AbstractControl, FormControl, FormGroup, ValidationErrors, Validators } from '@angular/forms';
 import { HttpErrorResponse } from '@angular/common/http';
 import { ChatForUpdateDto } from '../../../../dtos/chat/chat-for-update.dto';
+import { SignalRService } from '../../../../services/signal-r.service';
 
 @Component({
   selector: 'app-chat-settings',
@@ -26,7 +27,8 @@ export class ChatSettingsComponent implements OnInit, OnChanges {
     private chatService : ChatService,
     private errorHandlerService : ErrorHandlerService,
     private router : Router,
-    private toastrService: NbToastrService
+    private toastrService: NbToastrService,
+    private signalRService: SignalRService
   ){}
 
   ngOnInit(): void {
@@ -120,7 +122,6 @@ export class ChatSettingsComponent implements OnInit, OnChanges {
     this.chatService.deleteChatByChatId(this.chat?.chatId!)
     .subscribe({
       next : _ => {
-        console.log(_)
         this.onChatDelete.emit()
         this.router.navigate(["/chat"])
         // remove chat from chatlist 
@@ -148,6 +149,8 @@ export class ChatSettingsComponent implements OnInit, OnChanges {
         this.router.navigate(["/chat"]);
         this.leaveChatDialogComponent?.close();
         this.leaveChatDialogComponent!.loading = false;
+
+        this.signalRService.leaveGroup(this.chat!.chatId);
       },
       error : err => {
         this.leaveChatDialogComponent?.close();

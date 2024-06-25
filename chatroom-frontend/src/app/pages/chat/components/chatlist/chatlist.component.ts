@@ -12,6 +12,7 @@ import { CreateGroupChatModalComponent } from '../create-group-chat-modal/create
 import { ChatForCreationDto } from '../../../../dtos/chat/chat-for-creation.dto';
 import { AddMembersDialogContext } from '../../../../dtos/chat/add-members-dialog-context';
 import { AddMembersModalComponent } from '../add-members-modal/add-members-modal.component';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-chatlist',
@@ -19,6 +20,8 @@ import { AddMembersModalComponent } from '../add-members-modal/add-members-modal
   styleUrl: './chatlist.component.scss'
 })
 export class ChatlistComponent {
+  private subscriptions: Subscription = new Subscription();
+
   constructor(
     private router : Router,
     private userProfileSerview : UserProfileService,
@@ -103,6 +106,7 @@ export class ChatlistComponent {
       if(`/chat/view/from-chatlist/${chat.chatId}`){
         this.router.navigate(["/chat"]);
       }
+      this.signalRService.leaveGroup(chat.chatId);
     });
   }
 

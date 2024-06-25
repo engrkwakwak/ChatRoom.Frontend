@@ -3,7 +3,7 @@ import { ChatMemberDto } from '../../../../dtos/chat/chat-member.dto';
 import { UserProfileService } from '../../../../services/user-profile.service';
 import { Menu } from 'primeng/menu';
 import { NbMenuItem, NbMenuService } from '@nebular/theme';
-import { filter, map } from 'rxjs';
+import { filter, map, take } from 'rxjs';
 import { UserDto } from '../../../../dtos/chat/user.dto';
 import { ChatService } from '../../../../services/chat.service';
 import { ChatDto } from '../../../../dtos/chat/chat.dto';
@@ -37,7 +37,7 @@ export class ChatMemberItemComponent {
     this.userId = this.userProfileService.getUserIdFromToken()
     this.nbMenuService.onItemClick()
     .pipe(
-      filter(({ tag  }) => tag === `member-actions-menu-${this.member?.user.userId}`),
+      filter(({ tag  }) => tag === `member-actions-menu-${this.member?.user.userId}-${this.chat?.chatId}`),
       map(({ item: { title } }) => title),
     )
     .subscribe(title => {
@@ -131,6 +131,9 @@ export class ChatMemberItemComponent {
   private RemoveMember(){
     this.loading = true;
     this.chatService.removeChatMember(this.chat?.chatId!, this.member?.user?.userId!)
+    // .pipe(
+    //   take(1)
+    // )
     .subscribe({
       next : _ => {
         this.loading = false;
