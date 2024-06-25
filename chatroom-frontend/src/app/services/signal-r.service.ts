@@ -85,6 +85,10 @@ export class SignalRService {
       this.chatlistRemovedFromChat.next(chat);
     });
 
+    this.hubConnection.on('AddedToChat', (chatId) => {
+      this.joinGroup(chatId);
+    });
+
     this.hubConnection.start()
       .then(() => {
         this.isConnected = true;

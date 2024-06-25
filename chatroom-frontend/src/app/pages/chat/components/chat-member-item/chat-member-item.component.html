@@ -13,7 +13,7 @@
                 <p-progressSpinner [style]="{width: '30px', height: '30px'}" *ngIf="loading"  />
             </div>
             <div class="col-auto p-0" *ngIf="userMembership?.isAdmin && member?.user?.userId != userId">
-                <button nbButton size="small" ghost [nbContextMenu]="memberOptions" nbContextMenuTag="member-actions-menu-{{ member?.user?.userId! }}" >
+                <button nbButton size="small" ghost [nbContextMenu]="memberOptions" nbContextMenuTag="member-actions-menu-{{ member?.user?.userId! }}-{{this.chat?.chatId}}" >
                     <nb-icon icon="more-horizontal"></nb-icon>
                 </button>
             </div>
