@@ -19,7 +19,7 @@ import { Router } from '@angular/router';
 })
 export class UserProfileComponent implements OnInit {
   @Input({required: true}) userId!: number;
-  isUserFormEditable: boolean = false;
+  isUserFormEditable: boolean = true;
   user!: UserDto;
   userForm!: FormGroup;
 
