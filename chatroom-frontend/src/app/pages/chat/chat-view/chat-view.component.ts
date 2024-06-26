@@ -139,7 +139,7 @@ export class ChatViewComponent implements OnInit, OnDestroy {
     this.subscriptions.add(
       this.signalRService.getUserTypingStart()
       .subscribe((member) => {
-        if(member.user.userId != this.userId){
+        if(member.user.userId != this.userId && member.chatId == this.chatId){
           this.typingUser = member.user.displayName;
           this.someoneIsTyping = true;
         }
