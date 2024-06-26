@@ -8,6 +8,7 @@ import { ContactParameters } from '../../../../dtos/shared/contact-parameters.dt
 import { UserDto } from '../../../../dtos/chat/user.dto';
 import { ChatService } from '../../../../services/chat.service';
 import { SignalRService } from '../../../../services/signal-r.service';
+import { Subject, debounce, debounceTime, distinctUntilChanged } from 'rxjs';
 
 @Component({
   selector: 'app-chat-contacts',
@@ -42,15 +43,19 @@ export class ChatContactsComponent {
     private signalRService : SignalRService
   ) {}
 
-  search(ev: any) {
-    const name: string = ev.target.value.trimEnd();
-    this.resetUsers(ev.target.value.trimEnd());
-    this.resetContacts(ev.target.value.trimEnd());
+  searchInput : Subject<string> = new Subject<string>();
+  search(keyword : string) {
+    this.resetUsers(keyword);
+    this.resetContacts(keyword);
     this.fetchContacts();
-    if (!ev.target.value || ev.target.value.trimEnd() === " ") {
+    if (!keyword || keyword.trimEnd() === " ") {
       return;
     }
     this.fetchUser();
+  }
+
+  onSearchInput(ev:any){
+    this.searchInput.next(ev.target.value.trimEnd());
   }
 
   hideContactList() {
@@ -151,5 +156,13 @@ export class ChatContactsComponent {
     this.signalRService.getContactsUpdated().subscribe(() => {
       this.onContactUpdate();
     });
+    this.searchInput
+    .pipe(
+      distinctUntilChanged(),
+      debounceTime(300)
+    )
+    .subscribe(keyword => {
+      this.search(keyword)
+    })
   }
 }

@@ -12,7 +12,7 @@ import { CreateGroupChatModalComponent } from '../create-group-chat-modal/create
 import { ChatForCreationDto } from '../../../../dtos/chat/chat-for-creation.dto';
 import { AddMembersDialogContext } from '../../../../dtos/chat/add-members-dialog-context';
 import { AddMembersModalComponent } from '../add-members-modal/add-members-modal.component';
-import { Subscriber, Subscription, take } from 'rxjs';
+import { Observable, Subject, Subscriber, Subscription, debounce, debounceTime, distinctUntilChanged, take } from 'rxjs';
 
 @Component({
   selector: 'app-chatlist',
@@ -33,6 +33,7 @@ export class ChatlistComponent {
 
   chats : ChatDto[] = [];
   fetchingChats : boolean = false;
+  searchInput = new Subject<string>();
   chatlistUpdated : boolean = false;
   chatParams : ChatParameters = {
     PageSize : 10,
@@ -74,13 +75,15 @@ export class ChatlistComponent {
     })
   }
 
-  search(ev : any){
-    this.chatParams.Name = ev.target.value.trimEnd();
-    this.resetParams();
-    this.fetchChats();
+  onSearchInput(ev : any){
+    this.searchInput.next(ev.target.value.trimEnd())
   }
 
-  resetParams(){
+  // searchListener() : Observable<string>{
+  //   return this.searchInput.as
+  // }
+
+  private resetParams(){
     this.chats = [];
     this.chatParams.PageNumber = 1
   }
@@ -122,6 +125,18 @@ export class ChatlistComponent {
       }
       this.signalRService.leaveGroup(chat.chatId);
     });
+
+    this.searchInput
+    .pipe(
+      debounceTime(300),
+      distinctUntilChanged()
+    )
+    .subscribe(keyword => {
+      this.chatParams.Name = keyword;
+      this.resetParams();
+      this.fetchChats();
+    })
+
   }
 
   removeFromChats(chat:ChatDto){
