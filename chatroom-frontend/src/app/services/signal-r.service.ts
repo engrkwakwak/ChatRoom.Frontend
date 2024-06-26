@@ -24,7 +24,7 @@ export class SignalRService {
   private chatListNewMessage = new Subject<ChatHubChatlistUpdateDto>();
   private chatListDeletedChat = new Subject<ChatHubChatlistUpdateDto>();
   private chatlistRemovedFromChat = new Subject<ChatDto>();
-  private newChatCreated = new Subject<ChatHubChatlistUpdateDto>();
+  private contactsUpdated = new Subject<any>();
   private isConnected: boolean = false;
 
   constructor(
@@ -89,6 +89,10 @@ export class SignalRService {
 
     this.hubConnection.on('AddedToChat', (chatId) => {
       this.joinGroup(chatId);
+    });
+
+    this.hubConnection.on('ContactsUpdated', () => {
+      this.contactsUpdated.next(null);
     });
 
     this.hubConnection.start()
@@ -174,6 +178,10 @@ export class SignalRService {
 
   public getRemovedFromChat() : Observable<ChatDto>{
     return this.chatlistRemovedFromChat.asObservable();
+  }
+
+  public getContactsUpdated() : Observable<any>{
+    return this.contactsUpdated.asObservable();
   }
 
 }

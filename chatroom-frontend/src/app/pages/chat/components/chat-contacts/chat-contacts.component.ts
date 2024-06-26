@@ -7,6 +7,7 @@ import { UserSearchParameters } from '../../../../dtos/shared/user-search-parame
 import { ContactParameters } from '../../../../dtos/shared/contact-parameters.dto';
 import { UserDto } from '../../../../dtos/chat/user.dto';
 import { ChatService } from '../../../../services/chat.service';
+import { SignalRService } from '../../../../services/signal-r.service';
 
 @Component({
   selector: 'app-chat-contacts',
@@ -37,7 +38,8 @@ export class ChatContactsComponent {
     private contactService: ContactService,
     private authService: AuthService,
     private router: Router,
-    private chatModuleService: ChatService
+    private chatModuleService: ChatService,
+    private signalRService : SignalRService
   ) {}
 
   search(ev: any) {
@@ -146,5 +148,8 @@ export class ChatContactsComponent {
   ngOnInit() {
     this.contactParams.UserId = this.authService.getUserIdFromSession();
     this.fetchContacts();
+    this.signalRService.getContactsUpdated().subscribe(() => {
+      this.onContactUpdate();
+    });
   }
 }
