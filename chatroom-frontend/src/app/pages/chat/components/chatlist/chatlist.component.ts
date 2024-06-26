@@ -12,7 +12,7 @@ import { CreateGroupChatModalComponent } from '../create-group-chat-modal/create
 import { ChatForCreationDto } from '../../../../dtos/chat/chat-for-creation.dto';
 import { AddMembersDialogContext } from '../../../../dtos/chat/add-members-dialog-context';
 import { AddMembersModalComponent } from '../add-members-modal/add-members-modal.component';
-import { Subscription } from 'rxjs';
+import { Subscriber, Subscription, take } from 'rxjs';
 
 @Component({
   selector: 'app-chatlist',
@@ -20,7 +20,7 @@ import { Subscription } from 'rxjs';
   styleUrl: './chatlist.component.scss'
 })
 export class ChatlistComponent {
-  private subscriptions: Subscription = new Subscription();
+  private subscriptions: Subscription[] = [];
 
   constructor(
     private router : Router,
@@ -33,6 +33,7 @@ export class ChatlistComponent {
 
   chats : ChatDto[] = [];
   fetchingChats : boolean = false;
+  chatlistUpdated : boolean = false;
   chatParams : ChatParameters = {
     PageSize : 10,
     PageNumber : 1,
@@ -54,11 +55,13 @@ export class ChatlistComponent {
   }
 
   fetchChats(){
-    if(this.fetchingChats){
+    if(this.fetchingChats || this.chatlistUpdated){
+      this.chatlistUpdated = false;
       return;
     }
     this.fetchingChats = true;
     this.chatService.getChatListByUserId(this.chatParams)
+    .pipe(take(1))
     .subscribe({
       next : (chats : ChatDto[]) => {
         if(chats.length > 0){
@@ -82,17 +85,27 @@ export class ChatlistComponent {
     this.chatParams.PageNumber = 1
   }
 
+  ngOnDestroy(){
+    this.subscriptions.forEach(subscriber => {
+      subscriber.unsubscribe();
+    });
+  }
+
+  
   ngOnInit(){
     this.chatParams.UserId = this.userProfileSerview.getUserIdFromToken();
 
-    this.signalRService.getChatListNewMessage().subscribe((data : ChatHubChatlistUpdateDto) => {
+    let _sub : Subscription = this.signalRService.getChatListNewMessage().subscribe((data : ChatHubChatlistUpdateDto) => {
+      this.chatlistUpdated = true;
       this.chats.forEach((_chat : ChatDto, i:number) => {
         if(_chat.chatId == data.chat.chatId) {
           this.chats.splice(i,1);
         }
-      })
-      this.chats.unshift(data.chat)
+      });
+      this.chats.unshift(data.chat);
     });
+    this.subscriptions.push(_sub);
+
 
     this.signalRService.getChatlistDeletedChat().subscribe((data : ChatHubChatlistUpdateDto) => {
       this.removeFromChats(data.chat);
@@ -101,6 +114,7 @@ export class ChatlistComponent {
     this.chatService.onGroupChatLeave.subscribe((chat : ChatDto) => {
       this.removeFromChats(chat);
     });
+
     this.signalRService.getRemovedFromChat().subscribe((chat :ChatDto) => {
       this.removeFromChats(chat);
       if(`/chat/view/from-chatlist/${chat.chatId}`){

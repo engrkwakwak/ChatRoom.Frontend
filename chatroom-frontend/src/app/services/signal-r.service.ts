@@ -24,6 +24,7 @@ export class SignalRService {
   private chatListNewMessage = new Subject<ChatHubChatlistUpdateDto>();
   private chatListDeletedChat = new Subject<ChatHubChatlistUpdateDto>();
   private chatlistRemovedFromChat = new Subject<ChatDto>();
+  private newChatCreated = new Subject<ChatHubChatlistUpdateDto>();
   private isConnected: boolean = false;
 
   constructor(
@@ -74,6 +75,7 @@ export class SignalRService {
     });
 
     this.hubConnection.on('ChatlistNewMessage', (data: ChatHubChatlistUpdateDto) => {
+      console.log("new message : ", { data });
       this.chatListNewMessage.next(data);
     });
 
@@ -173,4 +175,5 @@ export class SignalRService {
   public getRemovedFromChat() : Observable<ChatDto>{
     return this.chatlistRemovedFromChat.asObservable();
   }
+
 }

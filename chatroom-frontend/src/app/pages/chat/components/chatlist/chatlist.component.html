@@ -12,7 +12,8 @@
         nbInfiniteList
         [threshold]="100"
         [throttleTime]="1000"
-        (bottomThreshold)="fetchChats()">
+        (bottomThreshold)="fetchChats()"
+        >
 
         <nb-list-item *ngFor="let chat of chats" (click)="viewChat(chat)">
             <app-chatlist-item [chat]="chat" />
