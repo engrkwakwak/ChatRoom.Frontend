@@ -19,7 +19,8 @@ export class SignalRService {
   private updatedMessage = new Subject<MessageDto>();
   private deleteMessage = new Subject<MessageDto>();
   private deleteChat = new Subject<number>();
-  private isUserTyping = new Subject<ChatMemberDto>()
+  private isUserStartTyping = new Subject<ChatMemberDto>()
+  private isUserEndTyping = new Subject<ChatMemberDto>()
   private lastSeenMessage = new Subject<ChatMemberDto>();
   private chatListNewMessage = new Subject<ChatHubChatlistUpdateDto>();
   private chatListDeletedChat = new Subject<ChatHubChatlistUpdateDto>();
@@ -43,11 +44,12 @@ export class SignalRService {
       })
       .build();
 
-    this.hubConnection.on('UserTyping', (chatMember : ChatMemberDto) => {
-      if(chatMember.userId != this.userProfileService.getUserIdFromToken())
-      {
-        this.isUserTyping.next(chatMember)
-      }
+    this.hubConnection.on('UserStartsTyping', (chatMember : ChatMemberDto) => {
+        this.isUserStartTyping.next(chatMember)
+    });
+
+    this.hubConnection.on('UserTypingEnd', (chatMember : ChatMemberDto) => {
+        this.isUserEndTyping.next(chatMember)
     });
 
     this.hubConnection.on('DeleteChat', (chatId : number) => {
@@ -172,8 +174,12 @@ export class SignalRService {
     return this.chatListDeletedChat.asObservable();
   }
 
-  public getTypingUser() : Observable<ChatMemberDto> {
-    return this.isUserTyping.asObservable();
+  public getUserTypingStart() : Observable<ChatMemberDto> {
+    return this.isUserStartTyping.asObservable();
+  }
+
+  public getUserTypingEnd() : Observable<ChatMemberDto> {
+    return this.isUserEndTyping.asObservable();
   }
 
   public getRemovedFromChat() : Observable<ChatDto>{

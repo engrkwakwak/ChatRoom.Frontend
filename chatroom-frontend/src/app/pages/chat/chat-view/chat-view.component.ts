@@ -1,6 +1,6 @@
 import { AfterViewInit, ChangeDetectorRef, Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { Subscription, concat, tap } from 'rxjs';
+import { Subject, Subscription, concat, debounceTime, distinctUntilChanged, pipe, tap } from 'rxjs';
 import { ChatService } from '../../../services/chat.service';
 import { AuthService } from '../../../services/auth.service';
 import { UserProfileService } from '../../../services/user-profile.service';
@@ -37,6 +37,10 @@ export class ChatViewComponent implements OnInit, OnDestroy {
   routeSub: Subscription | null = null;
   navigationSub!: Subscription;
   isInitialized: boolean = false;
+  someoneIsTyping : boolean = false;
+  typingUser : string = "";
+  private typingStart : boolean = false;
+  private typingWatcher : Subject<string> = new Subject<string>()
 
   constructor(
     private activatedRoute: ActivatedRoute,
@@ -131,7 +135,39 @@ export class ChatViewComponent implements OnInit, OnDestroy {
         }
       });
     }));
+
+    this.subscriptions.add(
+      this.signalRService.getUserTypingStart()
+      .subscribe((member) => {
+        if(member.user.userId != this.userId){
+          this.typingUser = member.user.displayName;
+          this.someoneIsTyping = true;
+        }
+      })
+    );
+
+    this.subscriptions.add(
+      this.signalRService.getUserTypingEnd()
+      .subscribe((member) => {
+        if(member.user.userId != this.userId){
+          this.typingUser = "";
+          this.someoneIsTyping = false;
+        }
+      })
+    );
+
+    this.typingWatcher
+    .pipe(
+      debounceTime(300),
+      distinctUntilChanged()
+    )
+    .subscribe(() => {
+      this.typingStart = false;
+      this.chatService.broadcastTypingStatusEnd(this.chatId).subscribe()
+    })
   }
+
+
 
   private initChatFromContacts() {
     const chat: ChatForCreationDto = {
@@ -262,8 +298,12 @@ export class ChatViewComponent implements OnInit, OnDestroy {
     }
   }
 
-  chatformInputChange(){
-    //this.chatService.broadcastTypingStatus(this.chatId).subscribe();
+  chatformInputChange(ev:any){
+    if(!this.typingStart){
+      this.chatService.broadcastTypingStatusStart(this.chatId).subscribe()
+    }
+    this.typingStart = true;
+    this.typingWatcher.next(ev)
   }
 
 }
