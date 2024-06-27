@@ -1,5 +1,5 @@
-import { Component, ElementRef, EventEmitter, Input, OnChanges, OnDestroy, OnInit, Output, SimpleChange, SimpleChanges, TemplateRef, ViewChild, ɵgetUnknownElementStrictMode } from '@angular/core';
-import { NbDialogRef, NbDialogService, NbToastrService, NbWindowService } from '@nebular/theme';
+import { Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges, TemplateRef, ViewChild } from '@angular/core';
+import { NbDialogRef, NbDialogService, NbToastrService } from '@nebular/theme';
 import { ChatDto } from '../../../../dtos/chat/chat.dto';
 import { UserProfileService } from '../../../../services/user-profile.service';
 import { ChatService } from '../../../../services/chat.service';
@@ -19,7 +19,7 @@ import { SignalRService } from '../../../../services/signal-r.service';
   templateUrl: './chat-settings.component.html',
   styleUrl: './chat-settings.component.scss'
 })
-export class ChatSettingsComponent implements OnInit, OnChanges, OnDestroy {
+export class ChatSettingsComponent implements OnInit, OnChanges {
 
   constructor(
     private nbDialogService : NbDialogService,
@@ -30,11 +30,6 @@ export class ChatSettingsComponent implements OnInit, OnChanges, OnDestroy {
     private toastrService: NbToastrService,
     private signalRService: SignalRService
   ){}
-  ngOnDestroy(): void {
-    if(this.currentImageUrl){
-      this.deletePicture(this.currentImageUrl);
-    }
-  }
 
   ngOnInit(): void {
     this.chatForm = this.createGroupChatForm();
@@ -72,6 +67,11 @@ export class ChatSettingsComponent implements OnInit, OnChanges, OnDestroy {
 
   open(){
     this.dialogRef = this.nbDialogService.open(this.chatSettingsRef!);
+    this.dialogRef.onClose.subscribe(() => {
+      if(this.currentImageUrl){
+        this.deletePicture(this.currentImageUrl);
+      }
+    });
   }
 
   close(){
