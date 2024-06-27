@@ -110,7 +110,7 @@ export class ChatlistComponent {
     this.subscriptions.push(_sub);
 
     this.signalRService.getChatlistDeletedChat().subscribe((data : ChatHubChatlistUpdateDto) => {
-      this.removeFromChats(data.chat.chatId);
+      this.signalRService.leaveGroup(data.chat.chatId);
     });
 
     this.signalRService.getOnLeaveGroup().subscribe(chatId => {
@@ -139,6 +139,7 @@ export class ChatlistComponent {
   }
 
   removeFromChats(chatId : number){
+    this.chatlistUpdated = true
     this.chats.forEach((_chat:ChatDto, i) =>{
       if(chatId == _chat.chatId){
         this.chats.splice(i,1);
