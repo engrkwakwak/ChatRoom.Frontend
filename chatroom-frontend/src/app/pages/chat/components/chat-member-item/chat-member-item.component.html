@@ -13,11 +13,6 @@
                 <p-progressSpinner [style]="{width: '30px', height: '30px'}" *ngIf="loading"  />
             </div>
             <div class="col-auto p-0" *ngIf="userMembership?.isAdmin && member?.user?.userId != userId">
-                <button nbButton size="small" ghost [nbContextMenu]="memberOptions" nbContextMenuTag="member-actions-menu-{{ member?.user?.userId! }}-{{this.chat?.chatId}}" >
-                    <nb-icon icon="more-horizontal"></nb-icon>
-                </button>
-            </div>
-            <div class="col-auto p-0" *ngIf="userMembership?.isAdmin && member?.user?.userId != userId">
                 <button nbButton size="small" ghost [nbPopover]="userActions" nbPopoverPlacement="bottom" >
                     <nb-icon icon="more-horizontal"></nb-icon>
                 </button>
@@ -29,15 +24,17 @@
             <div class="col-auto p-0">
                 <app-avatar [src]="loadProfilePicture()"  />
             </div>
-            
+            <div class="col">
+                <p class="mb-0">{{ user?.displayName! }}</p>
+            </div>
+            <div class="col-auto p-0">
+                <p-progressSpinner [style]="{width: '30px', height: '30px'}" *ngIf="loading"  />
+            </div>
             <div class="col-auto p-0" *ngIf="userMembership?.isAdmin">
                 <button nbButton size="small" status="primary" class="add-button" (click)="addMember()" >
                     <nb-icon icon="person-add"></nb-icon>
                     Add
                 </button>
-            </div>
-            <div class="col-auto p-0">
-                <p-progressSpinner [style]="{width: '30px', height: '30px'}" *ngIf="loading"  />
             </div>
         </div>
     </ng-template>

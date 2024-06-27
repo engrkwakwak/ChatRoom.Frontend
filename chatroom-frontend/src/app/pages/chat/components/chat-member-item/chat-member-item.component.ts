@@ -18,7 +18,6 @@ export class ChatMemberItemComponent {
   
   constructor(
     private userProfileService : UserProfileService,
-    private nbMenuService : NbMenuService,
     private chatService : ChatService,
     private errorHandlerService : ErrorHandlerService
   ){}
@@ -37,10 +36,6 @@ export class ChatMemberItemComponent {
 
   ngOnInit(): void {
     this.userId = this.userProfileService.getUserIdFromToken()
-    this.nbMenuService.onItemClick()
-    .subscribe((s) =>{
-      console.log(s)
-    })
     
     // optimize later
     this.chatService.getMemberByChatIdAndUserId(this.chat!.chatId, this.userId)
@@ -132,11 +127,6 @@ export class ChatMemberItemComponent {
     return this.type =='member' ? 
             this.userProfileService.loadDisplayPicture(this.member?.user!.displayPictureUrl!, this.member?.user.displayName!)
             : this.userProfileService.loadDisplayPicture(this.user?.displayPictureUrl!, this.user?.displayName!)
-  }
-
-
-  ngOnDestroy(){
-    console.log("Component destroyed")
   }
 
 }

@@ -20,7 +20,6 @@ export class ChatService {
   public isChatlistVisible : boolean = false;
   public isMobile = true;
 
-  onGroupChatLeave : Subject<ChatDto> = new Subject<ChatDto>();
   onMemberRemove : Subject<ChatMemberDto> = new Subject<ChatMemberDto>();
 
   constructor(

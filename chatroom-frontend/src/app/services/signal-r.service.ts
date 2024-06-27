@@ -27,10 +27,11 @@ export class SignalRService {
   private chatlistRemovedFromChat = new Subject<ChatDto>();
   private contactsUpdated = new Subject<any>();
   private isConnected: boolean = false;
+  private onLeaveGroup = new Subject<number>();
 
   constructor(
     private http: HttpClient,
-    private userProfileService : UserProfileService
+    private userProfileService : UserProfileService,
   ) {
   }
 
@@ -117,9 +118,13 @@ export class SignalRService {
       .catch(err => console.error('Error while joining group: ', err));
   }
 
-  public leaveGroup(chatId: number): void {
+  public leaveGroup(chatId: number){
+    const _subject = new  Subject<any>()
     this.hubConnection.invoke('RemoveFromGroupAsync', chatId)
-      .then(() => console.log(`Remove from group chat-${chatId}`))
+      .then(() => {
+        console.log("Removed form group");
+        this.onLeaveGroup.next(chatId)
+      })
       .catch(err => console.error('Error while leaving group: ', err));
   }
 
@@ -190,4 +195,7 @@ export class SignalRService {
     return this.contactsUpdated.asObservable();
   }
 
+  public getOnLeaveGroup() : Observable<number>{
+    return this.onLeaveGroup.asObservable();
+  }
 }

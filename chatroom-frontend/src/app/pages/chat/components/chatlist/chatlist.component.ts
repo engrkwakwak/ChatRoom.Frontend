@@ -109,17 +109,16 @@ export class ChatlistComponent {
     });
     this.subscriptions.push(_sub);
 
-
     this.signalRService.getChatlistDeletedChat().subscribe((data : ChatHubChatlistUpdateDto) => {
-      this.removeFromChats(data.chat);
+      this.removeFromChats(data.chat.chatId);
     });
 
-    this.chatService.onGroupChatLeave.subscribe((chat : ChatDto) => {
-      this.removeFromChats(chat);
+    this.signalRService.getOnLeaveGroup().subscribe(chatId => {
+      this.removeFromChats(chatId);
     });
 
     this.signalRService.getRemovedFromChat().subscribe((chat :ChatDto) => {
-      this.removeFromChats(chat);
+      this.removeFromChats(chat.chatId);
       if(`/chat/view/from-chatlist/${chat.chatId}`){
         this.router.navigate(["/chat"]);
       }
@@ -139,10 +138,11 @@ export class ChatlistComponent {
 
   }
 
-  removeFromChats(chat:ChatDto){
+  removeFromChats(chatId : number){
     this.chats.forEach((_chat:ChatDto, i) =>{
-      if(chat.chatId == _chat.chatId){
+      if(chatId == _chat.chatId){
         this.chats.splice(i,1);
+        console.log("remove from chatlist")
       }
     });
   }
