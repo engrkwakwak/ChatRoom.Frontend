@@ -1,4 +1,4 @@
-import { Component, ElementRef, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChange, SimpleChanges, TemplateRef, ViewChild, ɵgetUnknownElementStrictMode } from '@angular/core';
+import { Component, ElementRef, EventEmitter, Input, OnChanges, OnDestroy, OnInit, Output, SimpleChange, SimpleChanges, TemplateRef, ViewChild, ɵgetUnknownElementStrictMode } from '@angular/core';
 import { NbDialogRef, NbDialogService, NbToastrService, NbWindowService } from '@nebular/theme';
 import { ChatDto } from '../../../../dtos/chat/chat.dto';
 import { UserProfileService } from '../../../../services/user-profile.service';
@@ -19,7 +19,7 @@ import { SignalRService } from '../../../../services/signal-r.service';
   templateUrl: './chat-settings.component.html',
   styleUrl: './chat-settings.component.scss'
 })
-export class ChatSettingsComponent implements OnInit, OnChanges {
+export class ChatSettingsComponent implements OnInit, OnChanges, OnDestroy {
 
   constructor(
     private nbDialogService : NbDialogService,
@@ -30,6 +30,11 @@ export class ChatSettingsComponent implements OnInit, OnChanges {
     private toastrService: NbToastrService,
     private signalRService: SignalRService
   ){}
+  ngOnDestroy(): void {
+    if(this.currentImageUrl){
+      this.deletePicture(this.currentImageUrl);
+    }
+  }
 
   ngOnInit(): void {
     this.chatForm = this.createGroupChatForm();
@@ -63,6 +68,7 @@ export class ChatSettingsComponent implements OnInit, OnChanges {
   dialogRef! : NbDialogRef<any>;
   chatForm!: FormGroup;
   rightToMakeChanges: boolean = false;
+  currentImageUrl: string | null = null;
 
   open(){
     this.dialogRef = this.nbDialogService.open(this.chatSettingsRef!);
@@ -164,21 +170,35 @@ export class ChatSettingsComponent implements OnInit, OnChanges {
     if(input.files && input.files.length > 0) {
       const file = input.files[0];
       if(this.validateFile(file)) {
+        if(this.currentImageUrl) {
+          this.deletePicture(this.currentImageUrl);
+        }
         this.uploadPicture(file);
       }
     }
   }
   uploadPicture(file: File) {
-    const formData = new FormData();
-    formData.append('file', file, file.name);
+    const formData: FormData = new FormData();
+    formData.append('ImageFile', file, file.name);
+    formData.append('FileName', file.name);
+    formData.append('ContentType', file.type);
+    formData.append('ContainerName', 'chat-display-pictures');
 
-    const apiUri: string = `/chats/display-picture`;
-    this.userProfileService.uploadPicture(apiUri, formData).subscribe({
+    this.userProfileService.uploadPicture(formData).subscribe({
       next: (fileUrl) => {
         if(fileUrl && this.chat){
-          this.chat!.displayPictureUrl = fileUrl
+          this.chat!.displayPictureUrl = fileUrl;
+          this.currentImageUrl = fileUrl;
         }
         
+      },
+      error: (err) => this.errorHandlerService.handleError(err)
+    });
+  }
+  public deletePicture(fileUri: string) {
+    this.userProfileService.deletePicture(fileUri).subscribe({
+      next: () => {
+        this.currentImageUrl = null;
       },
       error: (err) => this.errorHandlerService.handleError(err)
     });
@@ -204,6 +224,7 @@ export class ChatSettingsComponent implements OnInit, OnChanges {
       next: () => {
         this.chat!.chatName = chat.chatName;
         this.chatChangesSaved.emit(this.chat!);
+        this.currentImageUrl = null;
         this.toastrService.success('Group chat information is successfully updated.');
       },
       error: (err: HttpErrorResponse) => this.errorHandlerService.handleError(err)
