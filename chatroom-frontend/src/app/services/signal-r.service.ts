@@ -65,6 +65,7 @@ export class SignalRService {
     });
 
     this.hubConnection.on('ReceiveMessage', (message: MessageDto) => {
+      console.log("new message : ", message)
       this.newMessageReceived.next(message);
     });
 
@@ -77,7 +78,6 @@ export class SignalRService {
     });
 
     this.hubConnection.on('ChatlistNewMessage', (data: ChatHubChatlistUpdateDto) => {
-      console.log("new message : ", { data });
       this.chatListNewMessage.next(data);
     });
 

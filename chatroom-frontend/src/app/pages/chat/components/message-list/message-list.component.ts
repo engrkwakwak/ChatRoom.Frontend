@@ -66,6 +66,8 @@ export class MessageListComponent implements OnInit, OnChanges, AfterViewInit {
         this.loadPrevious();
       }
     });
+
+
   }
 
   public onMessageUpdate(ev : MessageDto){
@@ -130,6 +132,9 @@ export class MessageListComponent implements OnInit, OnChanges, AfterViewInit {
         const paginationJson = res.headers.get('X-Pagination') ?? '{}';
         this.messageParameters = this.getPaginationValues(paginationJson);
 
+        console.log(this.chatContainer.scrollable.nativeElement.scrollHeight)
+        console.log(this.chatContainer.scrollable.nativeElement.clientHeight)
+
         if (isLoadPrevious) {
           const currentScrollHeight = this.chatContainer.scrollable.nativeElement.scrollHeight;
           setTimeout(() => {
@@ -142,6 +147,11 @@ export class MessageListComponent implements OnInit, OnChanges, AfterViewInit {
         if(!isLoadPrevious) {
           this.componentReady.emit();
         }
+
+        if(this.chatContainer.scrollable.nativeElement.scrollHeight == this.chatContainer.scrollable.nativeElement.clientHeight){
+          this.loadPrevious()
+        }
+        
       },
       error: (err: HttpErrorResponse) => {
         this.isLoading = false;

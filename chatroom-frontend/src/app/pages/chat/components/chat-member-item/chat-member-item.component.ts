@@ -48,6 +48,7 @@ export class ChatMemberItemComponent {
         this.setAsAdmin()
       }
       if(title === 'Remove as Admin'){
+        console.log("remove as admin")
         this.removeAsAdmin()
       }
     });

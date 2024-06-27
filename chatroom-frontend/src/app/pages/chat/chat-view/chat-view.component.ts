@@ -83,6 +83,8 @@ export class ChatViewComponent implements OnInit, OnDestroy {
       }
     }));
 
+
+    // debug this
     this.subscriptions.add(this.signalRService.getNewMessageReceived().subscribe((message: MessageDto) => {
       if(message.messageType.msgTypeId == 2 && this.userId == message.sender.userId){
         this.messageListComponent.pushMessage(message);
