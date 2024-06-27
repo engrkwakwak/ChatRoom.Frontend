@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { AbstractControl, FormControl, FormGroup, ValidationErrors, Validators } from '@angular/forms';
 import { NbDialogRef } from '@nebular/theme';
 import { ChatForCreationDto } from '../../../../dtos/chat/chat-for-creation.dto';
@@ -11,7 +11,7 @@ import { ErrorHandlerService } from '../../../../services/error-handler.service'
   templateUrl: './create-group-chat-modal.component.html',
   styleUrl: './create-group-chat-modal.component.scss'
 })
-export class CreateGroupChatModalComponent implements OnInit {
+export class CreateGroupChatModalComponent implements OnInit, OnDestroy {
   groupChatForm!: FormGroup;
   uploadedImageUrl: string | null = null;
 
@@ -20,6 +20,12 @@ export class CreateGroupChatModalComponent implements OnInit {
     private userService: UserProfileService,
     private errorHandlerService: ErrorHandlerService
   ){}
+
+  ngOnDestroy(): void {
+    if(this.uploadedImageUrl) {
+      this.deletePicture(this.uploadedImageUrl);
+    }
+  }
 
   ngOnInit(): void {
     this.groupChatForm = this.createGroupChatForm();
@@ -47,6 +53,7 @@ export class CreateGroupChatModalComponent implements OnInit {
   continue(){
     if(this.groupChatForm.valid) {
       const groupChat: ChatForCreationDto = this.mapFormValuesToDto(this.groupChatForm.value);
+      this.uploadedImageUrl = null;
       this.ref.close(groupChat);
     }
   }
@@ -56,6 +63,9 @@ export class CreateGroupChatModalComponent implements OnInit {
     if(input.files && input.files.length > 0) {
       const file = input.files[0];
       if(this.validateFile(file)) {
+        if(this.uploadedImageUrl) {
+          this.deletePicture(this.uploadedImageUrl);
+        }
         this.uploadPicture(file);
       }
     }
@@ -71,13 +81,24 @@ export class CreateGroupChatModalComponent implements OnInit {
   }
 
   uploadPicture(file: File) {
-    const formData = new FormData();
-    formData.append('file', file, file.name);
-
-    const apiUri: string = `/chats/display-picture`;
-    this.userService.uploadPicture(apiUri, formData).subscribe({
+    const formData: FormData = new FormData();
+    formData.append('ImageFile', file, file.name);
+    formData.append('FileName', file.name);
+    formData.append('ContentType', file.type);
+    formData.append('ContainerName', 'chat-display-pictures');
+    
+    this.userService.uploadPicture(formData).subscribe({
       next: (fileUrl) => {
         this.uploadedImageUrl = fileUrl;
+      },
+      error: (err) => this.errorHandlerService.handleError(err)
+    });
+  }
+
+  public deletePicture(fileUri: string) {
+    this.userService.deletePicture(fileUri).subscribe({
+      next: () => {
+        this.uploadedImageUrl = null;
       },
       error: (err) => this.errorHandlerService.handleError(err)
     });

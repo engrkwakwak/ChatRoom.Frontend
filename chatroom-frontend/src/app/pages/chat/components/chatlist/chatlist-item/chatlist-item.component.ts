@@ -9,6 +9,7 @@ import { ErrorHandlerService } from '../../../../../services/error-handler.servi
 import { ChatMemberDto } from '../../../../../dtos/chat/chat-member.dto';
 import { UserDisplayDto } from '../../../../../dtos/chat/user-display.dto';
 import { ActivatedRoute, Router } from '@angular/router';
+import { ChatType } from '../../../../../shared/enums';
 
 @Component({
   selector: 'app-chatlist-item',
@@ -52,6 +53,9 @@ export class ChatlistItemComponent {
   }
 
   ngOnInit(){
+    if(this.chat?.chatTypeId === ChatType.P2P) {
+      this.getP2PReceiver();
+    }
     
     this.messageService.getLatestMessage(this.chat?.chatId!)
     .subscribe({

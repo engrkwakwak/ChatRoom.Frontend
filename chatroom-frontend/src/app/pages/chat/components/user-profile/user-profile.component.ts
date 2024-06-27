@@ -1,11 +1,10 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnChanges, OnDestroy, OnInit, SimpleChanges } from '@angular/core';
 import { UserProfileService } from '../../../../services/user-profile.service';
 import { formatDate } from '@angular/common';
 import { AbstractControl, AsyncValidatorFn, FormControl, FormGroup, ValidationErrors, Validators } from '@angular/forms';
 import { UserDto } from '../../../../dtos/chat/user.dto';
 import { HttpErrorResponse } from '@angular/common/http';
 import { UserForUpdateDto } from '../../../../dtos/chat/user-for-update.dto';
-import { jwtDecode } from 'jwt-decode';
 import { Observable, map, of } from 'rxjs';
 import { NbDialogRef, NbToastrService } from '@nebular/theme';
 import { ErrorHandlerService } from '../../../../services/error-handler.service';
@@ -17,11 +16,12 @@ import { Router } from '@angular/router';
   templateUrl: './user-profile.component.html',
   styleUrl: './user-profile.component.scss'
 })
-export class UserProfileComponent implements OnInit {
+export class UserProfileComponent implements OnInit, OnChanges, OnDestroy {
   @Input({required: true}) userId!: number;
   isUserFormEditable: boolean = true;
   user!: UserDto;
   userForm!: FormGroup;
+  currentImageUrl: string | null = null;
 
   constructor(
     private userService: UserProfileService,
@@ -32,12 +32,29 @@ export class UserProfileComponent implements OnInit {
     protected dialogRef: NbDialogRef<UserProfileComponent>,
   ){
   }
+  ngOnDestroy(): void {
+    if(this.currentImageUrl) {
+      this.deletePicture(this.currentImageUrl);
+    }
+  }
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes['userId'] && changes['userId'].currentValue) {
+      this.isUserFormEditable = this.checkIfUserFormEditable();
+      this.setUserFormState();
+      this.getUserById();
+    }
+  }
 
   ngOnInit(): void {
     this.userForm = this.createUserForm();
-    this.isUserFormEditable = this.checkIfUserFormEditable();
-    this.setUserFormState();
-    this.getUserById();
+    this.ngOnChanges({
+      userId: {
+        currentValue: this.userId,
+        previousValue: null,
+        firstChange: true,
+        isFirstChange: () => true
+      }
+    });
   }
 
   sendMessage(): void {
@@ -168,6 +185,7 @@ export class UserProfileComponent implements OnInit {
     .subscribe({
       next: (_) => {
         this.toastrService.success("User profile updated successfully!", 'Success');
+        this.currentImageUrl = null;
         this.dialogRef.close();
       },
        error: (err: HttpErrorResponse) => console.log(err)//this.errorHandler.handleError(err)
@@ -175,12 +193,25 @@ export class UserProfileComponent implements OnInit {
   }
 
   public uploadPicture(file:File) {
-    const formData = new FormData();
-    formData.append('file', file, file.name);
-    const apiUri: string = `/users/${this.user.userId}/picture`;
-    this.userService.uploadPicture(apiUri, formData).subscribe({
+    const formData: FormData = new FormData();
+    formData.append('ImageFile', file, file.name);
+    formData.append('FileName', file.name);
+    formData.append('ContentType', file.type);
+    formData.append('ContainerName', 'user-display-pictures');
+
+    this.userService.uploadPicture(formData).subscribe({
       next: (fileUrl) => {
         this.user.displayPictureUrl = fileUrl;
+        this.currentImageUrl = fileUrl;
+      },
+      error: (err) => this.errorHandlerService.handleError(err)
+    });
+  }
+
+  public deletePicture(fileUri: string) {
+    this.userService.deletePicture(fileUri).subscribe({
+      next: () => {
+        this.currentImageUrl = null;
       },
       error: (err) => this.errorHandlerService.handleError(err)
     });
@@ -191,6 +222,9 @@ export class UserProfileComponent implements OnInit {
     if(input.files && input.files.length > 0) {
       const file = input.files[0];
       if(this.validateFile(file)) {
+        if(this.currentImageUrl) {
+          this.deletePicture(this.currentImageUrl)
+        }
         this.uploadPicture(file);
       }
     }
