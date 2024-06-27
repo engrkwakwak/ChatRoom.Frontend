@@ -66,7 +66,6 @@ export class SignalRService {
     });
 
     this.hubConnection.on('ReceiveMessage', (message: MessageDto) => {
-      console.log("new message : ", message)
       this.newMessageReceived.next(message);
     });
 
@@ -122,7 +121,6 @@ export class SignalRService {
     const _subject = new  Subject<any>()
     this.hubConnection.invoke('RemoveFromGroupAsync', chatId)
       .then(() => {
-        console.log("Removed form group");
         this.onLeaveGroup.next(chatId)
       })
       .catch(err => console.error('Error while leaving group: ', err));

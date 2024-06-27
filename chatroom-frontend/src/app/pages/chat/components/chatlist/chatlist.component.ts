@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { UserProfileService } from '../../../../services/user-profile.service';
 import { ChatService } from '../../../../services/chat.service';
 import { ChatParameters } from '../../../../dtos/shared/chat-parameters.dto';
@@ -28,7 +28,8 @@ export class ChatlistComponent {
     private chatService : ChatService,
     private errorHandlerService : ErrorHandlerService,
     private signalRService : SignalRService,
-    private dialogService: NbDialogService
+    private dialogService: NbDialogService,
+    private activatedRoute : ActivatedRoute
   ){}
 
   chats : ChatDto[] = [];
@@ -134,8 +135,7 @@ export class ChatlistComponent {
       this.chatParams.Name = keyword;
       this.resetParams();
       this.fetchChats();
-    })
-
+    });
   }
 
   removeFromChats(chatId : number){
