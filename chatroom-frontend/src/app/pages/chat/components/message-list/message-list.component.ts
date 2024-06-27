@@ -132,9 +132,6 @@ export class MessageListComponent implements OnInit, OnChanges, AfterViewInit {
         const paginationJson = res.headers.get('X-Pagination') ?? '{}';
         this.messageParameters = this.getPaginationValues(paginationJson);
 
-        console.log(this.chatContainer.scrollable.nativeElement.scrollHeight)
-        console.log(this.chatContainer.scrollable.nativeElement.clientHeight)
-
         if (isLoadPrevious) {
           const currentScrollHeight = this.chatContainer.scrollable.nativeElement.scrollHeight;
           setTimeout(() => {

@@ -32,27 +32,16 @@ export class ChatMemberItemComponent {
   @Output() onMemberAdded : EventEmitter<ChatMemberDto> = new EventEmitter<ChatMemberDto>();
   loading : boolean = false;
   userMembership? : ChatMemberDto;
+  memberOptions : NbMenuItem[] = [];
+
 
   ngOnInit(): void {
     this.userId = this.userProfileService.getUserIdFromToken()
     this.nbMenuService.onItemClick()
-    .pipe(
-      filter(({ tag  }) => tag === `member-actions-menu-${this.member?.user.userId}-${this.chat?.chatId}`),
-      map(({ item: { title } }) => title),
-    )
-    .subscribe(title => {
-      if(title === 'Remove Member'){
-        this.RemoveMember()
-      }
-      if(title === 'Set as Admin'){
-        this.setAsAdmin()
-      }
-      if(title === 'Remove as Admin'){
-        console.log("remove as admin")
-        this.removeAsAdmin()
-      }
-    });
-
+    .subscribe((s) =>{
+      console.log(s)
+    })
+    
     // optimize later
     this.chatService.getMemberByChatIdAndUserId(this.chat!.chatId, this.userId)
     .subscribe({
@@ -64,10 +53,7 @@ export class ChatMemberItemComponent {
       }
     });
 
-    this.setMemberOptions();
   }
-
-  memberOptions : NbMenuItem[] = [];
 
   removeAsAdmin(){
     this.loading = true;
@@ -89,27 +75,7 @@ export class ChatMemberItemComponent {
     });
   }
 
-  setMemberOptions(){
-    this.memberOptions.push( {
-      title: "Remove Member",
-      icon : "person-remove"
-    });
-    if(this.member?.isAdmin){
-      this.memberOptions.push({
-        title: "Remove as Admin",
-        icon: "lock"
-      });
-    }
-    else{
-      this.memberOptions.push({
-        title: "Set as Admin",
-        icon: "lock"
-      });
-    }
-    
-  }
-
-  private setAsAdmin(){
+   setAsAdmin(){
     this.loading = true;
     this.chatService.setChatAdmin(this.chat?.chatId!, this.member?.user?.userId!)
     .subscribe({
@@ -129,7 +95,7 @@ export class ChatMemberItemComponent {
     })
   }
 
-  private RemoveMember(){
+  removeMember(){
     this.loading = true;
     this.chatService.removeChatMember(this.chat?.chatId!, this.member?.user?.userId!)
     // .pipe(
@@ -166,6 +132,11 @@ export class ChatMemberItemComponent {
     return this.type =='member' ? 
             this.userProfileService.loadDisplayPicture(this.member?.user!.displayPictureUrl!, this.member?.user.displayName!)
             : this.userProfileService.loadDisplayPicture(this.user?.displayPictureUrl!, this.user?.displayName!)
+  }
+
+
+  ngOnDestroy(){
+    console.log("Component destroyed")
   }
 
 }
