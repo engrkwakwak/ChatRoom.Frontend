@@ -10,69 +10,64 @@
     
                 <nb-card-body>
                     <div class="mb-3">
-                        <label for="display_name" class="mb-2">Display Name <span class="text-danger">*</span></label>
-                        <input id="display_name" placeholder="Enter Display Name" name="displayName" formControlName="displayName" nbInput fullWidth />
-                        <ul>
-                            <li class="text-danger" *ngIf="displayName?.touched && displayName?.hasError('required')">Display Name is required.</li>
-                            <li class="text-danger" *ngIf="displayName?.touched && displayName?.hasError('maxlength')">Max number of characters for Display Name is 50.</li>
-                        </ul>
+                        <label for="display_name" class="col-sm-3 col-form-label">Display Name <span class="text-danger">*</span></label>
+                        <input nbInput fullWidth status="basic" shape="semi-round" class="form-control" id="display_name" formControlName="displayName" placeholder="John Doe" spellcheck="false">
+                        <span *ngIf="validateControl('displayName') && hasError('displayName', 'required')" class="form-text text-danger">Display Name is required.</span>
+                        <span *ngIf="validateControl('displayName') && hasError('displayName', 'maxlength')" class="form-text text-danger">Max characters for Display name is 50.</span>
                     </div>
                     <div class="mb-3">
-                        <label for="username" class="mb-2">Username <span class="text-danger">*</span></label>
-                        <input id="username" placeholder="Enter Username" name="username" formControlName="username" nbInput fullWidth  />
-                        <ul>
-                            <li class="text-danger"*ngIf="username?.touched && username?.hasError('required')">Username is required.</li>
-                            <li class="text-danger"*ngIf="username?.touched && username?.hasError('maxlength')">Max number of characters for Username is 20.</li>
-                            <li class="text-danger"*ngIf="username?.touched && username?.hasError('usernameTaken')">Username is already taken</li>
-                            <li class="text-danger"*ngIf="username?.touched && username?.hasError('pattern')">Username must only contain aplha numberic characters.</li>
-                        </ul>
+                        <label for="username" class="col-sm-3 col-form-label">Username <span class="text-danger">*</span></label>
+                        <input nbInput fullWidth status="basic" shape="semi-round" class="form-control" id="username" formControlName="username" placeholder="johndoe" spellcheck="false">
+                        <span *ngIf="validateControl('username') && hasError('username', 'required')" class="form-text text-danger">Username is required.</span>
+                        <span *ngIf="validateControl('username') && hasError('username', 'maxlength')" class="form-text text-danger">Max characters for Username is 50.</span>
+                        <span *ngIf="validateControl('username') && hasError('username', 'usernameTaken')" class="form-text text-danger">Username is already taken</span>
+                        <span *ngIf="validateControl('username') && hasError('username', 'pattern')" class="form-text text-danger">Username should not include spaces.</span>
                     </div>
                     <div class="mb-3">
-                        <label for="email" class="mb-2">Email <span class="text-danger">*</span></label>
-                        <input id="email" placeholder="Enter Email Address" name="email" formControlName="email" nbInput fullWidth required email />
-                        <ul>
-                            <li class="text-danger" *ngIf="email?.touched && email?.hasError('required')">Email is required.</li>
-                            <li class="text-danger" *ngIf="email?.touched && email?.hasError('email')">Email is not valid.</li>
-                            <li class="text-danger" *ngIf="email?.touched && email?.hasError('maxlength')">Max number of characters for Email is 100.</li>
-                            <li class="text-danger"*ngIf="email?.touched && email?.hasError('emailTaken')">Email is already taken</li>
-                        </ul>
+                        <label for="email" class="col-sm-3 col-form-label">Email Address <span class="text-danger">*</span></label>
+                        <input nbInput fullWidth status="basic" shape="semi-round" class="form-control" id="email" formControlName="email" placeholder="john@doe.com" spellcheck="false">
+                        <span *ngIf="validateControl('email') && hasError('email', 'required')" class="form-text text-danger">Email is required.</span>
+                        <span *ngIf="validateControl('email') && hasError('email', 'maxlength')" class="form-text text-danger">Max characters for Email is 100.</span>
+                        <span *ngIf="validateControl('email') && hasError('email', 'email')" class="form-text text-danger">Email is not valid.</span>
+                        <span *ngIf="validateControl('email') && hasError('email', 'emailTaken')" class="form-text text-danger">Email is already taken.</span>
                     </div>
                     <div class="mb-3">
-                        <label for="password" class="mb-2">Password <span class="text-danger">*</span></label>
-                        <nb-form-field >
-                            <input id="password" [type]="showPassword ? 'text' : 'password'" placeholder="Enter Password" name="password" formControlName="password" nbInput fullWidth />
+                        <label for="password" class="col-sm-3 col-form-label">Password <span class="text-danger">*</span></label>
+                        <nb-form-field>
+                            <input nbInput fullWidth status="basic" shape="semi-round" class="form-control" [type]="showPassword ? 'text' : 'password'" id="password" formControlName="password" placeholder="secure-password" spellcheck="false">
                             <button type="button" nbSuffix  nbButton ghost class="d-block me-0 ms-auto" (click)="toggleShowPassword()">
                                 <nb-icon [icon]="showPassword ? 'eye-outline' : 'eye-off-2-outline'"></nb-icon>
                             </button>
                         </nb-form-field>
-                        <ul>
-                            <li class="text-danger" *ngIf="password?.touched && password?.hasError('required')">Password is required.</li>
-                            <li class="text-danger" *ngIf="password?.touched && password?.hasError('minlength')">Password must be atleast 8 characters long.</li>
-                            <li class="text-danger" *ngIf="passwordConfirmation?.touched && signUpForm.errors?.['passwordMismatch']">Password Confirmation doesnt match</li>
-                        </ul>
+                        <span *ngIf="validateControl('password') && hasError('password', 'required')" class="form-text text-danger">Password is required.</span>
+                        <span *ngIf="validateControl('password') && hasError('password', 'minlength')" class="form-text text-danger">Password must be atleast 8 characters long.</span>
+                        <span *ngIf="(passwordConfirmation?.touched || passwordConfirmation?.dirty) && signUpForm.errors?.['passwordMismatch']" class="form-text text-danger">Password does not match.</span>
                     </div>
                     <div class="mb-3">
-                        <label for="password" class="mb-2">Password Confirmation <span class="text-danger">*</span></label>
-                        <nb-form-field >
-                            <input id="password-confirmation" [type]="showPasswordConfirmation ? 'text' : 'password'" placeholder="Retype the Password" name="passwordConfirmation" formControlName="passwordConfirmation" nbInput fullWidth />
+                        <label for="password-confirmation" class="col-sm-3 col-form-label">Confirm Password <span class="text-danger">*</span></label>
+                        <nb-form-field>
+                            <input 
+                                nbInput fullWidth status="basic" shape="semi-round"                                
+                                [type]="showPasswordConfirmation ? 'text' : 'password'" 
+                                id="password-confirmation" class="form-control" 
+                                formControlName="passwordConfirmation" 
+                                placeholder="secure-password" spellcheck="false">
                             <button type="button" nbSuffix  nbButton ghost class="d-block me-0 ms-auto" (click)="toggleShowPasswordConfirmation()">
                                 <nb-icon [icon]="showPasswordConfirmation ? 'eye-outline' : 'eye-off-2-outline'"></nb-icon>
                             </button>
                         </nb-form-field>
-                        <ul>
-                            <li class="text-danger" *ngIf="passwordConfirmation?.touched && passwordConfirmation?.hasError('required')">Password Confirmation is required.</li>
-                            <li class="text-danger" *ngIf="passwordConfirmation?.touched && passwordConfirmation?.hasError('minlength')">Password Confirmation must be atleast 8 characters long.</li>
-                        </ul>
+                        <span *ngIf="validateControl('passwordConfirmation') && hasError('passwordConfirmation', 'required')" class="form-text text-danger">Password is required.</span>
+                        <span *ngIf="validateControl('passwordConfirmation') && hasError('passwordConfirmation', 'minlength')" class="form-text text-danger">Password must be atleast 8 characters long.</span>
                     </div>
                 </nb-card-body>
                 
                 <nb-card-footer>
-                    <button type="submit" nbButton class="d-block me-0 ms-auto" [disabled]="signUpForm.invalid" status="primary" fullWidth>
+                    <button type="submit" nbButton hero shape="semi-round" class="d-block me-0 ms-auto" [disabled]="signUpForm.invalid" status="primary" fullWidth>
                         <nb-icon icon="save"></nb-icon>
                         Sign Up
                     </button>
                     <br>
-                    <button type="button" (click)="gotoSignIn()" nbButton class="d-block me-0 ms-auto" status="basic" outline fullWidth>
+                    <button type="button" (click)="gotoSignIn()" nbButton hero shape="semi-round" class="d-block me-0 ms-auto" status="basic" outline fullWidth>
                         <nb-icon icon="log-in"></nb-icon>
                         Sign in
                     </button>

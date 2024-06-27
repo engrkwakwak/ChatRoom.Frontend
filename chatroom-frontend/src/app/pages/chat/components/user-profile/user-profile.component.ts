@@ -73,7 +73,7 @@ export class UserProfileComponent implements OnInit, OnChanges, OnDestroy {
   createUserForm(): FormGroup {
     return new FormGroup({
       username: new FormControl('', {
-        validators: [Validators.required, Validators.maxLength(20), Validators.pattern("[A-Za-z0-9_]+")],
+        validators: [Validators.required, Validators.maxLength(20), Validators.pattern("^[^\\s]+$")],
         asyncValidators: [this.isUsernameTakenValidator]
       }),
       displayName: new FormControl('', [this.noWhiteSpaceValidator, Validators.maxLength(50)]),
