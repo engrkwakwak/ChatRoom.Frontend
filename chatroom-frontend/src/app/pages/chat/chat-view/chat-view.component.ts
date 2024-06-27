@@ -51,6 +51,7 @@ export class ChatViewComponent implements OnInit, OnDestroy {
     private messageService: MessageService,
     private signalRService: SignalRService,
     private router : Router,
+    private toastrService: NbToastrService
   ) {}
 
   ngOnDestroy(): void {
@@ -220,6 +221,11 @@ export class ChatViewComponent implements OnInit, OnDestroy {
   }
 
   public sendMessage(ev: any) {
+    if (ev.message.length > 500) {
+      this.toastrService.danger('Message must be 500 characters or less.', 'Error is encountered.' );
+      return;
+    }
+
     const message: MessageForCreationDto = {
       ChatId: this.chat?.chatId!,
       Content: ev.message,

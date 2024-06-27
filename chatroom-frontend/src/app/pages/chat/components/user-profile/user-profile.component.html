@@ -19,7 +19,7 @@
                     <span *ngIf="validateControl('username') && hasError('username', 'required')" class="form-text text-danger">Username is required.</span>
                     <span *ngIf="validateControl('username') && hasError('username', 'maxlength')" class="form-text text-danger">Max characters for Username is 20.</span>
                     <span *ngIf="validateControl('username') && hasError('username', 'usernameTaken')" class="form-text text-danger">Username is already taken.</span>
-                    <span *ngIf="validateControl('username') && hasError('username', 'pattern')" class="form-text text-danger">Username must only contain alpha numeric characters.</span>
+                    <span *ngIf="validateControl('username') && hasError('username', 'pattern')" class="form-text text-danger">Username should not include spaces.</span>
                 </div>
             </div>
             <div class="mb-3 row" *ngIf="isUserFormEditable">

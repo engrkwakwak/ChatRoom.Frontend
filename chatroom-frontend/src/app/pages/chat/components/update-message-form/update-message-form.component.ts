@@ -1,6 +1,6 @@
 import { Component, ElementRef, EventEmitter, Input, Output, ViewChild } from '@angular/core';
 import { MessageDto } from '../../../../dtos/chat/message.dto';
-import { NbWindowRef, NbWindowService } from '@nebular/theme';
+import { NbToastrService, NbWindowRef, NbWindowService } from '@nebular/theme';
 import { MessageService } from '../../../../services/message.service';
 import { MessageForUpdateDto } from '../../../../dtos/chat/message-for-update.dto';
 import { ErrorHandlerService } from '../../../../services/error-handler.service';
@@ -20,7 +20,8 @@ export class UpdateMessageFormComponent {
   constructor(
     private nbWindowService : NbWindowService,
     private messageService : MessageService,
-    private errorHandlerService : ErrorHandlerService
+    private errorHandlerService : ErrorHandlerService,
+    private toastrService: NbToastrService
   ){}
 
   show(){
@@ -39,6 +40,12 @@ export class UpdateMessageFormComponent {
       ChatId : this.message?.chatId!,
       Content : this.messageInput?.nativeElement.value
     }
+
+    if (message.Content.length > 500) {
+      this.toastrService.danger('Message must be 500 characters or less.', 'Error is encountered.' );
+      return;
+    }
+
     this.messageService.updateMessage(message)
     .subscribe({
       next : message => this.onUpdate.emit(message),

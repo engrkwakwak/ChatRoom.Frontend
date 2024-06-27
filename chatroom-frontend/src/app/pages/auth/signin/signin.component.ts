@@ -82,5 +82,12 @@ export class SigninComponent {
     }
   }
 
-  
+  validateControl = (controlName: string) => {
+    const control = this.loginForm.get(controlName);
+    return control?.invalid && (control?.touched || control?.dirty);
+  }
+
+  hasError = (controlName: string, errorName: string) => {
+    return this.loginForm.get(controlName)?.hasError(errorName);
+  }
 }

@@ -59,11 +59,20 @@ export class SignupComponent {
 
   signUpForm : FormGroup = this.fb.group({
     displayName : ['', [Validators.required, Validators.maxLength(50)]],
-    username : ['', [Validators.required, Validators.maxLength(20), Validators.pattern("[A-Za-z0-9_]+")], [this.isUsernameTakenValidator]],
-    email : ['', [Validators.required, Validators.maxLength(100)], [this.isEmailTakenValidator]],
+    username : ['', [Validators.required, Validators.maxLength(20), Validators.pattern("^[^\\s]+$")], [this.isUsernameTakenValidator]],
+    email : ['', [Validators.required, Validators.maxLength(100), Validators.email], [this.isEmailTakenValidator]],
     password : ['', [Validators.required, Validators.minLength(8)]],
     passwordConfirmation : ['', [Validators.required, Validators.minLength(8)]]
   });
+
+  validateControl = (controlName: string) => {
+    const control = this.signUpForm.get(controlName);
+    return control?.invalid && (control?.touched || control?.dirty);
+  }
+
+  hasError = (controlName: string, errorName: string) => {
+    return this.signUpForm.get(controlName)?.hasError(errorName);
+  }
 
   signUpForm_Submit(){
     this.toggleSignUpLoading();
