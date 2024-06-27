@@ -1,7 +1,7 @@
 <div id="chatlist">
     <div class="d-flex flex-column justify-content-evenly">
         <div class="p-2 chat-search-container">
-            <input nbInput fullWidth type="text" placeholder="Search Messages" (input)="search($event)" />
+            <input nbInput fullWidth type="text" placeholder="Search Messages" (input)="onSearchInput($event)" />
         </div>
         <div class="p-2">
             <button nbButton outline shape="round" size="small" fullWidth status="success" (click)="openCreateGCFirstModal()">+ Create Group Chat</button>
@@ -12,7 +12,8 @@
         nbInfiniteList
         [threshold]="100"
         [throttleTime]="1000"
-        (bottomThreshold)="fetchChats()">
+        (bottomThreshold)="fetchChats()"
+        >
 
         <nb-list-item *ngFor="let chat of chats" (click)="viewChat(chat)">
             <app-chatlist-item [chat]="chat" />

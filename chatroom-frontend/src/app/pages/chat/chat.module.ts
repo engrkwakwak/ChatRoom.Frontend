@@ -57,7 +57,7 @@ import { ChatMemberItemComponent } from './components/chat-member-item/chat-memb
     AddMembersModalComponent,
     UserItemComponent,
     ChatMembersComponent,
-    ChatMemberItemComponent
+    ChatMemberItemComponent,
   ],
   imports: [
     AppRoutingModule,

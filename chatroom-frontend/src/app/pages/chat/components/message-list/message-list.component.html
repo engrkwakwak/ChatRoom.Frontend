@@ -1,15 +1,16 @@
+
 <nb-chat #chatContainer>
     <div *nbCustomMessage="'app-message'; let message;noStyles:true" class="app-custom-message">
 
         <div [class]="currentUserId == message.sender?.userId ? 'content reply' : 'content'">
             <div class="message-con">
-                <div class="d-flex align-items-end flex-column mb-3">
+                <div class="d-flex align-items-end flex-column mb-0">
                     <div class="p-2 message-text">
                         {{message.content}}
                         <br>
                         <span class="opacity-50 small">{{message.dateSent | date:"MMM d, y, h:mm a"}}</span>
                     </div>
-                    <div class="mt-auto p-2 align-self-end" *ngIf="hasLastSeenUsers(message)">                
+                    <div class="mt-auto mb-0 p-2 align-self-end" *ngIf="hasLastSeenUsers(message)">                
                         <app-avatar *ngFor="let user of message.lastSeenUsers" 
                             [nbTooltip]="user.displayName" nbTooltipPlacement="top" nbTooltipStatus="default"
                             [width]="15" 

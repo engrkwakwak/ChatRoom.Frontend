@@ -19,16 +19,19 @@ export class SignalRService {
   private updatedMessage = new Subject<MessageDto>();
   private deleteMessage = new Subject<MessageDto>();
   private deleteChat = new Subject<number>();
-  private isUserTyping = new Subject<ChatMemberDto>()
+  private isUserStartTyping = new Subject<ChatMemberDto>()
+  private isUserEndTyping = new Subject<ChatMemberDto>()
   private lastSeenMessage = new Subject<ChatMemberDto>();
   private chatListNewMessage = new Subject<ChatHubChatlistUpdateDto>();
   private chatListDeletedChat = new Subject<ChatHubChatlistUpdateDto>();
   private chatlistRemovedFromChat = new Subject<ChatDto>();
+  private contactsUpdated = new Subject<any>();
   private isConnected: boolean = false;
+  private onLeaveGroup = new Subject<number>();
 
   constructor(
     private http: HttpClient,
-    private userProfileService : UserProfileService
+    private userProfileService : UserProfileService,
   ) {
   }
 
@@ -42,11 +45,12 @@ export class SignalRService {
       })
       .build();
 
-    this.hubConnection.on('UserTyping', (chatMember : ChatMemberDto) => {
-      if(chatMember.userId != this.userProfileService.getUserIdFromToken())
-      {
-        this.isUserTyping.next(chatMember)
-      }
+    this.hubConnection.on('UserStartsTyping', (chatMember : ChatMemberDto) => {
+        this.isUserStartTyping.next(chatMember)
+    });
+
+    this.hubConnection.on('UserTypingEnd', (chatMember : ChatMemberDto) => {
+        this.isUserEndTyping.next(chatMember)
     });
 
     this.hubConnection.on('DeleteChat', (chatId : number) => {
@@ -89,6 +93,10 @@ export class SignalRService {
       this.joinGroup(chatId);
     });
 
+    this.hubConnection.on('ContactsUpdated', () => {
+      this.contactsUpdated.next(null);
+    });
+
     this.hubConnection.start()
       .then(() => {
         this.isConnected = true;
@@ -109,9 +117,12 @@ export class SignalRService {
       .catch(err => console.error('Error while joining group: ', err));
   }
 
-  public leaveGroup(chatId: number): void {
+  public leaveGroup(chatId: number){
+    const _subject = new  Subject<any>()
     this.hubConnection.invoke('RemoveFromGroupAsync', chatId)
-      .then(() => console.log(`Remove from group chat-${chatId}`))
+      .then(() => {
+        this.onLeaveGroup.next(chatId)
+      })
       .catch(err => console.error('Error while leaving group: ', err));
   }
 
@@ -166,11 +177,23 @@ export class SignalRService {
     return this.chatListDeletedChat.asObservable();
   }
 
-  public getTypingUser() : Observable<ChatMemberDto> {
-    return this.isUserTyping.asObservable();
+  public getUserTypingStart() : Observable<ChatMemberDto> {
+    return this.isUserStartTyping.asObservable();
+  }
+
+  public getUserTypingEnd() : Observable<ChatMemberDto> {
+    return this.isUserEndTyping.asObservable();
   }
 
   public getRemovedFromChat() : Observable<ChatDto>{
     return this.chatlistRemovedFromChat.asObservable();
+  }
+
+  public getContactsUpdated() : Observable<any>{
+    return this.contactsUpdated.asObservable();
+  }
+
+  public getOnLeaveGroup() : Observable<number>{
+    return this.onLeaveGroup.asObservable();
   }
 }

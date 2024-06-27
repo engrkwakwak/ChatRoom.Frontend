@@ -18,7 +18,12 @@
          <app-message-list (messageListUpdated)="onMessageListUpdated($event)" (componentReady)="initializeMessageListComponent()" [currentUserId]="userId" [chatId]="chatId!" #messageList></app-message-list>
       </ng-container>
       
-       <nb-chat-form (send)="sendMessage($event)" (onInputChange)="chatformInputChange()"></nb-chat-form>
+      
+      <div class="typing-indicator" *ngIf="someoneIsTyping">
+         <div class="spinner-border spinner-border-sm" role="status"></div>
+         {{ typingUser }} is typing
+      </div>
+       <nb-chat-form (send)="sendMessage($event)" (onInputChange)="chatformInputChange($event)"></nb-chat-form>
     </div>
 
     

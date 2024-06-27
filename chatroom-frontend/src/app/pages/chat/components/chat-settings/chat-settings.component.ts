@@ -145,7 +145,6 @@ export class ChatSettingsComponent implements OnInit, OnChanges {
     this.chatService.leaveChat(this.chat?.chatId!)
     .subscribe({
       next : _ => {
-        this.chatService.onGroupChatLeave.next(this.chat!);
         this.router.navigate(["/chat"]);
         this.leaveChatDialogComponent?.close();
         this.leaveChatDialogComponent!.loading = false;

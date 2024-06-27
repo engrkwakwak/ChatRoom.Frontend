@@ -8,6 +8,7 @@ import { MessageService } from '../../../../../services/message.service';
 import { ErrorHandlerService } from '../../../../../services/error-handler.service';
 import { ChatMemberDto } from '../../../../../dtos/chat/chat-member.dto';
 import { UserDisplayDto } from '../../../../../dtos/chat/user-display.dto';
+import { ActivatedRoute, Router } from '@angular/router';
 
 @Component({
   selector: 'app-chatlist-item',
@@ -21,7 +22,9 @@ export class ChatlistItemComponent {
     private chatService : ChatService,
     private userProfileService : UserProfileService,
     private messageService : MessageService,
-    private errorHandlerService : ErrorHandlerService
+    private errorHandlerService : ErrorHandlerService,
+    private route : ActivatedRoute,
+    private router : Router
   ){}
 
   @Input({required: true}) chat? : ChatDto;
@@ -49,10 +52,7 @@ export class ChatlistItemComponent {
   }
 
   ngOnInit(){
-    if(this.chat?.chatTypeId == 1){
-      this.getP2PReceiver();
-    }
-
+    
     this.messageService.getLatestMessage(this.chat?.chatId!)
     .subscribe({
       next : message => this.latestMessage = message,

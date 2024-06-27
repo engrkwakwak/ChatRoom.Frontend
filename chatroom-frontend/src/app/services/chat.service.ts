@@ -20,7 +20,6 @@ export class ChatService {
   public isChatlistVisible : boolean = false;
   public isMobile = true;
 
-  onGroupChatLeave : Subject<ChatDto> = new Subject<ChatDto>();
   onMemberRemove : Subject<ChatMemberDto> = new Subject<ChatMemberDto>();
 
   constructor(
@@ -115,8 +114,12 @@ export class ChatService {
     return this.http.put<any>(`${this.API_ENDPOINT}/chats/${chatId}/leave`, {});
   }
 
-  broadcastTypingStatus(chatId : number) :  Observable<null>{
-    return this.http.get<null>(`${this.API_ENDPOINT}/chats/${chatId}/typing`);
+  broadcastTypingStatusStart(chatId : number) :  Observable<null>{
+    return this.http.get<null>(`${this.API_ENDPOINT}/chats/${chatId}/typing-start`);
+  }
+
+  broadcastTypingStatusEnd(chatId : number) :  Observable<null>{
+    return this.http.get<null>(`${this.API_ENDPOINT}/chats/${chatId}/typing-end`);
   }
 
   updateChat(route: string, chat: ChatForUpdateDto): Observable<void> {
