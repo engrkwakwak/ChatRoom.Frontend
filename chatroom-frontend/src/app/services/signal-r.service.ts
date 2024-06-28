@@ -8,6 +8,7 @@ import { ChatMemberDto } from '../dtos/chat/chat-member.dto';
 import { Message } from 'primeng/api';
 import { ChatHubChatlistUpdateDto } from '../dtos/chat/chathub-chatlist-update.dto';
 import { UserProfileService } from './user-profile.service';
+import { ChatType, Status } from '../shared/enums';
 
 @Injectable({
   providedIn: 'root'
@@ -28,6 +29,7 @@ export class SignalRService {
   private contactsUpdated = new Subject<any>();
   private isConnected: boolean = false;
   private onLeaveGroup = new Subject<number>();
+  private updatedChat = new Subject<ChatDto>();
 
   constructor(
     private http: HttpClient,
@@ -95,6 +97,18 @@ export class SignalRService {
 
     this.hubConnection.on('ContactsUpdated', () => {
       this.contactsUpdated.next(null);
+    });
+
+    this.hubConnection.on("UpdateChatNameAndPicture", (data) => {
+      const chat: ChatDto = {
+        chatId: data.chatId,
+        chatTypeId: ChatType.GroupChat,
+        chatName: data.chatName,
+        displayPictureUrl: data.displayPictureUrl,
+        dateCreated: '',
+        statusId: Status.Active
+      };
+      this.updatedChat.next(chat);
     });
 
     this.hubConnection.start()
@@ -195,5 +209,9 @@ export class SignalRService {
 
   public getOnLeaveGroup() : Observable<number>{
     return this.onLeaveGroup.asObservable();
+  }
+
+  public getUpdatedChat(): Observable<ChatDto> {
+    return this.updatedChat.asObservable();
   }
 }

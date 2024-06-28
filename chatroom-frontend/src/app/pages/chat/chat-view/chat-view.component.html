@@ -9,7 +9,7 @@
               {{ chat?.chatTypeId === 1 ? (members && members.length > 0 ? this.receiverName : 'Loading...') : (chat ? chat.chatName : "Loading...") }}
        </span>
 
-       <app-chat-settings (chatChangesSaved)="onChatChangesSaved($event)" [chat]="chat!" [members]="members!"  />
+       <app-chat-settings [chat]="chat!" [members]="members!"  />
        
     </div>
     <div class=" align-items-center" id="chat-view-container">
