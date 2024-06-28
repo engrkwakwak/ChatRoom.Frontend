@@ -159,6 +159,16 @@ export class ChatViewComponent implements OnInit, OnDestroy {
       })
     );
 
+    this.subscriptions.add(
+      this.signalRService.getUpdatedChat().subscribe((chat) => {
+        if(this.chat?.chatId == chat.chatId) {
+          this.chat.chatName = chat.chatName;
+          this.chat.displayPictureUrl = chat.displayPictureUrl;
+          this.profileImageSrc = chat.displayPictureUrl || null;
+        }
+      })
+    );
+
     this.typingWatcher
     .pipe(
       debounceTime(300),
@@ -249,12 +259,6 @@ export class ChatViewComponent implements OnInit, OnDestroy {
     }
 
     this.executeLastSeenMessageUpdate(sender, message);
-  }
-
-  onChatChangesSaved(chat: ChatDto) {
-    if(chat) {
-      this.profileImageSrc = chat.displayPictureUrl ?? '';
-    }
   }
 
   executeLastSeenMessageUpdate(sender: ChatMemberDto, message: MessageDto): void {

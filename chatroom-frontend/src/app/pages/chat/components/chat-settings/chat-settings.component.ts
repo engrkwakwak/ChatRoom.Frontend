@@ -54,7 +54,6 @@ export class ChatSettingsComponent implements OnInit, OnChanges {
   @Input({required:true}) chat? : ChatDto|null = null;
   @Input({required:true}) members : ChatMemberDto[] = [];
   @Output() onChatDelete : EventEmitter<any> = new EventEmitter<any>();
-  @Output() chatChangesSaved = new EventEmitter<ChatDto>();
 
   @ViewChild('deleteChatDialogComponent') deleteChatDialogComponent? : ConfirmationDialogComponent;
   @ViewChild('leaveChatDialogComponent') leaveChatDialogComponent? : ConfirmationDialogComponent;
@@ -223,7 +222,6 @@ export class ChatSettingsComponent implements OnInit, OnChanges {
     this.chatService.updateChat(apiUrl, chat).subscribe({
       next: () => {
         this.chat!.chatName = chat.chatName;
-        this.chatChangesSaved.emit(this.chat!);
         this.currentImageUrl = null;
         this.toastrService.success('Group chat information is successfully updated.');
       },
