@@ -18,7 +18,7 @@ Follow these steps for the installation of the Chatroom Frontend.
 	4. To run the system locally just enter `ng serve` on the command line.
 
 ## 软件依赖项(Software Dependencies)
-- NodeJS
+- NodeJS v18.20.2
 - Angular CLI
 - GIT
 
