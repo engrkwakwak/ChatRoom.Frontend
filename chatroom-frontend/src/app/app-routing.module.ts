@@ -18,7 +18,7 @@ import { ResetPasswordByEmailComponent } from './pages/auth/reset-password-by-em
 
 const routes: Routes = [
   {path: "", component: HomeComponent},
-  {path: "home", redirectTo: ""},
+  {path: "home", redirectTo: "/"},
   {
     path: "auth", 
     children : [
