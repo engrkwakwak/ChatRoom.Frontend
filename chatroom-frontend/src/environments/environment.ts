@@ -1,4 +1,4 @@
 export const environment = {
-    apiUrl : "https://april-chatroom-backend.azurewebsites.net/api",
-    signalREndpoint : "https://sigr-chatroom-prod.service.signalr.net"
+    apiUrl : "https://localhost:5001/api",
+    signalREndpoint : "https://localhost:5001"
 }
