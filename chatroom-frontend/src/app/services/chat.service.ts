@@ -5,8 +5,6 @@ import { Observable, Subject } from 'rxjs';
 import { NewChatMessageDto } from '../dtos/chat/new-chat-message.dto';
 import { MessageDto } from '../dtos/chat/message.dto';
 import { ChatDto } from '../dtos/chat/chat.dto';
-import { UserDto } from '../dtos/chat/user.dto';
-import { MessageForCreationDto } from '../dtos/chat/message-for-creation.dto';
 import { ChatParameters } from '../dtos/shared/chat-parameters.dto';
 import { ChatForCreationDto } from '../dtos/chat/chat-for-creation.dto';
 import { ChatMemberDto } from '../dtos/chat/chat-member.dto';

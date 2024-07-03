@@ -9,6 +9,7 @@ import { Message } from 'primeng/api';
 import { ChatHubChatlistUpdateDto } from '../dtos/chat/chathub-chatlist-update.dto';
 import { UserProfileService } from './user-profile.service';
 import { ChatType, Status } from '../shared/enums';
+import { environment } from '../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
@@ -41,7 +42,7 @@ export class SignalRService {
     if (this.isConnected) return;
     
     this.hubConnection = new signalR.HubConnectionBuilder()
-      .withUrl(`https://localhost:5001/chatRoomHub`, {
+      .withUrl(`${environment.signalREndpoint}/chatRoomHub`, {
         accessTokenFactory: () => localStorage.getItem('chatroom-token') || '',
         withCredentials: true
       })

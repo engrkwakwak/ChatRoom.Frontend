@@ -7,7 +7,6 @@ import { jwtDecode } from 'jwt-decode';
 import { UserProfileService } from '../../../../services/user-profile.service';
 import { UserDto } from '../../../../dtos/chat/user.dto';
 import { HttpErrorResponse } from '@angular/common/http';
-import { environment } from '../../../../../environments/environment.development';
 import { SignalRService } from '../../../../services/signal-r.service';
 import { ConfirmationDialogComponent } from '../confirmation-dialog/confirmation-dialog.component';
 import { AuthService } from '../../../../services/auth.service';
