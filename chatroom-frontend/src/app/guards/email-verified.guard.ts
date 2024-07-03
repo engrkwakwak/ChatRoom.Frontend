@@ -20,6 +20,7 @@ export class EmailVerifiedGuard  {
 
     return new Promise((resolve) => {
       this.authService.isEmailVerified(decodedToken.sub)
+      .pipe(take(1))
       .subscribe({
         next: isVerified => {
           if(!isVerified && route.routeConfig?.path === 'email-verification'){

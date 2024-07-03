@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { environment } from '../../environments/environment';
-import { Observable } from 'rxjs';
+import { Observable, shareReplay } from 'rxjs';
 import { UserDto } from '../dtos/chat/user.dto';
 // import { UserSearchParameters } from '../dtos/shared/user-search-parameters.dto.ts';
 import { HttpClient, HttpResponse } from '@angular/common/http';
@@ -22,7 +22,7 @@ export class UserService {
       Name : parameter.Name,
       PageSize : parameter.PageSize,
       PageNumber : parameter.PageNumber
-    }});
+    }}).pipe( shareReplay() );
   }
 
   public getUsers(route: string): Observable<HttpResponse<UserDto[]>> {
