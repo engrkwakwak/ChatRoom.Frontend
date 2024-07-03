@@ -84,7 +84,7 @@ import { ChatMemberItemComponent } from './components/chat-member-item/chat-memb
     JwtModule.forRoot({
       config: {
         tokenGetter: tokenGetter,
-        allowedDomains: ["localhost: 5001"],
+        allowedDomains: ["localhost: 5001", "https://april-chatroom-backend.azurewebsites.net"],
         disallowedRoutes: []
       }
     }),
