@@ -41,7 +41,7 @@ export function tokenGetter() {
     JwtModule.forRoot({
       config: {
         tokenGetter: tokenGetter,
-        allowedDomains: ["localhost:5001", "localhost:5000", "https://april-chatroom-backend.azurewebsites.net"],
+        allowedDomains: ["localhost:5001", "localhost:5000", "april-chatroom-backend.azurewebsites.net"],
         disallowedRoutes: []
       }
     }),

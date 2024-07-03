@@ -87,7 +87,7 @@ export class SignupComponent {
 
     this.auth.signup(data).subscribe({
       next: (response) => {
-        location.href = "/signin";
+        location.href = "/#/signin";
       },
       error: (error) => {
         this.toggleSignUpLoading()
