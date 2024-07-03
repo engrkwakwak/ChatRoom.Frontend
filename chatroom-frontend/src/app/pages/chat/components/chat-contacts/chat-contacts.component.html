@@ -13,12 +13,12 @@
                 nbInfiniteList
                 [threshold]="100"
                 [throttleTime]="1000"
-                (bottomThreshold)="fetchUser()">
+                (bottomThreshold)="fetchUsers()">
                     <nb-list-item class="user-item" *ngFor="let user of users" >
                         <app-contact-item [user]="user" (contactUpdated)="onContactUpdate()" />
                     </nb-list-item>
                     
-                    <nb-list-item class="user-skeleton" *ngIf="loadingStatus.Users">
+                    <nb-list-item class="user-skeleton" *ngIf="loadingStatus.users">
                         <app-user-skeleton-placeholder />
                         <br>
                         <app-user-skeleton-placeholder />
@@ -30,7 +30,7 @@
                         </div>
                     </nb-list-item>
 
-                    <nb-list-item class="user-initial-state" *ngIf="users.length < 1 && !loadingStatus.Users && userParams.Name == ''">
+                    <nb-list-item class="user-initial-state" *ngIf="users.length < 1 && !loadingStatus.users && userParams.Name == ''">
                         <div class="p-2 pt-4">
                             Try entering some keywords to search for other users.
                         </div>
@@ -49,7 +49,7 @@
                         <app-contact-item [user]="user" (contactUpdated)="onContactUpdate()" />
                     </nb-list-item>
                     
-                    <nb-list-item class="user-skeleton" *ngIf="loadingStatus.Contacts">
+                    <nb-list-item class="user-skeleton" *ngIf="loadingStatus.contacts">
                         <app-user-skeleton-placeholder />
                         <br>
                         <app-user-skeleton-placeholder />
@@ -61,7 +61,7 @@
                         </div>
                     </nb-list-item>
 
-                    <nb-list-item class="user-initial-state" *ngIf="contacts.length < 1 && !loadingStatus.Contacts && contactParams.Name == ''">
+                    <nb-list-item class="user-initial-state" *ngIf="contacts.length < 1 && !loadingStatus.contacts && contactParams.Name == ''">
                         <div class="py-2 pt-4">
                             Try entering some keywords to search for other users.
                         </div>
