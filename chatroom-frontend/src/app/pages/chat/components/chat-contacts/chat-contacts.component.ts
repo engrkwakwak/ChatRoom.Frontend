@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { UserService } from '../../../../services/user.service';
 import { ContactService } from '../../../../services/contact.service';
 import { AuthService } from '../../../../services/auth.service';
@@ -8,31 +8,22 @@ import { ContactParameters } from '../../../../dtos/shared/contact-parameters.dt
 import { UserDto } from '../../../../dtos/chat/user.dto';
 import { ChatService } from '../../../../services/chat.service';
 import { SignalRService } from '../../../../services/signal-r.service';
-import { Subject, debounce, debounceTime, distinctUntilChanged } from 'rxjs';
+import { Subject, debounceTime, distinctUntilChanged } from 'rxjs';
+import { ParameterService } from '../../../../services/parameter.service';
+import { ErrorHandlerService } from '../../../../services/error-handler.service';
 
 @Component({
   selector: 'app-chat-contacts',
   templateUrl: './chat-contacts.component.html',
   styleUrls: ['./chat-contacts.component.scss']
 })
-export class ChatContactsComponent {
+export class ChatContactsComponent implements OnInit {
   users: UserDto[] = [];
   contacts: UserDto[] = [];
-  userParams: UserSearchParameters = {
-    PageNumber: 1,
-    PageSize: 6,
-    Name: ""
-  };
-  contactParams: ContactParameters = {
-    PageNumber: 1,
-    PageSize: 6,
-    Name: "",
-    UserId: 0
-  };
-  loadingStatus: { Users: boolean; Contacts: boolean } = {
-    Users: false,
-    Contacts: false
-  };
+  userParams!: UserSearchParameters;
+  contactParams!: ContactParameters;
+  loadingStatus = { users: false, contacts: false }
+  searchInput : Subject<string> = new Subject<string>();
 
   constructor(
     private userService: UserService,
@@ -40,68 +31,107 @@ export class ChatContactsComponent {
     private authService: AuthService,
     private router: Router,
     private chatModuleService: ChatService,
-    private signalRService : SignalRService
+    private signalRService : SignalRService,
+    private parameterService: ParameterService,
+    private errorHandlerService: ErrorHandlerService
   ) {}
 
-  searchInput : Subject<string> = new Subject<string>();
+  ngOnInit(): void {
+    const userId = this.authService.getUserIdFromSession();
+    this.userParams = this.parameterService.createUserSearchParameters("");
+    this.contactParams = this.parameterService.createContactParameters("", userId);
+
+    this.fetchContacts();
+
+    this.signalRService.getContactsUpdated().subscribe(() => {
+      this.onContactUpdate();
+    });
+
+    this.searchInput
+      .pipe(
+        distinctUntilChanged(),
+        debounceTime(300)
+      )
+      .subscribe(keyword => {
+        this.search(keyword)
+      });
+  }
+
+  onSearchInput(ev:any) {
+    this.searchInput.next(ev.target.value);
+  }
+
   search(keyword : string) {
     this.resetUsers(keyword);
     this.resetContacts(keyword);
-    this.fetchContacts();
-    if (!keyword || keyword.trimEnd() === " ") {
-      return;
-    }
-    this.fetchUser();
-  }
 
-  onSearchInput(ev:any){
-    this.searchInput.next(ev.target.value.trimEnd());
-  }
+    this.loadingStatus.users = true;
+    this.loadingStatus.contacts = true;
 
-  hideContactList() {
-    this.chatModuleService.hideChatlist();
-  }
+    const userUri: string = `/users?pageNumber=${this.userParams.PageNumber}&pageSize=${this.userParams.PageSize}&name=${this.userParams.Name}`;
+    this.userService.searchUsersAndContacts(userUri, this.contactParams).subscribe({
+      next: ({users, contacts}) => {
+        if(this.userParams.Name.trim() !== ""){
+          this.users = users.body || [];
+        }
+        this.contacts = contacts;
 
-  viewChat() {
-    if(this.chatModuleService.isMobile){
-      this.hideContactList();
-    }
-    this.router.navigate(['/chat/view/1']);
-  }
+        const paginationJson = users.headers.get('X-Pagination');
+        if(paginationJson) {
+          this.setPaginationValues(paginationJson);
+        }
 
-  fetchUser() {
-    let isSearching: boolean = true;
-    if (this.userParams.Name.length <= 0 || this.loadingStatus.Users) {
-      return;
-    }
-    setTimeout(() => {
-      if (isSearching) {
-        this.loadingStatus.Users = true;
+        this.contactParams.PageNumber++;
+      },
+      error: (err) => this.errorHandlerService.handleError(err),
+      complete: () => {
+        this.loadingStatus.users = false;
+        this.loadingStatus.contacts = false;
       }
-    }, 500);
-    this.userService.searchUsersByName(this.userParams).subscribe({
+    });
+  }
+
+  private resetUsers(name: string) {
+    this.users = [];
+    this.userParams = this.parameterService.createUserSearchParameters(name);
+  }
+
+  private resetContacts(name: string) {
+    this.contacts = [];
+    this.contactParams = this.parameterService.createContactParameters(name, this.contactParams.UserId);
+  }
+
+  fetchUsers() {
+    if(this.loadingStatus.users || !this.userParams.HasNext) return;
+
+    this.loadingStatus.users = true;
+    console.log("Fired upon search");
+    const uri: string = `/users?pageNumber=${this.userParams.PageNumber}&pageSize=${this.userParams.PageSize}&name=${this.userParams.Name}`;
+    this.userService.getUsers(uri).subscribe({
       next: res => {
-        if (res.length > 0) {
-          this.users.push(...res);
-          this.userParams.PageNumber++;
+        if(res.body && res.body.length > 0 && this.userParams.Name !== '') {
+          this.users.push(...res.body);
+        }
+
+        const paginationJson = res.headers.get('X-Pagination');
+        if(paginationJson) {
+          this.setPaginationValues(paginationJson);
         }
       },
       error: () => {
-        this.loadingStatus.Users = false;
+        this.loadingStatus.users = false;
       },
       complete: () => {
-        this.loadingStatus.Users = false;
-        isSearching = false;
+        this.loadingStatus.users = false;
       }
     });
   }
 
   fetchContacts() {
-    if (this.loadingStatus.Contacts) {
-      return;
-    }
-    this.loadingStatus.Contacts = true;
-    this.contactService.searchContactsByNameUserId(this.contactParams).subscribe({
+    if (this.loadingStatus.contacts) return;
+    
+    this.loadingStatus.contacts = true;
+    this.userService.searchContactsByNameUserId(this.contactParams).subscribe({
       next: res => {
         if (res.length > 0) {
           this.contacts.push(...res);
@@ -109,10 +139,10 @@ export class ChatContactsComponent {
         }
       },
       error: () => {
-        this.loadingStatus.Contacts = false;
+        this.loadingStatus.contacts = false;
       },
       complete: () => {
-        this.loadingStatus.Contacts = false;
+        this.loadingStatus.contacts = false;
       }
     });
   }
@@ -122,6 +152,10 @@ export class ChatContactsComponent {
     this.fetchContacts();
   }
 
+  hideContactList() {
+    this.chatModuleService.hideChatlist();
+  }
+
   viewMessages(user: UserDto) {
     if (this.chatModuleService.isMobile) {
       this.hideContactList();
@@ -129,40 +163,14 @@ export class ChatContactsComponent {
     this.router.navigate([`/chat/view/from-contacts/${user.userId}`]);
   }
 
-  private resetUsers(name: string) {
-    this.users = [];
-    this.loadingStatus.Users = false;
-    this.userParams = {
-      PageSize: this.userParams.PageSize,
-      PageNumber: 1,
-      Name: name
-    };
-  }
+  setPaginationValues(paginationJson: string) {
+    const paginationData = JSON.parse(paginationJson);
 
-  private resetContacts(name: string) {
-    this.contacts = [];
-    this.loadingStatus.Contacts = false;
-    this.contactParams = {
-      PageSize: this.userParams.PageSize,
-      PageNumber: 1,
-      Name: name,
-      UserId: this.contactParams.UserId
-    };
-  }
-
-  ngOnInit() {
-    this.contactParams.UserId = this.authService.getUserIdFromSession();
-    this.fetchContacts();
-    this.signalRService.getContactsUpdated().subscribe(() => {
-      this.onContactUpdate();
-    });
-    this.searchInput
-    .pipe(
-      distinctUntilChanged(),
-      debounceTime(300)
-    )
-    .subscribe(keyword => {
-      this.search(keyword)
-    })
+    this.userParams.HasNext = paginationData.HasNext ?? false;
+    this.userParams.HasPrevious = paginationData.HasPrevious ?? false;
+    this.userParams.PageNumber = paginationData.CurrentPage ?? 1;
+    this.userParams.PageSize = paginationData.PageSize ?? 10;
+    this.userParams.TotalCount = paginationData.TotalCount ?? 0;
+    this.userParams.TotalPages = paginationData.TotalPages ?? 0;
   }
 }

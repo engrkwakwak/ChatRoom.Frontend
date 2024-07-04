@@ -29,15 +29,4 @@ export class ContactService {
   public getActiveContactByUserIdContactId(userId : number, contactId : number) : Observable<ContactDto>{
     return this.http.get<ContactDto>(`${this.API_ENDPOINT}/contacts/active/${userId}/${contactId}`);
   }
-
-  public searchContactsByNameUserId(parameter : ContactParameters) : Observable<UserDto[]>{
-    return this.http.get<UserDto[]>(`${this.API_ENDPOINT}/contacts`, {
-      params : {
-        Name : parameter.Name,
-        PageSize : parameter.PageSize,
-        PageNumber : parameter.PageNumber,
-        UserId : parameter.UserId
-      }
-    });
-  }
 }
