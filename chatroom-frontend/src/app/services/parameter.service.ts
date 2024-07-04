@@ -13,7 +13,7 @@ export class ParameterService {
     return {
       PageNumber: 1,
       PageSize: 6,
-      HasNext: true,
+      HasNext: false,
       HasPrevious: false,
       TotalCount: 0,
       TotalPages: 0,
