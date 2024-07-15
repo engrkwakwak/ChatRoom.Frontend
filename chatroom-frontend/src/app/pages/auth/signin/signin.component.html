@@ -26,7 +26,7 @@
                         <span *ngIf="validateControl('password') && hasError('password', 'required')" class="form-text text-danger">Password is required.</span>
                     </div>
 
-                    <button nbButton ghost size="small" (click)="showResetPassword()">
+                    <button nbButton ghost size="small" (click)="showResetPassword()" >
                         <nb-icon icon="question-mark-circle"></nb-icon>
                         Reset Password
                     </button>
@@ -35,7 +35,7 @@
             </nb-card-body>
 
             <nb-card-footer>
-                <button (click)="onSubmit()" nbButton hero shape="semi-round" class="d-block me-0 ms-auto" status="primary" fullWidth>
+                <button (click)="onSubmit()" nbButton hero shape="semi-round" class="d-block me-0 ms-auto" status="primary" fullWidth id="signin_btn">
                     <nb-icon icon="log-in"></nb-icon>
                     Sign In
                 </button>
