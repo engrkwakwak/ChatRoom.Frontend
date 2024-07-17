@@ -4,7 +4,13 @@
             <input nbInput fullWidth type="text" placeholder="Search Messages" (input)="onSearchInput($event)" />
         </div>
         <div class="p-2">
-            <button nbButton outline shape="round" size="small" fullWidth status="success" (click)="openCreateGCFirstModal()">+ Create Group Chat</button>
+            <button 
+                nbButton outline shape="round" size="small" 
+                fullWidth status="success" 
+                (click)="openCreateGCFirstModal()"
+                id="create-group-chat-button">
+                + Create Group Chat
+            </button>
         </div>
     </div>    
     
