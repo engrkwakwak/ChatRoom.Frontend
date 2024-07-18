@@ -1,4 +1,4 @@
-<nb-card>
+<nb-card id="user_profile_card">
     <nb-card-body >
         <input type="file" #file placeholder="Choose an image" accept="image/*" (change)="onFileChange($event)" style="display: none;">
         <app-avatar 
@@ -9,35 +9,35 @@
             [src]="loadDisplayPicture()" 
             (click)="isUserFormEditable ? file.click() : null" 
         />
-        <p class="mb-0 text-center fw-bold">{{ this.user ? this.user.displayName : ''}}</p>
+        <p class="mb-0 text-center fw-bold" id="display_name_label">{{ this.user ? this.user.displayName : ''}}</p>
         <br>
         <form [formGroup]="userForm" autocomplete="off">
             <div class="mb-3 row">
                 <label for="username" class="col-sm-3 col-form-label">Username</label>
                 <div class="col-sm-9">
                     <input nbInput status="basic" shape="semi-round" class="form-control" id="username" formControlName="username" placeholder="johndoe" spellcheck="false">
-                    <span *ngIf="validateControl('username') && hasError('username', 'required')" class="form-text text-danger">Username is required.</span>
-                    <span *ngIf="validateControl('username') && hasError('username', 'maxlength')" class="form-text text-danger">Max characters for Username is 20.</span>
-                    <span *ngIf="validateControl('username') && hasError('username', 'usernameTaken')" class="form-text text-danger">Username is already taken.</span>
-                    <span *ngIf="validateControl('username') && hasError('username', 'pattern')" class="form-text text-danger">Username should not include spaces.</span>
+                    <span *ngIf="validateControl('username') && hasError('username', 'required')" class="form-text text-danger validation-error">Username is required.</span>
+                    <span *ngIf="validateControl('username') && hasError('username', 'maxlength')" class="form-text text-danger validation-error">Max characters for Username is 20.</span>
+                    <span *ngIf="validateControl('username') && hasError('username', 'usernameTaken')" class="form-text text-danger validation-error">Username is already taken.</span>
+                    <span *ngIf="validateControl('username') && hasError('username', 'pattern')" class="form-text text-danger validation-error">Username should not include spaces.</span>
                 </div>
             </div>
             <div class="mb-3 row" *ngIf="isUserFormEditable">
                 <label for="displayName" class="col-sm-3 col-form-label">Name</label>
                 <div class="col-sm-9">
                     <input nbInput status="basic" shape="semi-round" class="form-control" id="displayName" formControlName="displayName" placeholder="John Doe" spellcheck="false">
-                    <span *ngIf="validateControl('displayName') && hasError('displayName', 'whitespace')" class="form-text text-danger">Display name is required.</span>
-                    <span *ngIf="validateControl('displayName') && hasError('displayName', 'maxlength')" class="form-text text-danger">Max characters for Display name is 20.</span>
+                    <span *ngIf="validateControl('displayName') && hasError('displayName', 'whitespace')" class="form-text text-danger validation-error">Display name is required.</span>
+                    <span *ngIf="validateControl('displayName') && hasError('displayName', 'maxlength')" class="form-text text-danger validation-error">Max characters for Display name is 20.</span>
                 </div>
             </div>
             <div class="mb-3 row">
                 <label for="email" class="col-sm-3 col-form-label">Email</label>
                 <div class="col-sm-9">
                     <input nbInput status="basic" shape="semi-round" class="form-control" id="email" formControlName="email" placeholder="john@doe.com" spellcheck="false">
-                    <span *ngIf="validateControl('email') && hasError('email', 'whitespace')" class="form-text text-danger">Email is required.</span>
-                    <span *ngIf="validateControl('email') && hasError('email', 'maxlength')" class="form-text text-danger">Max characters for Email is 100.</span>
-                    <span *ngIf="validateControl('email') && hasError('email', 'email')" class="form-text text-danger">Invalid email address.</span>
-                    <span *ngIf="validateControl('email') && hasError('email', 'emailTaken')" class="form-text text-danger">Email address is already taken.</span>
+                    <span *ngIf="validateControl('email') && hasError('email', 'whitespace')" class="form-text text-danger validation-error">Email is required.</span>
+                    <span *ngIf="validateControl('email') && hasError('email', 'maxlength')" class="form-text text-danger validation-error">Max characters for Email is 100.</span>
+                    <span *ngIf="validateControl('email') && hasError('email', 'email')" class="form-text text-danger validation-error">Invalid email address.</span>
+                    <span *ngIf="validateControl('email') && hasError('email', 'emailTaken')" class="form-text text-danger validation-error">Email address is already taken.</span>
                 </div>
             </div>
             <div class="mb-3 row">
@@ -45,20 +45,20 @@
                 <div class="col-sm-9">
                     <input nbInput [nbDatepicker]="datepicker" format="MM\dd\yyyy" status="basic" shape="semi-round" class="form-control" id="birth-date" formControlName="birthDate">
                     <nb-datepicker #datepicker></nb-datepicker>
-                    <span *ngIf="validateControl('birthDate') && hasError('birthDate', 'futureDate')" class="form-text text-danger">Birthday cannot be set in the future.</span>
+                    <span *ngIf="validateControl('birthDate') && hasError('birthDate', 'futureDate')" class="form-text text-danger validation-error">Birthday cannot be set in the future.</span>
                 </div>
             </div>
             <div class="mb-3 row">
                 <label for="address" class="col-sm-3 col-form-label">Address</label>
                 <div class="col-sm-9">
                     <textarea nbInput status="basic" shape="semi-round" id="address" class="form-control" formControlName="address" placeholder="Barangay, Municipality, Province, Country" spellcheck="false"></textarea>
-                    <span *ngIf="validateControl('address') && hasError('address', 'maxlength')" class="form-text text-danger">Max characters for Address name is 100.</span>
+                    <span *ngIf="validateControl('address') && hasError('address', 'maxlength')" class="form-text text-danger validation-error">Max characters for Address name is 100.</span>
                 </div>
             </div>   
         </form>
     </nb-card-body>
     <nb-card-footer class="d-flex justify-content-end">
-        <button nbButton outline status="primary" [disabled]="!userForm.valid" (click)="updateUser()" *ngIf="isUserFormEditable">Save Changes</button>
+        <button nbButton outline status="primary" [disabled]="!userForm.valid" (click)="updateUser()" *ngIf="isUserFormEditable" id="edit_profile_save_btn">Save Changes</button>
         <button nbButton outline status="primary" (click)="sendMessage()" *ngIf="!isUserFormEditable">Send A Message</button>
     </nb-card-footer>
 </nb-card>
