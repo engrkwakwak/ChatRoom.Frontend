@@ -1,13 +1,13 @@
 <ng-template #dialogTemplate>
-    <nb-card [nbSpinner]="false">
-        <nb-card-header>{{title ? title : "Confirm"}}</nb-card-header>
-        <nb-card-body>
+    <nb-card [nbSpinner]="false" id="confirmation-dialog">
+        <nb-card-header id="confirm-diag-title">{{title ? title : "Confirm"}}</nb-card-header>
+        <nb-card-body id="confirm-diag-message">
             {{ message ? message : "Do you want to continue?"}}
         </nb-card-body>
         <nb-card-footer>
             <div class="buttons" >
                 <button nbButton ghost (click)="cancel()">Cancel</button>
-                <button nbButton [nbSpinner]="loading" [status]="status ? status : 'basic'" (click)="continue()" >Continue</button>
+                <button nbButton [nbSpinner]="loading" [status]="status ? status : 'basic'" (click)="continue()" id="continue_btn">Continue</button>
             </div>
         </nb-card-footer>
     </nb-card>

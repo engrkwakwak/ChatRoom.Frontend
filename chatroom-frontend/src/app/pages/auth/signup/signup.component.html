@@ -12,24 +12,24 @@
                     <div class="mb-3">
                         <label for="display_name" class="col-sm-3 col-form-label">Display Name <span class="text-danger">*</span></label>
                         <input nbInput fullWidth status="basic" shape="semi-round" class="form-control" id="display_name" formControlName="displayName" placeholder="John Doe" spellcheck="false">
-                        <span *ngIf="validateControl('displayName') && hasError('displayName', 'required')" class="form-text text-danger">Display Name is required.</span>
-                        <span *ngIf="validateControl('displayName') && hasError('displayName', 'maxlength')" class="form-text text-danger">Max characters for Display name is 50.</span>
+                        <span *ngIf="validateControl('displayName') && hasError('displayName', 'required')" class="form-text text-danger validation-error">Display Name is required.</span>
+                        <span *ngIf="validateControl('displayName') && hasError('displayName', 'maxlength')" class="form-text text-danger validation-error">Max characters for Display name is 50.</span>
                     </div>
                     <div class="mb-3">
                         <label for="username" class="col-sm-3 col-form-label">Username <span class="text-danger">*</span></label>
                         <input nbInput fullWidth status="basic" shape="semi-round" class="form-control" id="username" formControlName="username" placeholder="johndoe" spellcheck="false">
-                        <span *ngIf="validateControl('username') && hasError('username', 'required')" class="form-text text-danger">Username is required.</span>
-                        <span *ngIf="validateControl('username') && hasError('username', 'maxlength')" class="form-text text-danger">Max characters for Username is 50.</span>
-                        <span *ngIf="validateControl('username') && hasError('username', 'usernameTaken')" class="form-text text-danger">Username is already taken</span>
-                        <span *ngIf="validateControl('username') && hasError('username', 'pattern')" class="form-text text-danger">Username should not include spaces.</span>
+                        <span *ngIf="validateControl('username') && hasError('username', 'required')" class="form-text text-danger validation-error">Username is required.</span>
+                        <span *ngIf="validateControl('username') && hasError('username', 'maxlength')" class="form-text text-danger validation-error">Max characters for Username is 20.</span>
+                        <span *ngIf="validateControl('username') && hasError('username', 'usernameTaken')" class="form-text text-danger validation-error">Username is already taken</span>
+                        <span *ngIf="validateControl('username') && hasError('username', 'pattern')" class="form-text text-danger validation-error">Username should not include spaces.</span>
                     </div>
                     <div class="mb-3">
                         <label for="email" class="col-sm-3 col-form-label">Email Address <span class="text-danger">*</span></label>
                         <input nbInput fullWidth status="basic" shape="semi-round" class="form-control" id="email" formControlName="email" placeholder="john@doe.com" spellcheck="false">
-                        <span *ngIf="validateControl('email') && hasError('email', 'required')" class="form-text text-danger">Email is required.</span>
-                        <span *ngIf="validateControl('email') && hasError('email', 'maxlength')" class="form-text text-danger">Max characters for Email is 100.</span>
-                        <span *ngIf="validateControl('email') && hasError('email', 'email')" class="form-text text-danger">Email is not valid.</span>
-                        <span *ngIf="validateControl('email') && hasError('email', 'emailTaken')" class="form-text text-danger">Email is already taken.</span>
+                        <span *ngIf="validateControl('email') && hasError('email', 'required')" class="form-text text-danger validation-error">Email is required.</span>
+                        <span *ngIf="validateControl('email') && hasError('email', 'maxlength')" class="form-text text-danger validation-error">Max characters for Email is 100.</span>
+                        <span *ngIf="validateControl('email') && hasError('email', 'email')" class="form-text text-danger validation-error">Email is not valid.</span>
+                        <span *ngIf="validateControl('email') && hasError('email', 'emailTaken')" class="form-text text-danger validation-error">Email is already taken.</span>
                     </div>
                     <div class="mb-3">
                         <label for="password" class="col-sm-3 col-form-label">Password <span class="text-danger">*</span></label>
@@ -39,9 +39,9 @@
                                 <nb-icon [icon]="showPassword ? 'eye-outline' : 'eye-off-2-outline'"></nb-icon>
                             </button>
                         </nb-form-field>
-                        <span *ngIf="validateControl('password') && hasError('password', 'required')" class="form-text text-danger">Password is required.</span>
-                        <span *ngIf="validateControl('password') && hasError('password', 'minlength')" class="form-text text-danger">Password must be atleast 8 characters long.</span>
-                        <span *ngIf="(passwordConfirmation?.touched || passwordConfirmation?.dirty) && signUpForm.errors?.['passwordMismatch']" class="form-text text-danger">Password does not match.</span>
+                        <span *ngIf="validateControl('password') && hasError('password', 'required')" class="form-text text-danger validation-error">Password is required.</span>
+                        <span *ngIf="validateControl('password') && hasError('password', 'minlength')" class="form-text text-danger validation-error">Password must be atleast 8 characters long.</span>
+                        <span *ngIf="(passwordConfirmation?.touched || passwordConfirmation?.dirty) && signUpForm.errors?.['passwordMismatch']" class="form-text text-danger validation-error">Password does not match.</span>
                     </div>
                     <div class="mb-3">
                         <label for="password-confirmation" class="col-sm-3 col-form-label">Confirm Password <span class="text-danger">*</span></label>
@@ -56,8 +56,8 @@
                                 <nb-icon [icon]="showPasswordConfirmation ? 'eye-outline' : 'eye-off-2-outline'"></nb-icon>
                             </button>
                         </nb-form-field>
-                        <span *ngIf="validateControl('passwordConfirmation') && hasError('passwordConfirmation', 'required')" class="form-text text-danger">Password is required.</span>
-                        <span *ngIf="validateControl('passwordConfirmation') && hasError('passwordConfirmation', 'minlength')" class="form-text text-danger">Password must be atleast 8 characters long.</span>
+                        <span *ngIf="validateControl('passwordConfirmation') && hasError('passwordConfirmation', 'required')" class="form-text text-danger validation-error">Password is required.</span>
+                        <span *ngIf="validateControl('passwordConfirmation') && hasError('passwordConfirmation', 'minlength')" class="form-text text-danger validation-error">Password must be atleast 8 characters long.</span>
                     </div>
                 </nb-card-body>
                 

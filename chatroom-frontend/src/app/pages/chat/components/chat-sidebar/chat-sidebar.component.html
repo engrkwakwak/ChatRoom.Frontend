@@ -1,6 +1,6 @@
 <div id="chatsidebar">
     <nb-layout-header>
-        <div class="row align-items-center" [nbContextMenu]="userActionItems"
+        <div class="row align-items-center" [nbContextMenu]="userActionItems" id="user-profile-btn"
         nbContextMenuTag="user-actions-menu">
             <div class="col-auto">
                 <app-avatar [width]="40" [height]="40" [src]="loadDisplayPicture()" />
@@ -13,10 +13,16 @@
     </nb-layout-header>
 
     <nb-tabset fullWidth>
-        <nb-tab tabIcon="message-circle" tabTitle="Chats" responsive>
+        <nb-tab tabIcon=""  responsive>
+            <ng-template nbTabTitle>
+                <span id="chats_tab_title"><nb-icon icon="message-circle"></nb-icon> Chats</span>
+            </ng-template>
             <app-chatlist />
         </nb-tab>
-        <nb-tab tabIcon="people" tabTitle="Contacts" responsive>
+        <nb-tab responsive id="contacts_tab">
+            <ng-template nbTabTitle>
+                <span id="contacts_tab_title"><nb-icon icon="people"></nb-icon> Contacts</span>
+            </ng-template>
             <app-chat-contacts />
         </nb-tab>
     </nb-tabset>

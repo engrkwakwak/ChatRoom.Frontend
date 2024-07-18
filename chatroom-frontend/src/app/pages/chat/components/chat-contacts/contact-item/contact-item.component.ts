@@ -39,18 +39,22 @@ export class ContactItemComponent {
     isEmailVerified: false
   }; 
   contactInfo : ContactDto | null = null;
+  options : MenuItem[] = [];
+
   @ViewChild("menu") menu? : Menu;
 
   userOptions : MenuItem[] = [
     {
       label : "View Profile",
       icon: "pi pi-user",
-      command: () => this.viewProfile()
+      command: () => this.viewProfile(),
+      id: "opt-view-profile"
     },
     {
       label : "Add Contact",
       icon: "pi pi-user-plus",
-      command: () => this.addContact()
+      command: () => this.addContact(),
+      id: "opt-add-contact"
     }
   ]; 
 
@@ -58,12 +62,14 @@ export class ContactItemComponent {
     {
       label : "View Profile",
       icon: "pi pi-user",
-      command: () => this.viewProfile()
+      command: () => this.viewProfile(),
+      id: "opt-view-profile"
     },
     {
       label : "Remove Contact",
       icon: "pi pi-user-minus",
-      command: () => this.deleteContact()
+      command: () => this.deleteContact(),
+      id: "opt-remove-contact"
     }
   ];
 
@@ -107,7 +113,8 @@ export class ContactItemComponent {
         this.toastrService.show('Success', `User successfully remove from contacts.`, { 
           position : NbGlobalPhysicalPosition.TOP_RIGHT,
           status : 'success',
-          icon: 'checkmark'
+          icon: 'checkmark',
+          // duration: 100000000
         });
         this.contactUpdated.emit();
       },
@@ -130,6 +137,7 @@ export class ContactItemComponent {
     .subscribe({
       next: res => {
         this.contactInfo = res;
+        this.options = res ? this.contactOptions : this.userOptions
       },
       error : err => this.errorHandlerService.handleError(err)
     })

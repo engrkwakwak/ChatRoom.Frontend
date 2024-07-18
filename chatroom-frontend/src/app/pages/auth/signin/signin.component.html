@@ -12,8 +12,8 @@
                     <div class="mb-3">
                         <label for="username" class="col-form-label">Username or Email Address <span class="text-danger">*</span></label>
                         <input nbInput fullWidth status="basic" shape="semi-round" class="form-control" id="username" formControlName="username" placeholder="'johndoe' or 'john@doe.com'" spellcheck="false">
-                        <span *ngIf="validateControl('username') && hasError('username', 'required')" class="form-text text-danger">Username is required.</span>
-                        <span *ngIf="validateControl('username') && hasError('username', 'maxlength')" class="form-text text-danger">Maximum length of 100 characters is exceeded.</span>
+                        <span *ngIf="validateControl('username') && hasError('username', 'required')" class="form-text text-danger validation-error">Username is required.</span>
+                        <span *ngIf="validateControl('username') && hasError('username', 'maxlength')" class="form-text text-danger validation-error">Maximum length of 100 characters is exceeded.</span>
                     </div>
                     <div class="mb-3">
                         <label for="password" class="mb-2">Password <span class="text-danger">*</span></label>
@@ -23,14 +23,14 @@
                                 <nb-icon [icon]="showPassword ? 'eye-outline' : 'eye-off-2-outline'"></nb-icon>
                             </button>
                         </nb-form-field>
-                        <span *ngIf="validateControl('password') && hasError('password', 'required')" class="form-text text-danger">Password is required.</span>
+                        <span *ngIf="validateControl('password') && hasError('password', 'required')" class="form-text text-danger validation-error">Password is required.</span>
                     </div>
 
                     <button nbButton ghost size="small" (click)="showResetPassword()" >
                         <nb-icon icon="question-mark-circle"></nb-icon>
                         Reset Password
                     </button>
-                    <div *ngIf="invalidLogin" class="alert alert-danger">Invalid username or password.</div>
+                    <div id="invalid-auth-alert" *ngIf="invalidLogin" class="alert alert-danger">Invalid username or password.</div>
                 </form>
             </nb-card-body>
 
