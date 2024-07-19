@@ -6,14 +6,14 @@
                 <app-avatar [src]="loadProfilePicture()"  />
             </div>
             <div class="col">
-                <p class="mb-0">{{ member!.user.displayName! }} {{ userId && userId == member!.user.userId ? '(You)' : '' }} </p>
-                <p class="mb-0 opacity-50">{{ member!.isAdmin ? 'Admin' : 'Member'}}</p>
+                <p class="mb-0 chat-member-name">{{ member!.user.displayName! }} {{ userId && userId == member!.user.userId ? '(You)' : '' }} </p>
+                <p class="mb-0 opacity-50 chat-member-role">{{ member!.isAdmin ? 'Admin' : 'Member'}}</p>
             </div>
             <div class="col-auto p-0">
                 <p-progressSpinner [style]="{width: '30px', height: '30px'}" *ngIf="loading"  />
             </div>
             <div class="col-auto p-0" *ngIf="userMembership?.isAdmin && member?.user?.userId != userId">
-                <button nbButton size="small" ghost [nbPopover]="userActions" nbPopoverPlacement="bottom" >
+                <button nbButton size="small" ghost class="member-menu-button" [nbPopover]="userActions" nbPopoverPlacement="bottom" >
                     <nb-icon icon="more-horizontal"></nb-icon>
                 </button>
             </div>
@@ -25,7 +25,7 @@
                 <app-avatar [src]="loadProfilePicture()"  />
             </div>
             <div class="col">
-                <p class="mb-0">{{ user?.displayName! }}</p>
+                <p class="mb-0 user-name" >{{ user?.displayName! }}</p>
             </div>
             <div class="col-auto p-0">
                 <p-progressSpinner [style]="{width: '30px', height: '30px'}" *ngIf="loading"  />

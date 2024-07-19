@@ -170,4 +170,8 @@ export class AddMembersModalComponent implements OnInit, OnDestroy {
       this.selectedUsers = this.selectedUsers.filter(selectedUser => selectedUser.userId !== user.userId);
     }
   }
+
+  isFormValid(): boolean {
+    return this.selectedUsers.length > 0;
+  }
 }

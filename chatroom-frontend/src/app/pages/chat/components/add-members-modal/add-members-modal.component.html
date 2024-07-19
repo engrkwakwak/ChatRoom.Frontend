@@ -12,7 +12,7 @@
             [threshold]="100"
             [throttleTime]="1000"
             (bottomThreshold)="fetchNext()">
-            @for (user of selectedUsers; track user.userId){
+            @for (user of selectedUsers; track user.userId) {
                 <nb-list-item class="d-flex align-items-center mb-3" style="width: 100%;">
                     <div class="p-2">
                         <app-user-item [user]="user"></app-user-item>
@@ -23,8 +23,8 @@
                 </nb-list-item>
             }
             
-            @for (user of filteredUsers; track user.userId){
-                <nb-list-item class="d-flex align-items-center mb-3" style="width: 100%;">
+            @for (user of filteredUsers; track user.userId) {
+                <nb-list-item class="d-flex align-items-center mb-3 filtered-users" style="width: 100%;">
                     <div class="p-2">
                         <app-user-item [user]="user"></app-user-item>
                     </div>
@@ -38,7 +38,7 @@
         
     </nb-card-body>
     <nb-card-footer>
-      <button nbButton status="danger" (click)="dismiss()">Close</button>
-      <button nbButton status="primary" (click)="complete()">Complete</button>
+      <button nbButton status="danger" id="close-button" (click)="dismiss()">Close</button>
+      <button nbButton status="primary" [disabled]="!isFormValid()" id="add-member-complete-button" (click)="complete()">Complete</button>
     </nb-card-footer>
 </nb-card>

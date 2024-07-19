@@ -77,14 +77,15 @@ export class ChatMembersComponent {
 
   searchUsers(){
     this.isProcessing = true;
-    this.userService.searchUsersByName(this.userParameters)
+    const uri: string = `/users?pageNumber=${this.userParameters.PageNumber}&pageSize=${this.userParameters.PageSize}&name=${this.userParameters.Name}`;
+    this.userService.getUsers(uri)
     .subscribe({
-      next: (users : UserDto[]) => {
+      next: (res) => {
         if(this.userParameters.PageNumber == 1){
-          this.users = users;
+          this.users = res.body!;
         }
         else{
-          this.users.push(...users);
+          this.users.push(...res.body!);
         }
         this.userParameters.PageNumber++;
         this.isProcessing = false;

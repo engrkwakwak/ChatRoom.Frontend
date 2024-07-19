@@ -1,4 +1,4 @@
 <ng-template #updateMessageTemplate>
-    <textarea #messageInput  nbInput placeholder="Write message" name="" id="" >{{message?.content}}</textarea>
-    <button nbButton (click)="updateMessage()">Save</button>
+    <textarea #messageInput  nbInput placeholder="Write message" name="" id="update-message-input" >{{message?.content}}</textarea>
+    <button nbButton (click)="updateMessage()" id="save-changes-button">Save</button>
 </ng-template>

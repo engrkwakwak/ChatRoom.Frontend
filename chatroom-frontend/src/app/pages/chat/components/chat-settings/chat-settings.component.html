@@ -1,11 +1,11 @@
-<button nbButton ghost shape="semi-round" (click)="open()">
+<button nbButton ghost shape="semi-round" id="chat-settings-button" (click)="open()">
     <nb-icon icon="settings"></nb-icon>
 </button>
 
 <ng-template #chatSettingsRef>
     <div class="chat-settings-card">
         <div class="close-button">
-            <button nbButton ghost size="small" (click)="close()">
+            <button nbButton ghost size="small" id="close-button" (click)="close()">
                 <nb-icon icon="close"></nb-icon>
             </button>
         </div>
@@ -17,28 +17,28 @@
                 <div class="col">
                 </div>
                 <div class="col-6">
-                    <input class="text-center" nbInput fullWidth shape="semi-round" id="chatName" formControlName="chatName"  placeholder="Group name">
+                    <input class="text-center" nbInput fullWidth shape="semi-round" id="chat-name" formControlName="chatName"  placeholder="Group name">
                 </div>
                 <div class="col">
-                    <button [hidden]="!chatForm.valid" nbButton ghost status="success" (click)="updateChat()"><nb-icon icon="checkmark-circle-outline"></nb-icon></button>
+                    <button [disabled]="!chatForm.valid" nbButton ghost status="success" id="update-chat-button" (click)="updateChat()"><nb-icon icon="checkmark-circle-outline"></nb-icon></button>
                 </div>
             </div>
         </form>
 
         <div class="action-buttons">
             <nb-list *ngIf="chat?.chatTypeId == 2">
-                <nb-list-item (click)="showMembersDialog()">
+                <nb-list-item id="members-button" (click)="showMembersDialog()">
                     <nb-icon icon="people" class="me-2"></nb-icon>
                     {{members.length}} Members
                 </nb-list-item>
-                <nb-list-item (click)="confirmLeaveChat()">
+                <nb-list-item id="leave-chat-button" (click)="confirmLeaveChat()">
                     <nb-icon icon="log-out" class="me-2"></nb-icon>
                     Leave Chat
                 </nb-list-item>
             </nb-list>
 
             <nb-list>
-                <nb-list-item class="delete-chat-item" (click)="confirmDeleteChat()" *ngIf="chat!.chatTypeId == 1 || (chat!.chatTypeId == 2 && isAdmin())">
+                <nb-list-item id="delete-chat-button" class="delete-chat-item" (click)="confirmDeleteChat()" *ngIf="chat!.chatTypeId == 1 || (chat!.chatTypeId == 2 && isAdmin())">
                     <nb-icon icon="trash-2" class="me-2"></nb-icon>
                     Delete Chat
                 </nb-list-item>

@@ -3,12 +3,12 @@
         <nb-card >
             <nb-card-header>
                 <div class="row">
-                    <div class="col">
+                    <div class="col section-title">
                         <nb-icon icon="people"></nb-icon>
                         Members
                     </div>
                     <div class="col-auto">
-                        <button nbButton size="small" ghost (click)="close()">
+                        <button nbButton size="small" ghost id="close-button" (click)="close()">
                             <nb-icon icon="close"></nb-icon>
                         </button>
                     </div>
@@ -16,14 +16,14 @@
             </nb-card-header>
             <nb-card-body>
                 <form [formGroup]="searchForm" class="search-form">
-                    <input placeholder="Search Member or User to add or remove members" type="search" formControlName="search" nbInput fullWidth>
+                    <input placeholder="Search Member or User to add or remove members" type="search" id="search-input" formControlName="search" nbInput fullWidth>
                 </form>
                 <div class="list-con">
                     <ng-container *ngIf="!search?.value || search?.value.trim() == ''; else usersTemplate " >
                         <p class="px-3">
                             Members
                         </p>
-                        <nb-list >
+                        <nb-list class="chat-member-list">
                             <nb-list-item *ngFor="let member of members">
                                 <app-chat-member-item type="member" [member]="member" [chat]="chat!"  class="w-100" />
                             </nb-list-item>
@@ -33,7 +33,7 @@
                         <p class="px-3">
                             Users
                         </p>
-                        <nb-list 
+                        <nb-list class="available-user-list"
                             nbInfiniteList
                             [threshold]="200"
                             [throttleTime]="1000"
