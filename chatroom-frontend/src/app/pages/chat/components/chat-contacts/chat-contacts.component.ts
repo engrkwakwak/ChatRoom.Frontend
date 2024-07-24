@@ -15,15 +15,15 @@ import { ErrorHandlerService } from '../../../../services/error-handler.service'
 @Component({
   selector: 'app-chat-contacts',
   templateUrl: './chat-contacts.component.html',
-  styleUrls: ['./chat-contacts.component.scss']
+  styleUrls: ['./chat-contacts.component.scss'],
 })
 export class ChatContactsComponent implements OnInit {
   users: UserDto[] = [];
   contacts: UserDto[] = [];
   userParams!: UserSearchParameters;
   contactParams!: ContactParameters;
-  loadingStatus = { users: false, contacts: false }
-  searchInput : Subject<string> = new Subject<string>();
+  loadingStatus = { users: false, contacts: false };
+  searchInput: Subject<string> = new Subject<string>();
 
   constructor(
     private userService: UserService,
@@ -31,15 +31,18 @@ export class ChatContactsComponent implements OnInit {
     private authService: AuthService,
     private router: Router,
     private chatModuleService: ChatService,
-    private signalRService : SignalRService,
+    private signalRService: SignalRService,
     private parameterService: ParameterService,
     private errorHandlerService: ErrorHandlerService
   ) {}
 
   ngOnInit(): void {
     const userId = this.authService.getUserIdFromSession();
-    this.userParams = this.parameterService.createUserSearchParameters("");
-    this.contactParams = this.parameterService.createContactParameters("", userId);
+    this.userParams = this.parameterService.createUserSearchParameters('');
+    this.contactParams = this.parameterService.createContactParameters(
+      '',
+      userId
+    );
 
     this.fetchContacts();
 
@@ -48,20 +51,17 @@ export class ChatContactsComponent implements OnInit {
     });
 
     this.searchInput
-      .pipe(
-        distinctUntilChanged(),
-        debounceTime(300)
-      )
-      .subscribe(keyword => {
-        this.search(keyword)
+      .pipe(distinctUntilChanged(), debounceTime(300))
+      .subscribe((keyword) => {
+        this.search(keyword);
       });
   }
 
-  onSearchInput(ev:any) {
+  onSearchInput(ev: any) {
     this.searchInput.next(ev.target.value);
   }
 
-  search(keyword : string) {
+  search(keyword: string) {
     this.resetUsers(keyword);
     this.resetContacts(keyword);
 
@@ -69,26 +69,28 @@ export class ChatContactsComponent implements OnInit {
     this.loadingStatus.contacts = true;
 
     const userUri: string = `/users?pageNumber=${this.userParams.PageNumber}&pageSize=${this.userParams.PageSize}&name=${this.userParams.Name}`;
-    this.userService.searchUsersAndContacts(userUri, this.contactParams).subscribe({
-      next: ({users, contacts}) => {
-        if(this.userParams.Name.trim() !== ""){
-          this.users = users.body || [];
-        }
-        this.contacts = contacts;
+    this.userService
+      .searchUsersAndContacts(userUri, this.contactParams)
+      .subscribe({
+        next: ({ users, contacts }) => {
+          if (this.userParams.Name.trim() !== '') {
+            this.users = users.body || [];
+          }
+          this.contacts = contacts;
 
-        const paginationJson = users.headers.get('X-Pagination');
-        if(paginationJson) {
-          this.setPaginationValues(paginationJson);
-        }
+          const paginationJson = users.headers.get('X-Pagination');
+          if (paginationJson) {
+            this.setPaginationValues(paginationJson);
+          }
 
-        this.contactParams.PageNumber++;
-      },
-      error: (err) => this.errorHandlerService.handleError(err),
-      complete: () => {
-        this.loadingStatus.users = false;
-        this.loadingStatus.contacts = false;
-      }
-    });
+          this.contactParams.PageNumber++;
+        },
+        error: (err) => this.errorHandlerService.handleError(err),
+        complete: () => {
+          this.loadingStatus.users = false;
+          this.loadingStatus.contacts = false;
+        },
+      });
   }
 
   private resetUsers(name: string) {
@@ -98,23 +100,26 @@ export class ChatContactsComponent implements OnInit {
 
   private resetContacts(name: string) {
     this.contacts = [];
-    this.contactParams = this.parameterService.createContactParameters(name, this.contactParams.UserId);
+    this.contactParams = this.parameterService.createContactParameters(
+      name,
+      this.contactParams.UserId
+    );
   }
 
   fetchUsers() {
-    if(this.loadingStatus.users || !this.userParams.HasNext) return;
+    if (this.loadingStatus.users || !this.userParams.HasNext) return;
 
+    this.userParams.PageNumber++;
     this.loadingStatus.users = true;
-    console.log("Fired upon search");
     const uri: string = `/users?pageNumber=${this.userParams.PageNumber}&pageSize=${this.userParams.PageSize}&name=${this.userParams.Name}`;
     this.userService.getUsers(uri).subscribe({
-      next: res => {
-        if(res.body && res.body.length > 0 && this.userParams.Name !== '') {
+      next: (res) => {
+        if (res.body && res.body.length > 0 && this.userParams.Name !== '') {
           this.users.push(...res.body);
         }
 
         const paginationJson = res.headers.get('X-Pagination');
-        if(paginationJson) {
+        if (paginationJson) {
           this.setPaginationValues(paginationJson);
         }
       },
@@ -123,16 +128,16 @@ export class ChatContactsComponent implements OnInit {
       },
       complete: () => {
         this.loadingStatus.users = false;
-      }
+      },
     });
   }
 
   fetchContacts() {
     if (this.loadingStatus.contacts) return;
-    
+
     this.loadingStatus.contacts = true;
     this.userService.searchContactsByNameUserId(this.contactParams).subscribe({
-      next: res => {
+      next: (res) => {
         if (res.length > 0) {
           this.contacts.push(...res);
           this.contactParams.PageNumber++;
@@ -143,7 +148,7 @@ export class ChatContactsComponent implements OnInit {
       },
       complete: () => {
         this.loadingStatus.contacts = false;
-      }
+      },
     });
   }
 
