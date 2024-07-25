@@ -1,36 +1,34 @@
+#简介
 
-# 简介(Introduction)
-
-TODO: 简要介绍你的项目。通过此节说明此项目的目标或动机。
+Chatroom App is a platform designed for real-time messaging. It allows users to connect with friends and new people, customize their profiles, and have secure conversations
 
   
 
-# 入门(Getting Started)
+#入门
 
-TODO: 指导用户在自己的系统上设置和运行代码。在本节中，可讨论:
+This section provides a step-by-step guide for installing the application.
 
-## 安装过程(Installation Process)
-Follow these steps for the installation of the Chatroom Frontend.
-
+1. 安装过程
 	1. Clone this repository.
 	2. Navigate to the project directory `cd chatroom-frontend`.
 	3. Run `npm install` on the command line to install all the dependencies of the application.
 	4. To run the system locally just enter `ng serve` on the command line.
+2. 软件依赖项
+	- NodeJS v18.20.2
+	- Angular v17
+	- GIT
+3. 最新发布
 
-## 软件依赖项(Software Dependencies)
-- NodeJS v18.20.2
-- Angular CLI
-- GIT
+4. API 参考
 
-## 最新发布(Latest Releases)
+  
 
-## API 参考(API Reference)
+#生成与测试
+Building the application is simple. Just navigate to the main folder `chatroom-frontend` and run the command `ng build --configuration production`. This will generate a `dist` folder, which you can then use to deploy the application.
+For more information on building Angular apps refer to this [documentation](https://v17.angular.io/guide/build).
+  
 
-# 生成与测试(Build & Test)
-
-TODO: 说明并展示如何生成代码和运行测试。
-
-# 参与
+#参与
 
 TODO: 说明其他用户和开发人员可如何帮助改善代码。
 
