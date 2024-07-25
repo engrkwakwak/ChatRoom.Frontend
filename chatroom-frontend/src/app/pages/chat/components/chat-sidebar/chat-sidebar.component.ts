@@ -89,7 +89,7 @@ export class ChatSidebarComponent implements OnInit {
     this.dialogService.open(UserProfileComponent, {
       context: {
         userId: userId
-      }
+      }, 
     }).onClose.subscribe(() => {
       this.loadDisplayName();
     });
