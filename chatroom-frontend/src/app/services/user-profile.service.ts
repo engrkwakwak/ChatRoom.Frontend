@@ -44,9 +44,12 @@ export class UserProfileService {
     return this.http.delete<void>(url, { body: { pictureUrl: fileUrl } });
   }
 
-  public loadDisplayPicture(picturePath: string, name : string) : string {
-    if(!picturePath || picturePath.trim().length === 0) {
+  public loadDisplayPicture(picturePath: string, name : string, isGC : boolean = false) : string {
+    if(!isGC && (!picturePath || picturePath.trim().length === 0)) {
       return encodeURI(`https://api.dicebear.com/8.x/adventurer-neutral/svg?seed=${name}`);
+    }
+    if(isGC && (!picturePath || picturePath.trim().length === 0)) {
+      return encodeURI(`https://api.dicebear.com/9.x/initials/svg?seed=${name}&radius=50`);
     }
     return picturePath;
   }

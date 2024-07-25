@@ -40,7 +40,7 @@ export class ChatService {
       this.isMobile = false;
     }
     else{
-      this.hideChatlist();
+      this.showChatlist();
       this.isMobile = true;
     }
   }

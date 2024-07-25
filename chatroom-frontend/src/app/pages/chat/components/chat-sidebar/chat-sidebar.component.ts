@@ -20,6 +20,7 @@ import { ChatService } from '../../../../services/chat.service';
 })
 export class ChatSidebarComponent implements OnInit {
   username: string = '';
+  displayName : string = '';
   picturePath: string = '';
   @ViewChild('changePasswordDialog') changePasswordDialog? : ConfirmationDialogComponent;
 
@@ -126,7 +127,8 @@ export class ChatSidebarComponent implements OnInit {
     this.userProfileService.getUser(userByIdUri)
     .subscribe({
       next: (userEntity: UserDto) => {
-        this.username = userEntity.displayName;
+        this.displayName = userEntity.displayName;
+        this.username = userEntity.username;
         this.updatePicturePath(userEntity.displayPictureUrl ?? "");
       },
       error: (err: HttpErrorResponse) => console.log(err),
@@ -140,7 +142,7 @@ export class ChatSidebarComponent implements OnInit {
   }
 
   public loadDisplayPicture() : string {
-    return this.userProfileService.loadDisplayPicture(this.picturePath, this.username);
+    return this.userProfileService.loadDisplayPicture(this.picturePath, this.displayName);
   }
 
   public updatePicturePath(newPath: string): void{

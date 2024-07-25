@@ -226,7 +226,7 @@ export class ChatViewComponent implements OnInit, OnDestroy {
       this.profileImageSrc = this.userProfileService.loadDisplayPicture(receiver!.user.displayPictureUrl!, receiver!.user.displayName);
       this.receiverName = receiver?.user.displayName!;
     } else {
-      this.profileImageSrc = this.userProfileService.loadDisplayPicture(this.chat?.displayPictureUrl!, this.chat?.chatName!);
+      this.profileImageSrc = this.userProfileService.loadDisplayPicture(this.chat?.displayPictureUrl!, this.chat?.chatName!, true);
     }
   }
 
@@ -317,5 +317,7 @@ export class ChatViewComponent implements OnInit, OnDestroy {
     this.typingStart = true;
     this.typingWatcher.next(ev)
   }
+
+
 
 }

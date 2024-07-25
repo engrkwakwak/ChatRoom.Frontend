@@ -49,7 +49,7 @@ export class ChatlistItemComponent {
     if(this.chat?.chatTypeId == 1){
       return this.userProfileService.loadDisplayPicture(this.receiver?.displayPictureUrl!, this.receiver?.displayName!)
     }
-    return this.userProfileService.loadDisplayPicture(this.chat?.displayPictureUrl!, this.chat?.chatName!)
+    return this.userProfileService.loadDisplayPicture(this.chat?.displayPictureUrl!, this.chat?.chatName!, true)
   }
 
   ngOnInit(){
