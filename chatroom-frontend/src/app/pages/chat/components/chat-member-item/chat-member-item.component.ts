@@ -38,10 +38,12 @@ export class ChatMemberItemComponent {
     this.userId = this.userProfileService.getUserIdFromToken()
     
     // optimize later
+    console.log(`started ${this.userId}`)
     this.chatService.getMemberByChatIdAndUserId(this.chat!.chatId, this.userId)
     .subscribe({
       next : chatMember => {
         this.userMembership = chatMember;
+        console.log(`loaded ${this.userId}`)
       },
       error : err => {
         this.errorHandlerService.handleError(err);

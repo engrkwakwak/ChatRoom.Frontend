@@ -97,7 +97,7 @@ export class ChatSettingsComponent implements OnInit, OnChanges {
     if(this.chat?.chatTypeId == 1){
       return this.userProfileService.loadDisplayPicture(receiver?.displayPictureUrl!, receiver?.displayName!);
     }
-    return this.userProfileService.loadDisplayPicture(this.chat?.displayPictureUrl!, this.chat?.chatName!);
+    return this.userProfileService.loadDisplayPicture(this.chat?.displayPictureUrl!, this.chat?.chatName!, true);
   }
 
   isAdmin(){

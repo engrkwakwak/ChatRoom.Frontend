@@ -1,11 +1,12 @@
 nb-card {
-    width: 550px; // Adjust the width as needed
+    // width: 550px; // Adjust the width as needed
     height: 650px; // Adjust the height as needed
-    max-width: 90%; // Ensure it is responsive
+    max-width: 550px; // Ensure it is responsive
     max-height: 90%; // Ensure it is responsive
     padding: 20px;
     border-radius: 8px;
     overflow: auto; // Ensure content is scrollable if it exceeds the height
+    margin: 0px;
 }
 
 .form-control {
